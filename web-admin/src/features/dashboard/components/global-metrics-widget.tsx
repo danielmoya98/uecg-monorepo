@@ -1,6 +1,6 @@
 import { Users, GraduationCap, Library, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { GlobalStats } from "../types/dashboard.types";
+import type { GlobalStats } from "../types/dashboard.types";
 
 interface GlobalMetricsWidgetProps {
   stats: GlobalStats | undefined;

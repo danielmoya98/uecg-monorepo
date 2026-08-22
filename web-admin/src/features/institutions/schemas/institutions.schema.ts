@@ -15,7 +15,7 @@ export const institutionSchema = z.object({
     'BENI',
     'PANDO',
   ], {
-    required_error: 'Seleccione un departamento',
+    message: 'Seleccione un departamento',
   }),
   municipality: z.string().min(1, 'El municipio es obligatorio'),
   district: z.string().min(1, 'El distrito es obligatorio'),

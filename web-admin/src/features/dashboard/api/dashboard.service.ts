@@ -1,5 +1,5 @@
 import { api } from "@/shared/api/client";
-import { RootStats, GlobalStats, TeacherStats } from "../types/dashboard.types";
+import type { RootStats, GlobalStats, TeacherStats } from "../types/dashboard.types";
 
 export const DashboardService = {
   getRootStats: async (): Promise<RootStats> => {

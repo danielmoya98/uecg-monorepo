@@ -209,7 +209,7 @@ export default function InstitutionForm({
             <SwissSelect
               id="department"
               value={currentDept || ''}
-              onChange={(val) => setValue('department', val, { shouldValidate: true })}
+              onChange={(val) => setValue('department', val as InstitutionFormValues['department'], { shouldValidate: true })}
               options={[
                 { value: 'CHUQUISACA', label: 'CHUQUISACA' },
                 { value: 'LA_PAZ', label: 'LA PAZ' },
