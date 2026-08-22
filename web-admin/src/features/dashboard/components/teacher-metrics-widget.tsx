@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Clock, ClipboardCheck, ArrowRight, BookOpen, Users, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { TeacherStats } from "../types/dashboard.types";
+import type { TeacherStats } from "../types/dashboard.types";
 
 interface TeacherMetricsWidgetProps {
   stats: TeacherStats | undefined;
