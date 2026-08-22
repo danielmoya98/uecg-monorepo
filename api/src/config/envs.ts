@@ -3,8 +3,15 @@ import { z } from 'zod';
 
 export const envSchema = z
   .object({
-    PORT: z.string().min(1, 'PORT is required.').transform(Number),
-    DATABASE_URL: z.string().min(1, 'DATABASE_URL is required.'),
+    PORT: z
+      .union([z.string(), z.number()])
+      .default(4000)
+      .transform((val) => (typeof val === 'string' ? Number(val) : val)),
+    DATABASE_URL: z
+      .string()
+      .default(
+        'postgresql://postgres:postgres@localhost:5432/uecg_db?schema=public',
+      ),
   })
   .passthrough();
 
