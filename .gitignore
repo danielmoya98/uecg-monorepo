@@ -1,0 +1,49 @@
+# Logs & Sistema Operativo
+*.log
+.DS_Store
+.directory
+Thumbs.db
+
+# Dependencias (aplica a api, web-admin, landing y paquetes)
+node_modules/
+.pnpm-store/
+
+# Builds / Compilados Web & Node
+dist/
+build/
+.next/
+.astro/
+out/
+temp-exports/
+coverage/
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+*.env.local
+*.env.*.local
+firebase-credentials.json
+*firebase-credentials*.json
+!*firebase-credentials.example.json
+google-services.json
+GoogleService-Info.plist
+*.pem
+*.key
+
+# Flutter / Dart (ignora en cualquier subdirectorio)
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub/
+**/.pub-cache/
+**/build/
+*.lock.lock
+
+# Configuraciones de IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*.iml
+

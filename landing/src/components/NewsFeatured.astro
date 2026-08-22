@@ -1,0 +1,69 @@
+---
+// src/components/NewsFeatured.astro
+import { Image } from 'astro:assets';
+
+const featured = {
+    category: "Noticia Principal",
+    title: "Estudiantes ganan el 1er Lugar en Robótica Nacional",
+    excerpt: "El equipo 'Che Guevara Tech' superó a más de 50 colegios con su proyecto de automatización agrícola sostenible en La Paz.",
+    date: { day: "25", month: "FEB" },
+    img: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=1600&fit=crop",
+    link: "/noticias/robotica-nacional"
+};
+---
+
+<section class="relative w-full h-[75vh] min-h-[600px] overflow-hidden bg-[#000089] border-b-4 border-gray-900 group">
+
+    <div class="absolute inset-0 w-full h-full mix-blend-multiply opacity-60 group-hover:opacity-40 transition-opacity duration-700">
+        <Image
+                src={featured.img}
+                alt={featured.title}
+                width={1600}
+                height={900}
+                format="webp"
+                loading="eager"       /* CRÍTICO: Carga inmediata */
+        fetchpriority="high"  /* CRÍTICO: Prioridad máxima */
+        class="w-full h-full object-cover grayscale group-hover:scale-105 transition-transform duration-[2s] ease-out will-change-transform"
+        />
+    </div>
+
+    <div class="absolute inset-0 bg-gradient-to-t from-[#000089] via-[#000089]/40 to-transparent opacity-90"></div>
+
+    <div class="absolute top-8 right-8 z-10 text-white/10 font-black leading-none select-none pointer-events-none text-right hidden md:block">
+        <span class="block text-[12rem] tracking-tighter">{featured.date.day}</span>
+        <span class="block text-4xl uppercase tracking-[0.5em] mr-2">{featured.date.month}</span>
+    </div>
+
+    <div class="absolute inset-0 container mx-auto px-6 flex flex-col justify-end pb-12 md:pb-20 z-20">
+
+        <div class="flex flex-col md:flex-row items-end gap-12 border-l-2 border-white/30 pl-6 md:pl-10">
+
+            <div class="flex-1 max-w-4xl">
+                <span class="inline-flex items-center gap-2 text-blue-300 font-bold uppercase tracking-widest text-xs mb-6">
+                    <span class="w-2 h-2 bg-blue-300"></span>
+                    {featured.category}
+                </span>
+
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[0.9] tracking-tight mb-6 uppercase">
+                    {featured.title}
+                </h1>
+
+                <p class="text-lg md:text-xl text-blue-100/80 max-w-2xl font-medium leading-relaxed border-l-2 border-blue-400 pl-4">
+                    {featured.excerpt}
+                </p>
+            </div>
+
+            <a href={featured.link} class="group/btn relative overflow-hidden bg-white text-[#000089] px-10 py-5 font-bold uppercase tracking-widest text-sm hover:text-white transition-colors duration-300 shrink-0">
+                <span class="relative z-10 flex items-center gap-3">
+                    Leer Artículo
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform">
+                        <path stroke-linecap="square" stroke-linejoin="miter" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </span>
+                <div class="absolute inset-0 bg-[#000089] transform translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-out z-0"></div>
+            </a>
+
+        </div>
+    </div>
+
+</section>

@@ -1,0 +1,90 @@
+---
+// src/components/Alumni.astro
+import { Image } from 'astro:assets';
+
+const alumni = [
+    {
+        name: "Dr. Javier López",
+        year: "Promo 2010",
+        role: "Neurocirujano",
+        quote: "La base científica y ética que recibí en el Che Guevara fue clave para mi carrera médica.",
+        img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=200&fit=crop"
+    },
+    {
+        name: "Ing. Ana Torrez",
+        year: "Promo 2015",
+        role: "CEO TechStart",
+        quote: "Aquí aprendí que el liderazgo no es mandar, sino servir. Esos valores guían mi empresa hoy.",
+        img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&fit=crop"
+    }
+];
+---
+
+<section class="py-24 bg-[#000089] text-white overflow-hidden relative">
+
+    <svg class="absolute top-0 left-0 w-64 h-64 text-white/5 -translate-y-1/4 translate-x-10 pointer-events-none" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z" />
+    </svg>
+
+    <div class="container mx-auto px-6 relative z-10">
+
+        <div class="text-center mb-16">
+            <span class="text-blue-300 font-bold uppercase tracking-widest text-xs mb-2 block">Legado</span>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 tracking-tight">Orgullo Che Guevara</h2>
+            <p class="text-blue-100/70 max-w-xl mx-auto text-lg">
+                Nuestros graduados transforman el mundo.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {alumni.map((person) => (
+                    <div class="group relative bg-[#000089] border border-white/20 p-10 hover:bg-white transition-colors duration-500 ease-out">
+
+                        <span class="text-6xl text-blue-400/30 absolute top-4 left-6 font-serif leading-none group-hover:text-blue-100 transition-colors">“</span>
+
+                        <p class="text-xl md:text-2xl font-serif italic mb-10 relative z-10 leading-relaxed text-blue-50 group-hover:text-[#000089] transition-colors duration-300">
+                            "{person.quote}"
+                        </p>
+
+                        <div class="flex items-center gap-5 border-t border-white/10 pt-6 group-hover:border-gray-200 transition-colors">
+
+                            <div class="relative w-14 h-14 shrink-0 overflow-hidden rounded-full border-2 border-transparent group-hover:border-[#000089] transition-all duration-300">
+                                <Image
+                                        src={person.img}
+                                        alt={person.name}
+                                        width={100}
+                                        height={100}
+                                        format="webp"
+                                        loading="lazy"
+                                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                                />
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-white text-lg leading-none group-hover:text-gray-900 transition-colors duration-300">
+                                    {person.name}
+                                </h4>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
+                                <span class="text-xs uppercase tracking-widest text-blue-300 group-hover:text-[#000089] font-bold transition-colors">
+                                    {person.role}
+                                </span>
+                                    <span class="hidden sm:inline text-white/30 group-hover:text-gray-400">•</span>
+                                    <span class="text-xs text-white/50 group-hover:text-gray-500 tabular-nums">
+                                    {person.year}
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+            ))}
+        </div>
+
+        <div class="mt-20 text-center">
+            <a href="/contacto" class="inline-block border border-white/30 px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-[#000089] transition-all hover:scale-105">
+                ¿Eres Ex-Alumno? Contáctanos
+            </a>
+        </div>
+
+    </div>
+</section>

@@ -1,0 +1,162 @@
+---
+// src/components/Navbar.astro
+// Importamos el contenido crudo del SVG para control total del color
+import logoSVG from '../assets/lg.svg?raw';
+
+const currentPath = Astro.url.pathname;
+
+const links = [
+    { name: "Inicio", href: "/" },
+    { name: "Nosotros", href: "/nosotros" },
+    { name: "Académico", href: "/academico" },
+    { name: "Admisiones", href: "/admisiones" },
+    { name: "Vida Estudiantil", href: "/proyectos" },
+    { name: "Noticias", href: "/noticias" },
+    { name: "Contacto", href: "/contacto" },
+];
+---
+
+<nav class="sticky top-0 z-100 w-full border-b border-gray-200 bg-white/90 backdrop-blur-md">
+    <div class="container mx-auto px-6 h-20 flex justify-between items-center">
+
+        <a href="/" class="flex items-center gap-3 sm:gap-4 group z-110" aria-label="Volver al inicio">
+            <div class="relative h-16 w-auto aspect-square flex items-center justify-center text-[#000089] logo-container transition-transform group-hover:scale-105">
+                <Fragment set:html={logoSVG} />
+            </div>
+
+            <div class="h-10 w-px bg-gray-200 hidden xs:block"></div>
+
+            <div class="flex flex-col justify-center">
+        <span class="text-[#000089] text-[10px] sm:text-[11px] font-bold tracking-[0.2em] uppercase leading-none mb-1 opacity-80">
+            Unidad Educativa
+        </span>
+                <span class="text-[#000089] text-xl sm:text-2xl font-black uppercase tracking-tighter leading-none group-hover:opacity-80 transition-opacity">
+            Che Guevara
+        </span>
+            </div>
+        </a>
+
+        <ul class="hidden lg:flex items-center gap-8">
+            {links.map((link) => {
+                const isActive = link.href === '/'
+                    ? currentPath === '/'
+                    : currentPath.startsWith(link.href);
+
+                return (
+                        <li>
+                            <a
+                                    href={link.href}
+                                    class:list={[
+                                        "text-xs font-bold uppercase tracking-widest transition-colors relative py-2",
+                                        isActive ? "text-[#000089]" : "text-gray-500 hover:text-[#000089]"
+                                    ]}
+                            >
+                                {link.name}
+                                {isActive && (
+                                        <span class="absolute -bottom-1 left-1/2 w-1 h-1 bg-[#000089] rounded-full -translate-x-1/2"></span>
+                                )}
+                            </a>
+                        </li>
+                );
+            })}
+        </ul>
+
+        <button id="menu-toggle" class="lg:hidden z-110 p-2 text-[#000089] hover:bg-blue-50 transition-colors rounded">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                <path stroke-linecap="square" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+            </svg>
+        </button>
+    </div>
+
+    <div
+            id="mobile-menu"
+            class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:hidden flex flex-col overflow-hidden"
+            style="z-index: 9999; height: 100vh; width: 100vw;"
+    >
+        <div class="h-20 flex items-center justify-between px-6 border-b border-gray-100 shrink-0 bg-white">
+            <span class="text-[#000089] text-[10px] font-black uppercase tracking-[0.3em]">Navegación Institucional</span>
+            <button id="menu-close" class="p-2 text-gray-500 hover:text-[#000089] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="square" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="grow flex flex-col justify-center px-8 overflow-y-auto bg-white">
+            <ul class="flex flex-col gap-4">
+                {links.map((link, index) => (
+                        <li class="border-b border-gray-50 last:border-none">
+                            <a
+                                    href={link.href}
+                                    class="group flex items-end justify-between py-5 text-4xl font-black text-gray-900 hover:text-[#000089] transition-all uppercase tracking-tighter"
+                            >
+                                <span>{link.name}</span>
+                                <span class="text-[10px] font-bold text-gray-300 group-hover:text-[#000089] mb-2 tabular-nums tracking-widest">
+                                0{index + 1}
+                            </span>
+                            </a>
+                        </li>
+                ))}
+            </ul>
+        </div>
+
+        <div class="p-10 bg-gray-50 border-t border-gray-100 shrink-0 text-center">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.4em] mb-2">U.E. Che Guevara</p>
+            <p class="text-[9px] text-gray-400 italic font-medium">Sucre, Bolivia — Gestión 2026</p>
+        </div>
+    </div>
+</nav>
+
+<style is:global>
+    /* Aseguramos que el SVG inyectado respete el color institucional y el tamaño */
+    .logo-container svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    /* Forzamos el color del SVG inyectado */
+    .logo-container svg path,
+    .logo-container svg g {
+        fill: #000089 ! aspiration;
+    }
+
+    /* Ocultar scrollbar en menú móvil si es necesario */
+    #mobile-menu div::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
+<script>
+    const initMenu = () => {
+        const toggle = document.getElementById('menu-toggle');
+        const close = document.getElementById('menu-close');
+        const menu = document.getElementById('mobile-menu');
+
+        if (!toggle || !menu || !close) return;
+
+        const openAction = () => {
+            menu.classList.remove('translate-x-full');
+            document.body.style.overflow = 'hidden';
+            document.body.style.height = '100vh';
+        };
+
+        const closeAction = () => {
+            menu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+            document.body.style.height = '';
+        };
+
+        toggle.addEventListener('click', openAction);
+        close.addEventListener('click', closeAction);
+
+        // Cerrar menú al hacer clic en cualquier enlace
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeAction);
+        });
+    };
+
+    // Inicializar en carga y tras transiciones de Astro
+    initMenu();
+    document.addEventListener('astro:page-load', initMenu);
+</script>

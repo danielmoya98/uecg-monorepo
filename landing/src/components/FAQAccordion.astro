@@ -1,0 +1,79 @@
+---
+// src/components/FAQAccordion.astro
+const faqs = [
+    { question: "¿Cuál es el costo de la mensualidad?", answer: "Las pensiones para la gestión 2026 tienen un costo base de Bs. 850 para nivel inicial y Bs. 950 para primaria/secundaria. Existen descuentos por pago anual anticipado." },
+    { question: "¿Cuentan con servicio de transporte escolar?", answer: "Sí, disponemos de una flota de 5 buses monitoreados por GPS que cubren las 4 zonas principales de la ciudad (Norte, Sur, Este y Centro)." },
+    { question: "¿Es necesario comprar uniformes en el colegio?", answer: "No. Entregamos el patrón de costura y los padres tienen libertad de confeccionarlos donde prefieran, siempre respetando la normativa de colores y diseño." },
+    { question: "¿Tienen horario extendido?", answer: "Ofrecemos talleres extracurriculares hasta las 17:30 hrs (Robótica, Danza, Fútbol), pero no contamos con servicio de guardería regular." },
+    { question: "¿Hay examen de ingreso?", answer: "Realizamos una evaluación diagnóstica (no excluyente) para conocer el nivel académico del estudiante y ofrecer nivelación si fuera necesario." },
+];
+---
+
+<section class="py-16 md:py-24 bg-white border-t border-gray-100">
+    <div class="container mx-auto px-6 max-w-4xl">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 pb-6 md:pb-8 border-b-2 border-gray-900">
+            <div class="w-full md:w-auto mb-4 md:mb-0">
+                <span class="text-[#000089] font-bold uppercase tracking-widest text-[10px] md:text-xs mb-2 block">Soporte</span>
+                <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-none tracking-tight">
+                    Preguntas <br>Frecuentes
+                </h2>
+            </div>
+
+            <div class="w-full md:w-auto flex justify-start md:justify-end">
+                <p class="text-left md:text-right text-gray-500 max-w-xs text-sm font-medium border-l-2 border-gray-200 pl-4 md:pl-0 md:border-l-0 md:border-r-2 md:pr-4">
+                    Resolvemos tus dudas principales sobre el proceso de admisión y vida escolar.
+                </p>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-200">
+            {faqs.map((faq, index) => (
+                    <details class="group border-b border-gray-200 open:bg-gray-50 transition-colors duration-300">
+                        <summary class="flex items-start gap-4 md:gap-6 cursor-pointer p-5 md:p-8 list-none select-none">
+
+                        <span class="text-[10px] md:text-xs font-bold text-gray-400 mt-1 md:mt-1.5 tabular-nums group-hover:text-[#000089] transition-colors shrink-0">
+                            0{index + 1}
+                        </span>
+
+                            <div class="flex-1 pr-2 md:pr-8">
+                            <span class="text-lg md:text-xl font-bold text-gray-900 group-hover:text-[#000089] transition-colors block leading-tight">
+                                {faq.question}
+                            </span>
+                            </div>
+
+                            <span class="shrink-0 text-gray-400 group-hover:text-[#000089] transition-all duration-300 group-open:rotate-45 group-open:text-[#000089] mt-0.5">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="md:w-6 md:h-6">
+                                <path d="M12 5V19M5 12H19" stroke-linecap="square" stroke-linejoin="miter"/>
+                            </svg>
+                        </span>
+                        </summary>
+
+                        <div class="px-5 md:px-8 pb-6 md:pb-8 pl-[2.5rem] md:pl-[4.5rem] text-gray-600 leading-relaxed text-sm md:text-lg animate-fade-in max-w-2xl">
+                            {faq.answer}
+                        </div>
+                    </details>
+            ))}
+        </div>
+
+    </div>
+</section>
+
+<style>
+    /* Eliminar el triángulo por defecto de details */
+    details > summary {
+        list-style: none;
+    }
+    details > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .animate-fade-in {
+        animation: slideDown 0.3s ease-out forwards;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>

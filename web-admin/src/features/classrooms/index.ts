@@ -1,0 +1,6 @@
+export { default as ClassroomsPage } from './components/classrooms-page'
+export * from './types/classrooms.types'
+export { ClassroomsService } from './api/classrooms.service'
+export { useClassroomsData } from './hooks/use-classrooms-data'
+export { ClassroomDrawer } from './components/classroom-drawer'
+export { BulkClassroomDrawer } from './components/bulk-classroom-drawer'

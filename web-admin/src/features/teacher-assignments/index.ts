@@ -1,0 +1,6 @@
+export { default as TeacherAssignmentsPage } from './components/teacher-assignments-page'
+export { TeacherAssignmentsService } from './api/teacher-assignments.service'
+export * from './types/teacher-assignments.types'
+export { useAssignmentsData } from './hooks/use-assignments-data'
+export { useClassroomSelection } from './hooks/use-classroom-selection'
+export { useCloneDrawer } from './hooks/use-clone-drawer'

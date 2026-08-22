@@ -1,0 +1,66 @@
+---
+// src/components/ContactInfo.astro
+---
+<div class="h-full bg-white border border-gray-200 p-8 md:p-10 flex flex-col justify-between shadow-sm hover:shadow-lg transition-shadow duration-300">
+
+    <div>
+        <div class="flex items-center gap-4 mb-8 border-b border-gray-100 pb-6">
+            <div class="w-12 h-12 bg-[#000089] text-white flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="square" stroke-linejoin="miter" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="square" stroke-linejoin="miter" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                </svg>
+            </div>
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Ubicación Central</span>
+                <h3 class="text-xl font-bold text-gray-900 leading-none">Atención Presencial</h3>
+            </div>
+        </div>
+
+        <div class="space-y-10">
+            <div class="group cursor-default">
+                <span class="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#000089] mb-3">
+                    Dirección Física
+                </span>
+                <p class="text-lg text-gray-800 leading-relaxed font-medium">
+                    Av. Las Américas #123 <br>
+                    <span class="text-gray-400 text-sm">(Frente al Parque Bolívar)</span><br>
+                    Sucre, Bolivia
+                </p>
+            </div>
+
+            <div>
+                <span class="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#000089] mb-4">
+                    Horario de Oficina
+                </span>
+                <ul class="space-y-3 text-sm text-gray-600">
+                    <li class="flex justify-between items-end border-b border-gray-200 border-dashed pb-2">
+                        <span class="uppercase tracking-wide font-bold">Lun - Vie</span>
+                        <span class="font-mono font-bold text-gray-900 tabular-nums">08:00 - 12:30</span>
+                    </li>
+                    <li class="flex justify-between items-end border-b border-gray-200 border-dashed pb-2">
+                        <span class="uppercase tracking-wide font-bold">Turno Tarde</span>
+                        <span class="font-mono font-bold text-gray-900 tabular-nums">14:30 - 18:00</span>
+                    </li>
+                    <li class="flex justify-between items-end text-gray-400 pt-1">
+                        <span class="uppercase tracking-wide">Sábados</span>
+                        <span class="italic text-xs">Citas Previas</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <a
+            href="https://goo.gl/maps/tulink"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group mt-10 w-full bg-white border-2 border-[#000089] py-4 px-6 flex items-center justify-between text-[#000089] hover:bg-[#000089] hover:text-white transition-all duration-300"
+    >
+        <span class="text-xs font-bold uppercase tracking-[0.2em]">Abrir Mapa</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 transform group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+        </svg>
+    </a>
+
+</div>

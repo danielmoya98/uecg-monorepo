@@ -1,0 +1,86 @@
+name: Monorepo CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  check-api:
+    name: Test & Build Backend API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: api/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./api
+        run: npm ci
+
+      - name: Generate Prisma Client
+        working-directory: ./api
+        run: npx prisma generate
+
+      - name: Typecheck and Build
+        working-directory: ./api
+        run: npm run build
+
+      - name: Run Unit Tests
+        working-directory: ./api
+        run: npm test --if-present
+
+  check-web-admin:
+    name: Test & Build Web Admin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: web-admin/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./web-admin
+        run: npm ci
+
+      - name: Build Web Admin
+        working-directory: ./web-admin
+        run: npm run build
+
+      - name: Run Tests
+        working-directory: ./web-admin
+        run: npm test --if-present
+
+  check-landing:
+    name: Build Landing Page
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: landing/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./landing
+        run: npm ci
+
+      - name: Build Landing
+        working-directory: ./landing
+        run: npm run build

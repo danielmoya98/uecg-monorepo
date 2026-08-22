@@ -1,0 +1,112 @@
+---
+// src/components/NewsGrid.astro
+import { Image } from 'astro:assets';
+
+const news = [
+    {
+        category: "Institucional",
+        day: "25",
+        month: "FEB",
+        year: "2026",
+        title: "Inauguración del nuevo laboratorio de Robótica y Automatización",
+        img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800&fit=crop"
+    },
+    {
+        category: "Deportes",
+        day: "20",
+        month: "FEB",
+        year: "2026",
+        title: "Nuestra selección gana el campeonato departamental de Futsal",
+        img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800&fit=crop"
+    },
+    {
+        category: "Cultura",
+        day: "15",
+        month: "FEB",
+        year: "2026",
+        title: "Feria cultural y exposición de talentos: Un éxito rotundo",
+        img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&fit=crop"
+    }
+];
+---
+
+<section class="py-16 md:py-24 bg-white border-t border-gray-200">
+    <div class="container mx-auto px-6">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 border-b-4 border-gray-900 pb-6">
+            <div class="w-full md:w-auto mb-6 md:mb-0">
+                <span class="text-[#000089] font-bold uppercase tracking-widest text-[10px] md:text-xs mb-2 block">Boletín Informativo</span>
+                <h2 class="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 tracking-tighter leading-none uppercase">
+                    Actualidad
+                </h2>
+            </div>
+
+            <a href="/noticias" class="group flex items-center gap-3 text-[10px] md:text-xs font-bold uppercase tracking-widest hover:text-[#000089] focus:text-[#000089] transition-colors focus:outline-none" aria-label="Ver todas las noticias">
+                <span>Ver Archivo</span>
+                <div class="w-8 h-8 md:w-10 md:h-10 border-2 border-gray-900 flex items-center justify-center group-hover:bg-[#000089] group-focus:bg-[#000089] group-hover:border-[#000089] group-focus:border-[#000089] group-hover:text-white group-focus:text-white transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="square" stroke-linejoin="miter" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </div>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-gray-900">
+            {news.map((item) => (
+                    <article tabindex="0" class="group relative flex flex-col h-full border-r border-b border-gray-900 bg-white hover:bg-gray-50 focus:bg-gray-50 transition-colors duration-500 cursor-pointer overflow-hidden focus:outline-none">
+
+                        <div class="relative w-full aspect-video md:aspect-[4/3] overflow-hidden border-b border-gray-900 bg-gray-100">
+
+                            <div class="absolute top-0 left-0 z-10 bg-[#000089] text-white text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-3 py-1.5">
+                                {item.category}
+                            </div>
+
+                            <Image
+                                    src={item.img}
+                                    alt={item.title}
+                                    width={600}
+                                    height={450}
+                                    format="webp"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-focus:grayscale-0 group-hover:scale-105 group-focus:scale-105 transition-all duration-700 ease-out"
+                            />
+
+                            <div class="absolute inset-0 bg-[#000089] mix-blend-multiply opacity-0 group-hover:opacity-20 group-focus:opacity-20 transition-opacity duration-500"></div>
+                        </div>
+
+                        <div class="p-6 md:p-8 flex flex-col flex-grow justify-between relative">
+
+                            <div>
+                                <div class="flex items-start gap-4 md:gap-5 mb-4 md:mb-6">
+                                    <div class="flex flex-col items-center leading-none text-gray-400 group-hover:text-[#000089] group-focus:text-[#000089] transition-colors shrink-0">
+                                        <span class="text-4xl md:text-5xl font-black tracking-tighter tabular-nums">{item.day}</span>
+                                        <span class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest border-t-2 border-current pt-1 mt-1 w-full text-center">
+                                            {item.month}
+                                        </span>
+                                    </div>
+
+                                    <h3 class="text-lg md:text-2xl font-bold text-gray-900 leading-[1.1] group-hover:text-[#000089] group-focus:text-[#000089] transition-colors line-clamp-3">
+                                        {item.title}
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 group-hover:border-gray-300 group-focus:border-gray-300 transition-colors flex justify-between items-center">
+                                <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-gray-400 font-bold group-hover:text-gray-600 group-focus:text-gray-600">
+                                    Leer Noticia
+                                </span>
+
+                                <span class="text-[#000089] transform translate-x-[-10px] opacity-0 group-hover:opacity-100 group-focus:opacity-100 group-hover:translate-x-0 group-focus:translate-x-0 transition-all duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="square" stroke-linejoin="miter" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+            ))}
+        </div>
+
+    </div>
+</section>

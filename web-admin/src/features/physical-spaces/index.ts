@@ -1,0 +1,5 @@
+export { default as PhysicalSpacesPage } from './components/physical-spaces-page'
+export * from './types/physical-spaces.types'
+export { PhysicalSpacesService } from './api/physical-spaces.service'
+export { usePhysicalSpacesData } from './hooks/use-physical-spaces-data'
+export { usePhysicalSpacesDrawers } from './hooks/use-physical-spaces-drawers'

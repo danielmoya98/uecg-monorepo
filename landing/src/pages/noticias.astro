@@ -1,0 +1,114 @@
+---
+// src/pages/noticias.astro
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import PageHeader from '../components/PageHeader.astro'; // Importado para consistencia
+import Newsletter from '../components/Newsletter.astro';
+import Footer from '../components/Footer.astro';
+
+const allNews = [
+    { category: "Institucional", day: "25", month: "FEB", year: "2026", title: "Inauguración del nuevo laboratorio de Robótica", img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800&fit=crop" },
+    { category: "Deportes", day: "20", month: "FEB", year: "2026", title: "Nuestra selección gana el campeonato departamental", img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800" },
+    { category: "Arte", day: "15", month: "FEB", year: "2026", title: "Feria cultural y exposición de talentos", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800" },
+    { category: "Académico", day: "10", month: "FEB", year: "2026", title: "Inicio de clases: Todo lo que debes saber", img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800" },
+    { category: "Comunidad", day: "05", month: "FEB", year: "2026", title: "Jornada de limpieza y reforestación", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800" },
+    { category: "Institucional", day: "01", month: "FEB", year: "2026", title: "Nuevo convenio con la Universidad San Francisco", img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800&fit=crop" }
+];
+
+const categories = ["Todas", "Institucional", "Académico", "Deportes", "Arte", "Comunidad"];
+---
+
+<Layout title="Archivo de Noticias | U.E. Che Guevara">
+    <Navbar />
+
+    <div transition:name="page-header-transition">
+        <PageHeader
+                title="Actualidad"
+                subtitle="Comunicados y Noticias"
+                image="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800&fit=crop"
+        />
+    </div>
+
+    <main class="bg-white py-24" transition:animate="fade">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-12 gap-16">
+
+                <div class="lg:col-span-8">
+
+                    <div class="flex items-center justify-between mb-12">
+                        <h2 class="text-xs font-black uppercase tracking-[0.3em] text-[#000089]">Últimas Publicaciones</h2>
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{allNews.length} Resultados</span>
+                    </div>
+
+                    <div class="flex flex-col border-t border-gray-900">
+                        {allNews.map((item) => (
+                                <article class="group relative flex flex-col md:flex-row border-b border-gray-900 bg-white hover:bg-gray-50 transition-colors duration-500 overflow-hidden">
+
+                                    <div class="md:w-1/3 relative h-56 md:h-auto border-r-0 md:border-r border-gray-900">
+                                        <img
+                                                src={item.img}
+                                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                                                alt={item.title}
+                                                loading="lazy"
+                                        />
+                                        <div class="absolute top-0 left-0 bg-[#000089] text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1.5">
+                                            {item.category}
+                                        </div>
+                                    </div>
+
+                                    <div class="p-8 md:w-2/3 flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-start gap-4 mb-4">
+                                                <div class="flex flex-col leading-none text-gray-300 group-hover:text-[#000089] transition-colors">
+                                                    <span class="text-4xl font-black tabular-nums">{item.day}</span>
+                                                    <span class="text-[9px] font-bold text-center border-t border-current pt-1 mt-1">{item.month}</span>
+                                                </div>
+                                                <h3 class="text-xl md:text-2xl font-black text-gray-900 leading-none uppercase tracking-tighter group-hover:text-[#000089] transition-colors">
+                                                    {item.title}
+                                                </h3>
+                                            </div>
+                                            <p class="text-gray-500 text-sm leading-relaxed line-clamp-2 font-medium">
+                                                Entérate de los detalles sobre {item.title.toLowerCase()} y cómo impacta en el desarrollo de nuestra comunidad estudiantil.
+                                            </p>
+                                        </div>
+
+                                        <div class="mt-8 flex justify-between items-center">
+                                            <div class="flex gap-2">
+                                                <div class="w-2 h-2 bg-[#000089]"></div>
+                                                <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400">Lectura: 3 min</span>
+                                            </div>
+                                            <a href={`/noticias/${item.title.toLowerCase().replace(/ /g, '-')}`} class="text-[#000089] font-black text-[10px] uppercase tracking-widest border-b-2 border-[#000089] pb-0.5 group-hover:border-black group-hover:text-black transition-all">
+                                                Leer Más +
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
+                        ))}
+                    </div>
+
+                    <div class="mt-16 flex border-l border-t border-gray-900 w-fit">
+                        <button class="w-14 h-14 border-r border-b border-gray-900 flex items-center justify-center text-gray-400 hover:bg-[#000089] hover:text-white transition-colors">←</button>
+                        <button class="w-14 h-14 border-r border-b border-gray-900 flex items-center justify-center font-black bg-[#000089] text-white">01</button>
+                        <button class="w-14 h-14 border-r border-b border-gray-900 flex items-center justify-center font-black hover:bg-gray-100 transition-colors">02</button>
+                        <button class="w-14 h-14 border-r border-b border-gray-900 flex items-center justify-center text-gray-400 hover:bg-[#000089] hover:text-white transition-colors">→</button>
+                    </div>
+
+                </div>
+
+                <div class="lg:col-span-4 space-y-16">
+                    <div class="sticky top-28 space-y-16">
+                        <Newsletter />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>

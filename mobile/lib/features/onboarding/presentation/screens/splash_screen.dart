@@ -1,0 +1,182 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // <-- Paquete clave para SVG
+import 'package:flutter_animate/flutter_animate.dart'; // <-- Paquete clave para animaciones pro
+import '../../../../core/theme/app_theme.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
+
+class SplashScreen extends ConsumerStatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  // Variables de control de estado para las animaciones matemáticas
+  bool _isDotCenter = false;
+  bool _isScaleTheCircle = false;
+  bool _hideLogoAndText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Iniciamos la secuencia de animación automáticamente
+    _startAnimationSequence();
+  }
+
+  Future<void> _startAnimationSequence() async {
+    // 1. ESPERA DE CONTEMPLACIÓN (2 segundos en total)
+    // Dejamos que la entrada escalonada del logo (que dura 1.2s en la UI) termine
+    // y el usuario contemple el emblema un momento.
+    await Future.delayed(const Duration(milliseconds: 5000));
+    if (!mounted) return;
+
+    // 2. VIAJE DEL PUNTO AL CENTRO
+    // El punto viaja desde la base hasta el centro (Eje vertical, story telling geométrico)
+    setState(() => _isDotCenter = true);
+
+    // 3. IMPACTO DEL PUNTO (500ms de viaje + 20ms de micro-retraso de choque)
+    await Future.delayed(const Duration(milliseconds: 520));
+    if (!mounted) return;
+
+    // 4. DETONACIÓN DE LA EXPLOSIÓN BLANCA
+    // Ocultamos el emblema y el texto justo antes de la explosión
+    setState(() {
+      _hideLogoAndText = true;
+      _isScaleTheCircle = true;
+    });
+
+    // 5. LLENADO DE LA PANTALLA (600ms que dura la explosión)
+    await Future.delayed(const Duration(milliseconds: 600));
+    if (!mounted) return;
+
+    // 6. NAVEGACIÓN ENRUTADA POR RIVERPOD
+    _checkAuthAndNavigate();
+  }
+
+  void _checkAuthAndNavigate() {
+    final authState = ref.read(authProvider);
+
+    if (authState.status == AuthStatus.authenticated) {
+      final role = authState.user?['role'] ?? 'ESTUDIANTE';
+      if (role == 'DOCENTE') {
+        context.go('/dashboard/teacher');
+      } else if (role == 'PADRE' || role == 'TUTOR') {
+        context.go('/dashboard/parent');
+      } else {
+        context.go('/dashboard/student');
+      }
+    } else {
+      context.go('/onboarding');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Obtenemos el tamaño de la pantalla para cálculos matemáticos precisos
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      backgroundColor: AppTheme.swissBlue,
+      body: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            // ========================================================
+            // 1. EL CÍRCULO DE EXPLOSIÓN BLANCA (FONDO REVEAL)
+            // ========================================================
+            Center(
+              child: AnimatedScale(
+                duration: const Duration(milliseconds: 600),
+                curve: const Cubic(0.58, -0.30, 0.365, 1),
+                // 🔥 SOLUCIÓN: Empieza con escala CERO o está invisible.
+                // Usamos 15 para asegurar llenado completo en pantallas largas.
+                scale: _isScaleTheCircle ? 15 : 0.0,
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  decoration: const BoxDecoration(
+                    color: AppTheme.pureWhite,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ),
+
+            // ========================================================
+            // 2. EL ENSAMBLE DEL EMBLEMA (Logo + Tipografía)
+            // ========================================================
+            Center(
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: _hideLogoAndText ? 0.0 : 1.0,
+                // Englobamos el SVG y el Texto para animar su entrada juntos
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // El Logo SVG (Pintado de blanco puro)
+                    SvgPicture.asset(
+                      'assets/lg.svg',
+                      width: 170, // Espacio negativo equilibrado
+                      // 🔥 Esto pinta tu SVG azul de color blanco puro para contrastar
+                      colorFilter: const ColorFilter.mode(
+                          AppTheme.pureWhite, BlendMode.srcIn),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // 🚀 Tensión Tipográfica Extrema (Pedestal moderno)
+                    Text(
+                      'U.E.C.G.',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: AppTheme.pureWhite,
+                            letterSpacing:
+                                16.0, // Espaciado extremo premium institucional
+                            fontWeight: FontWeight.w900, // Peso pesado
+                            fontSize: 10, // Pequeño y preciso
+                          ),
+                    ),
+                  ],
+                )
+                    // 🚀 ENTRADA ESCALONADA (Declarativa con flutter_animate)
+                    .animate()
+                    .fade(duration: 1000.ms, curve: Curves.easeInCirc)
+                    .slideY(
+                        begin: 0.1,
+                        duration: 1200.ms,
+                        curve: Curves
+                            .easeOutQuart), // Flota sutilmente hacia arriba
+              ),
+            ),
+
+            // ========================================================
+            // 3. EL PUNTO VIAJERO (Geometric Storytelling en eje vertical)
+            // ========================================================
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 500),
+              curve:
+                  const Cubic(.47, -1.26, .36, 1), // Efecto "tirachinas" suizo
+              // Cálculo matemático: Mitad de pantalla - radio del punto - desplazamiento vertical
+              // 🔥 SOLUCIÓN: El punto ya no está a la izquierda. Está abajo. alineado matemáticamente.
+              top: (screenHeight / 2) -
+                  12 -
+                  (_isDotCenter ? 0 : -250), // Empieza 250px abajo del centro
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: const BoxDecoration(
+                  color: AppTheme.pureWhite,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

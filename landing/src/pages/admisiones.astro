@@ -1,0 +1,80 @@
+---
+// src/pages/admisiones.astro
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PreinscriptionForm from '../components/PreinscriptionForm.astro';
+import Admissions from '../components/Admissions.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import WhatsAppHub from '../components/WhatsAppHub.astro'; // Añadido para soporte directo
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+        title="Admisiones 2026"
+        description="Inicia el proceso de inscripción para la gestión 2026. Requisitos, pasos detallados y formulario de preinscripción en línea."
+>
+    <Navbar />
+
+    <div transition:name="page-header-transition">
+        <PageHeader
+                title="Admisiones"
+                subtitle="Gestión Escolar 2026"
+                image="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1200"
+        />
+    </div>
+
+    <main transition:animate="fade">
+
+        <section id="formulario-registro" class="scroll-mt-20">
+            <PreinscriptionForm />
+        </section>
+
+        <div class="bg-gray-50 border-y border-gray-200">
+            <Admissions />
+        </div>
+
+        <section class="bg-white">
+            <FAQAccordion />
+        </section>
+
+        <section class="py-24 bg-gray-50 border-t border-gray-900">
+            <div class="container mx-auto px-6">
+                <div class="mb-16 text-center">
+                    <span class="text-[#000089] font-bold uppercase tracking-widest text-xs mb-2 block">Contacto Directo</span>
+                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter">¿Necesitas Ayuda?</h2>
+                    <p class="text-gray-500 mt-4 max-w-xl mx-auto">
+                        Nuestro equipo administrativo está listo para guiarte de forma personalizada a través de WhatsApp.
+                    </p>
+                </div>
+
+                <WhatsAppHub />
+            </div>
+        </section>
+
+        <section class="py-24 bg-[#000089] text-center text-white relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+            <div class="container mx-auto px-6 relative z-10">
+                <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-8 leading-none">
+                    Ven a conocernos <br>en persona
+                </h2>
+                <p class="text-blue-100 mb-12 max-w-2xl mx-auto text-lg font-medium">
+                    Nuestras puertas están abiertas de Lunes a Viernes (08:00 - 16:00). Ubícanos frente al Parque Bolívar para una visita guiada.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="https://wa.me/591XXXXXXXX" target="_blank" class="group bg-white text-[#000089] px-10 py-5 font-bold uppercase tracking-widest text-sm hover:bg-blue-50 transition-all flex items-center justify-center gap-3">
+                        Agendar Visita
+                        <span class="group-hover:translate-x-1 transition-transform">→</span>
+                    </a>
+                    <a href="/contacto" class="border-2 border-white/30 text-white px-10 py-5 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-[#000089] transition-all">
+                        Ver Mapa de Ubicación
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <Footer />
+</Layout>

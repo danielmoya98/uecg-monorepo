@@ -1,0 +1,78 @@
+---
+// src/components/DirectorWelcome.astro
+import { Image } from 'astro:assets';
+
+// URL de la imagen (Idealmente deberías tenerla en local para máximo rendimiento)
+const directorImg = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&fit=crop";
+---
+
+<section class="py-24 bg-white border-b border-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+
+            <div class="lg:col-span-5 relative group cursor-crosshair">
+
+                <div class="absolute top-4 left-4 w-full h-full border-2 border-[#000089] z-0 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2 bg-[#000089]/5"></div>
+
+                <div class="relative z-10 aspect-[4/5] overflow-hidden border border-gray-200 bg-gray-100">
+                    <Image
+                            src={directorImg}
+                            alt="Lic. María Rodríguez - Directora General"
+                            width={600}
+                            height={750}
+                            format="webp"
+                            loading="lazy"
+                            decoding="async"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out will-change-filter"
+                            transition:name="director-image"
+                    />
+
+                    <div class="absolute bottom-0 left-0 bg-white px-6 py-3 border-t border-r border-gray-200">
+                        <span class="text-xs font-bold uppercase tracking-widest text-[#000089]">Desde 1998</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 lg:pl-8">
+
+                <span class="text-gray-400 font-bold uppercase tracking-widest text-xs mb-6 block flex items-center gap-3">
+                   <span class="w-6 h-px bg-gray-300"></span> La Dirección
+                </span>
+
+                <h2 class="text-4xl lg:text-5xl font-black text-gray-900 mb-10 leading-none tracking-tight">
+                    Mensaje de <br>Bienvenida
+                </h2>
+
+                <div class="relative mb-10 pl-8 border-l-4 border-[#000089]">
+                    <p class="text-2xl md:text-3xl font-serif italic text-gray-800 leading-relaxed">
+                        “Educar no es solo transmitir conocimientos, es encender una llama que iluminará el camino por el resto de sus vidas.”
+                    </p>
+                </div>
+
+                <div class="prose prose-lg text-gray-500 mb-12 font-medium leading-relaxed">
+                    <p class="mb-4">
+                        Bienvenidos a la U.E. Ernesto Che Guevara. Nos dedicamos a construir una comunidad donde el <strong class="text-gray-900">rigor académico</strong> se encuentra con la calidez humana.
+                    </p>
+                    <p>
+                        Nuestro compromiso es formar ciudadanos globales, críticos y empáticos. Los invito a conocer nuestro modelo educativo.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-6 pt-8 border-t border-gray-100">
+                    <div class="font-serif italic text-3xl text-[#000089] select-none">
+                        M. Rodríguez
+                    </div>
+
+                    <div class="h-10 w-px bg-gray-200"></div>
+
+                    <div>
+                        <p class="font-bold text-gray-900 text-sm uppercase tracking-wide">Lic. María Rodríguez</p>
+                        <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mt-1">Directora General</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>

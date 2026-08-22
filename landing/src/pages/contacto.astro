@@ -1,0 +1,86 @@
+---
+// src/pages/contacto.astro
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import PageHeader from '../components/PageHeader.astro';
+import WhatsAppHub from '../components/WhatsAppHub.astro';
+import ContactInfo from '../components/ContactInfo.astro';
+import InteractiveMap from '../components/InteractiveMap.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+        title="Contacto"
+        description="Canales directos de comunicación, ubicación y horarios de atención de la U.E. Ernesto Che Guevara."
+>
+    <Navbar />
+
+    <div transition:name="page-header-transition">
+        <PageHeader
+                title="Canales Directos"
+                subtitle="Atención al Cliente"
+                image="https://images.unsplash.com/photo-1534536281715-e28d76689b4d?q=80&w=1200&fit=crop"
+        />
+    </div>
+
+    <main class="bg-white" transition:animate="fade">
+        <div class="container mx-auto px-6 py-24">
+
+            <div class="grid lg:grid-cols-12 gap-16 items-start">
+
+                <div class="lg:col-span-8">
+                    <div class="mb-12">
+                        <span class="text-[#000089] font-bold uppercase tracking-[0.2em] text-xs mb-3 block">Soporte Inmediato</span>
+                        <h2 class="text-4xl md:text-5xl font-black text-gray-900 leading-none tracking-tight uppercase mb-6">
+                            ¿Con quién deseas <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-[#000089] to-blue-600">hablar hoy?</span>
+                        </h2>
+                        <p class="text-gray-500 text-lg max-w-2xl font-medium leading-relaxed">
+                            Hemos habilitado canales especializados para agilizar tu atención. Selecciona el departamento correspondiente para iniciar un chat directo.
+                        </p>
+                    </div>
+
+                    <WhatsAppHub />
+
+                    <div class="mt-12 p-8 bg-gray-50 border-l-4 border-[#000089] flex flex-col md:flex-row gap-6 items-center justify-between group">
+                        <div class="flex gap-4 items-start">
+                            <div class="text-2xl mt-1 group-hover:rotate-12 transition-transform">⚡</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 uppercase tracking-widest text-sm mb-1">Compromiso de Respuesta</h4>
+                                <p class="text-sm text-gray-500 leading-relaxed max-w-md">
+                                    Nuestros asesores responden habitualmente en menos de <strong class="text-[#000089]">15 minutos</strong> dentro del horario laboral (08:00 - 16:00).
+                                </p>
+                            </div>
+                        </div>
+                        <div class="hidden md:block h-10 w-px bg-gray-200"></div>
+                        <div class="text-right hidden md:block">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Zona Horaria</span>
+                            <span class="text-sm font-bold text-gray-900 tabular-nums">GMT-4 (Bolivia)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-28">
+
+                    <ContactInfo />
+
+                    <div class="aspect-square">
+                        <InteractiveMap />
+                    </div>
+
+                    <div class="mt-6">
+                        <a
+                                href="https://maps.app.goo.gl/xVd1hyvJ5MRrvqk-ba6hc"
+                                target="_blank"
+                                class="flex items-center justify-between w-full bg-gray-900 text-white p-5 font-bold uppercase tracking-widest text-[10px] hover:bg-[#000089] transition-colors group"
+                        >
+                            <span>Abrir en Google Maps 3D</span>
+                            <span class="group-hover:translate-x-2 transition-transform">↗</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>

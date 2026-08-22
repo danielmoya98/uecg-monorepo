@@ -1,0 +1,71 @@
+---
+// src/pages/proyectos.astro
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ClubsGrid from '../components/ClubsGrid.astro';
+import Gallery from '../components/Gallery.astro';
+import Achievements from '../components/Achievements.astro';
+import Alumni from '../components/Alumni.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+        title="Vida Estudiantil"
+        description="Explora los clubes, actividades extracurriculares, logros deportivos y nuestra red de ex-alumnos."
+>
+    <Navbar />
+
+    <div transition:name="page-header-transition">
+        <PageHeader
+                title="Vida Estudiantil"
+                subtitle="Cultura, Arte y Deporte"
+                image="https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=1600&fit=crop"
+        />
+    </div>
+
+    <main transition:animate="slide">
+
+        <section id="clubes" class="scroll-mt-20">
+            <ClubsGrid />
+        </section>
+
+        <div class="bg-white">
+            <Gallery />
+        </div>
+
+        <section class="bg-[#000089] text-white">
+            <Achievements />
+        </section>
+
+        <div class="bg-gray-50 border-t border-gray-200">
+            <Alumni />
+        </div>
+
+        <section class="py-24 bg-white border-t border-gray-900 relative overflow-hidden">
+            <div class="absolute -bottom-10 -left-10 text-[15rem] font-black text-gray-50 select-none pointer-events-none z-0">
+                CH
+            </div>
+
+            <div class="container mx-auto px-6 text-center relative z-10">
+                <h2 class="text-4xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter mb-6">
+                    Forma parte de nuestra <br>historia
+                </h2>
+                <p class="text-gray-500 max-w-2xl mx-auto mb-10 font-medium">
+                    Inscripciones abiertas para la gestión 2026. Cupos limitados por nivel para garantizar una educación personalizada.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="/admisiones" class="bg-[#000089] text-white px-12 py-5 font-bold uppercase tracking-widest text-xs hover:bg-black transition-all">
+                        Postular Ahora →
+                    </a>
+                    <a href="/contacto" class="border-2 border-gray-900 text-gray-900 px-12 py-5 font-bold uppercase tracking-widest text-xs hover:bg-gray-900 hover:text-white transition-all">
+                        Solicitar Visita
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <Footer />
+</Layout>

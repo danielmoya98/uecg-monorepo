@@ -1,0 +1,90 @@
+---
+// src/components/Stats.astro
+const stats = [
+    { value: 25, symbol: "+", label: "Años de Historia" },
+    { value: 1200, symbol: "", label: "Estudiantes" },
+    { value: 80, symbol: "+", label: "Docentes" },
+    { value: 100, symbol: "%", label: "Ingreso U." }
+];
+---
+
+<section class="bg-[#000089] relative overflow-hidden border-y border-gray-900" id="stats-section">
+
+    <div class="absolute inset-0 opacity-20 pointer-events-none"
+         style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 32px 32px;">
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-2 lg:grid-cols-4 border-l border-white/10">
+
+            {stats.map((stat) => (
+                    <div class="p-10 md:p-16 border-r border-b border-white/10 flex flex-col items-center justify-center group hover:bg-white/5 transition-colors duration-500">
+
+                        <div class="text-5xl md:text-7xl font-black text-white mb-4 flex items-baseline tabular-nums tracking-tighter">
+                            <span class="counter" data-target={stat.value}>0</span>
+                            {stat.symbol && (
+                                    <span class="text-2xl md:text-3xl ml-1 text-blue-400 font-bold group-hover:translate-y-[-4px] transition-transform duration-300">
+                                {stat.symbol}
+                            </span>
+                            )}
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <span class="w-2 h-[1px] bg-blue-400"></span>
+                            <span class="text-blue-200 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] block">
+                            {stat.label}
+                        </span>
+                        </div>
+                    </div>
+            ))}
+
+        </div>
+    </div>
+</section>
+
+<script>
+    // Función de animación optimizada
+    const animateStat = (el) => {
+        const target = +el.dataset.target;
+        const duration = 2000;
+        const startTime = performance.now();
+
+        const update = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // EaseOutExpo: Rápido al inicio, lento al final
+            const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+
+            el.textContent = Math.floor(ease * target).toLocaleString();
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                el.textContent = target.toLocaleString();
+            }
+        };
+
+        requestAnimationFrame(update);
+    };
+
+    const initStats = () => {
+        const section = document.querySelector('#stats-section');
+        if (!section) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.counter');
+                    counters.forEach(c => animateStat(c));
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        observer.observe(section);
+    };
+
+    // Soporte para Astro View Transitions
+    document.addEventListener('astro:page-load', initStats);
+</script>

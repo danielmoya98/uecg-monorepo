@@ -1,0 +1,48 @@
+import {
+  Controller,
+  Get,
+  Patch,
+  Body,
+  Param,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  ParseUUIDPipe,
+} from '@nestjs/common';
+import { TrimestersService } from './trimesters.service';
+import { UpdateTrimesterDto } from './dto/update-trimester.dto';
+import { ApiTags, ApiOperation, ApiCookieAuth } from '@nestjs/swagger';
+
+// 🔥 IMPORTACIONES ABAC
+import { AuthGuard } from '@nestjs/passport';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequirePermissions } from '../auth/decorators/permissions.decorator';
+import { SystemPermissions } from '../auth/constants/permissions.constant';
+
+@ApiTags('Configuración de Trimestres')
+@ApiCookieAuth('uecg_access_token')
+@UseGuards(AuthGuard('jwt'), PermissionsGuard) // 🔥 Escudo Activado
+@Controller('trimesters')
+export class TrimestersController {
+  constructor(private readonly trimestersService: TrimestersService) {}
+
+  @Get('year/:academicYearId')
+  // 🔓 Lectura abierta a todo usuario logueado (Los profesores necesitan saber si está abierto)
+  @ApiOperation({ summary: 'Obtiene los trimestres de una gestión específica' })
+  getByAcademicYear(
+    @Param('academicYearId', ParseUUIDPipe) academicYearId: string,
+  ) {
+    return this.trimestersService.getByAcademicYear(academicYearId);
+  }
+
+  @Patch(':id')
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_ACADEMIC_YEAR) // 🔥 ABAC CORREGIDO: Usando permiso del diccionario
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Actualiza fechas o abre/cierra un trimestre' })
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateTrimesterDto: UpdateTrimesterDto,
+  ) {
+    return this.trimestersService.update(id, updateTrimesterDto);
+  }
+}

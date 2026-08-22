@@ -1,0 +1,64 @@
+---
+// src/components/PageHeader.astro
+interface Props {
+    title: string;
+    subtitle: string;
+    image?: string;
+}
+
+const { title, subtitle, image } = Astro.props;
+
+const gridPattern = `background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), 
+linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); 
+background-size: 50px 50px;`;
+---
+
+<header class="relative pt-48 pb-24 md:pt-52 md:pb-32 bg-[#000089] text-white overflow-hidden border-b border-gray-900">
+
+    {image ? (
+            <div class="absolute inset-0 z-0">
+                <img
+                        src={image}
+                        alt="Header Background"
+                        class="w-full h-full object-cover grayscale mix-blend-multiply opacity-50"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-[#000089] via-[#000089]/80 to-[#000089]/40"></div>
+            </div>
+    ) : (
+            <div class="absolute inset-0 z-0 opacity-20 pointer-events-none" style={gridPattern}></div>
+    )}
+
+    <div class="absolute -bottom-20 -right-10 text-[20rem] font-black text-white/5 leading-none select-none pointer-events-none z-0 tracking-tighter">
+        {title.charAt(0)}
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+
+        <nav class="absolute -top-28 left-6 md:left-6 flex items-center z-20">
+            <a href="/" class="group flex items-center gap-3 text-[10px] md:text-xs font-bold uppercase tracking-widest text-blue-200 hover:text-white transition-colors py-2 border-b border-transparent hover:border-white">
+                <span class="text-lg leading-none group-hover:-translate-x-1 transition-transform">←</span>
+                Inicio
+            </a>
+            <span class="mx-3 text-blue-400">/</span>
+            <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/70">
+                {subtitle}
+            </span>
+        </nav>
+
+        <div class="max-w-4xl" transition:animate="slide">
+            <div class="inline-flex items-center gap-3 mb-4 md:mb-6">
+                <div class="w-8 h-[1px] bg-blue-300"></div>
+                <span class="text-blue-300 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs">
+                    {subtitle}
+                </span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-8 text-white">
+                {title}
+            </h1>
+
+            <div class="w-24 h-2 bg-white mt-2"></div>
+        </div>
+
+    </div>
+</header>

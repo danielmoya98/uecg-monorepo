@@ -1,0 +1,122 @@
+---
+// src/components/FooterBlueSwiss.astro
+import logoSVG from '../assets/lg.svg?raw';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-[#000089] text-white font-sans border-t border-blue-800 flex flex-col">
+
+    <div class="border-b border-white/10 bg-[#000060]">
+        <div class="container mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-6">
+
+            <a href="/" class="group flex items-center gap-4">
+                <div class="h-20 w-20 text-white footer-logo flex-shrink-0">
+                    <Fragment set:html={logoSVG} />
+                </div>
+
+                <h2 class="text-2xl font-black tracking-tighter uppercase leading-none group-hover:text-blue-200 transition-colors">
+                    U.E. Che <br>Guevara
+                </h2>
+            </a>
+
+            <a href="/admisiones" class="group flex items-center gap-4 text-xs md:text-sm font-bold uppercase tracking-widest hover:text-blue-900 hover:bg-white transition-all bg-[#000089] px-6 py-3 border border-white/20 hover:border-white">
+                Iniciar Admisión
+                <span class="text-xl leading-none group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-6 flex-grow">
+        <div class="grid md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/10">
+
+            <div class="py-12 md:pr-8 flex flex-col justify-between h-full">
+                <div>
+                    <span class="block text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-6">Ubicación</span>
+                    <address class="not-italic text-sm text-blue-100 leading-relaxed font-medium">
+                        Av. Las Américas #123<br>
+                        Zona Central<br>
+                        Sucre, Bolivia
+                    </address>
+                </div>
+                <a href="https://goo.gl/maps/x" target="_blank" rel="noopener" class="inline-block mt-6 text-[10px] font-bold text-white uppercase border-b border-white/30 hover:border-white hover:text-blue-200 transition-all pb-1 w-max">
+                    Ver en Google Maps
+                </a>
+            </div>
+
+            <div class="py-12 md:px-8 flex flex-col justify-between h-full">
+                <div>
+                    <span class="block text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-6">Contacto</span>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="mailto:info@uecg.edu.bo" class="text-sm text-blue-100 hover:text-white transition-colors block break-words font-medium">info@uecg.edu.bo</a>
+                        </li>
+                        <li>
+                            <a href="tel:+59146451234" class="text-sm text-blue-100 hover:text-white transition-colors tabular-nums tracking-wide block font-medium">+591 4 645-1234</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="py-12 md:px-8">
+                <span class="block text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-6">Explorar</span>
+                <nav>
+                    <ul class="space-y-3 font-bold text-xs uppercase tracking-widest">
+                        <li><a href="/nosotros" class="text-white hover:text-blue-300 hover:pl-2 transition-all block">Nosotros</a></li>
+                        <li><a href="/academico" class="text-white hover:text-blue-300 hover:pl-2 transition-all block">Académico</a></li>
+                        <li><a href="/proyectos" class="text-white hover:text-blue-300 hover:pl-2 transition-all block">Vida Estudiantil</a></li>
+                        <li><a href="/padres" class="text-blue-300 hover:text-white hover:pl-2 transition-all block">Portal Padres</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="py-12 md:pl-8 flex flex-col justify-between h-full">
+                <div>
+                    <span class="block text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-6">Social</span>
+                    <div class="flex gap-0 font-bold text-xs border border-white/20 inline-flex">
+                        <a href="#" class="w-10 h-10 flex items-center justify-center text-white hover:bg-white hover:text-[#000089] transition-colors border-r border-white/20" aria-label="Facebook">FB</a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center text-white hover:bg-white hover:text-[#000089] transition-colors border-r border-white/20" aria-label="Instagram">IG</a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center text-white hover:bg-white hover:text-[#000089] transition-colors" aria-label="YouTube">YT</a>
+                    </div>
+                </div>
+                <div class="mt-8 md:mt-0">
+                    <p class="text-[10px] text-blue-300/60 uppercase tracking-widest leading-relaxed">
+                        © {year} U.E.C.G.<br>
+                        Honor y Perseverancia.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="border-t border-white/10 bg-[#000060]/30">
+        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-2">
+
+            <div class="flex gap-4">
+                <a href="#" class="text-[9px] font-bold text-blue-300/50 uppercase tracking-widest hover:text-white transition-colors">Privacidad</a>
+                <a href="#" class="text-[9px] font-bold text-blue-300/50 uppercase tracking-widest hover:text-white transition-colors">Cookies</a>
+            </div>
+
+            <p class="text-[9px] font-bold text-blue-300/50 uppercase tracking-widest">
+                Desarrollado por
+                <a href="https://tuagencia.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-200 transition-colors ml-1 border-b border-transparent hover:border-blue-200 pb-0.5">
+                    TU NOMBRE / AGENCIA
+                </a>
+            </p>
+        </div>
+    </div>
+
+</footer>
+
+<style>
+    .footer-logo :global(svg) {
+        width: 100%;
+        height: 100%;
+    }
+
+    .footer-logo :global(path),
+    .footer-logo :global(g) {
+        fill: #ffffff !important;
+    }
+</style>

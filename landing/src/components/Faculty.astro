@@ -1,0 +1,72 @@
+---
+// src/components/Faculty.astro
+import { Image } from 'astro:assets';
+
+const teachers = [
+    { name: "Lic. Ana Paredes", subject: "Matemáticas", role: "Jefe de Área", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&fit=crop" },
+    { name: "Ing. Roberto Diaz", subject: "Robótica & TI", role: "Docente", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&fit=crop" },
+    { name: "Profa. Carmen Luz", subject: "Literatura", role: "Tutora Secundaria", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=600&fit=crop" },
+    { name: "Lic. Mario Ruiz", subject: "Ciencias Sociales", role: "Docente", img: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=600&fit=crop" },
+    { name: "Dra. Elena Costa", subject: "Biología", role: "Coord. Laboratorios", img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800&fit=crop" },
+    { name: "Coach David Paz", subject: "Educación Física", role: "Entrenador", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&fit=crop" },
+];
+---
+
+<section class="py-16 md:py-24 bg-white border-t border-gray-200">
+    <div class="container mx-auto px-6">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 border-b-2 border-gray-900 pb-6 md:pb-8">
+            <div class="w-full md:w-auto mb-4 md:mb-0">
+                <span class="text-[#000089] font-bold uppercase tracking-widest text-[10px] md:text-xs mb-2 block">Excelencia Académica</span>
+                <h2 class="text-3xl md:text-5xl font-black text-gray-900 leading-none uppercase tracking-tight">
+                    Cuerpo Docente
+                </h2>
+            </div>
+
+            <div class="w-full md:w-auto flex flex-col items-start md:items-end">
+                <p class="text-sm font-medium text-gray-500 mb-1">Profesionales comprometidos con el futuro.</p>
+                <p class="text-xs font-bold uppercase tracking-widest text-[#000089]">Gestión 2026</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-gray-200">
+            {teachers.map((teacher) => (
+                    <div class="group relative bg-white border-r border-b border-gray-200 p-6 md:p-8 hover:bg-[#000089] transition-colors duration-500 cursor-pointer overflow-hidden flex flex-col">
+
+                        <div class="flex justify-between items-start mb-4 md:mb-6">
+                        <span class="inline-block px-2 py-1 border border-gray-200 text-[#000089] text-[9px] md:text-[10px] font-bold uppercase tracking-widest group-hover:border-white/20 group-hover:text-blue-200 transition-colors bg-gray-50 group-hover:bg-transparent">
+                            {teacher.subject}
+                        </span>
+                            <span class="text-gray-300 group-hover:text-white transition-colors text-xl leading-none font-light">+</span>
+                        </div>
+
+                        <div class="aspect-[4/3] md:aspect-square w-full mb-4 md:mb-6 overflow-hidden bg-gray-100 relative">
+                            <Image
+                                    src={teacher.img}
+                                    alt={teacher.name}
+                                    width={400}
+                                    height={400}
+                                    format="webp"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
+                            />
+                            <div class="absolute inset-0 bg-blue-900/0 group-hover:bg-blue-900/10 transition-colors duration-500 mix-blend-multiply"></div>
+                        </div>
+
+                        <div class="mt-auto">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-900 group-hover:text-white transition-colors duration-300 leading-tight mb-1">
+                                {teacher.name}
+                            </h3>
+                            <p class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 group-hover:text-blue-200 transition-colors font-medium">
+                                {teacher.role}
+                            </p>
+                        </div>
+
+                        <div class="absolute bottom-0 left-0 w-0 h-1 bg-blue-300 group-hover:w-full transition-all duration-700 ease-out"></div>
+
+                    </div>
+            ))}
+        </div>
+    </div>
+</section>

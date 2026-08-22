@@ -1,0 +1,92 @@
+---
+// Institutional.astro
+import { Image } from 'astro:assets';
+
+// Imagen local o remota optimizada
+const historyImg = "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1000&fit=crop";
+---
+
+<section class="py-24 bg-white border-t border-gray-200">
+    <div class="container mx-auto px-6">
+
+        <div class="grid lg:grid-cols-12 border-b border-gray-200">
+
+            <div class="lg:col-span-5 py-12 md:pr-12 flex flex-col justify-center relative overflow-hidden">
+
+                <span class="absolute -top-10 -left-6 text-[12rem] font-black text-gray-50 select-none z-0 leading-none tracking-tighter pointer-events-none">
+                    1998
+                </span>
+
+                <div class="relative z-10">
+                    <span class="text-[#000089] font-bold uppercase tracking-widest text-xs mb-4 block flex items-center gap-3">
+                        <span class="w-2 h-2 bg-[#000089]"></span> Historia
+                    </span>
+
+                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-none tracking-tight">
+                        Nuestro <br>Legado
+                    </h2>
+
+                    <p class="text-gray-600 text-lg leading-relaxed mb-8 font-medium">
+                        La Unidad Educativa Ernesto Che Guevara nació como respuesta a una necesidad urgente. Lo que comenzó con 3 aulas, hoy es un referente de <strong class="text-gray-900">innovación pedagógica</strong> en Sucre.
+                    </p>
+
+                    <a href="/historia" class="group inline-flex items-center gap-2 text-[#000089] font-bold uppercase text-xs tracking-[0.2em] border-b border-[#000089] pb-1 hover:text-black hover:border-black transition-colors">
+                        Leer Historia
+                        <span class="group-hover:translate-x-1 transition-transform">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 relative h-[400px] lg:h-auto border-l border-gray-200 bg-gray-100 group overflow-hidden">
+                <Image
+                        src={historyImg}
+                        alt="Fundación del Colegio"
+                        width={800}
+                        height={600}
+                        format="webp"
+                        loading="lazy"
+                        class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000 ease-out"
+                />
+                <div class="absolute inset-0 bg-[#000089] mix-blend-multiply opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2">
+
+            <div class="group p-12 md:p-16 border-r border-gray-200 hover:bg-[#000089] transition-colors duration-500 cursor-default relative overflow-hidden">
+                <span class="absolute top-4 right-4 text-9xl font-black text-gray-100 group-hover:text-white/10 transition-colors select-none leading-none">M</span>
+
+                <div class="relative z-10">
+                    <div class="w-12 h-12 mb-6 border-2 border-gray-900 group-hover:border-white flex items-center justify-center transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-gray-900 group-hover:text-white">
+                            <path stroke-linecap="square" stroke-linejoin="miter" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 group-hover:text-white mb-4 transition-colors">Misión</h3>
+                    <p class="text-gray-500 group-hover:text-blue-100 leading-relaxed transition-colors font-medium">
+                        Formar ciudadanos críticos, éticos y comprometidos, a través de una educación científica y tecnológica de excelencia.
+                    </p>
+                </div>
+            </div>
+
+            <div class="group p-12 md:p-16 hover:bg-[#000089] transition-colors duration-500 cursor-default relative overflow-hidden">
+                <span class="absolute top-4 right-4 text-9xl font-black text-gray-100 group-hover:text-white/10 transition-colors select-none leading-none">V</span>
+
+                <div class="relative z-10">
+                    <div class="w-12 h-12 mb-6 border-2 border-gray-900 group-hover:border-white flex items-center justify-center transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-gray-900 group-hover:text-white">
+                            <path stroke-linecap="square" stroke-linejoin="miter" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="square" stroke-linejoin="miter" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 group-hover:text-white mb-4 transition-colors">Visión 2030</h3>
+                    <p class="text-gray-500 group-hover:text-blue-100 leading-relaxed transition-colors font-medium">
+                        Ser reconocidos como la institución líder en Bolivia, referente en innovación digital y valores humanos.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>

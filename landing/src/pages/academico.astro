@@ -1,0 +1,63 @@
+---
+// src/pages/academico.astro
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Methodology from '../components/Methodology.astro';
+/* RECOMENDACIÓN:
+   He renombrado 'LevelsFlip' a 'AcademicLevels'
+   usando la versión optimizada "Swiss Curriculum Grid"
+   para evitar el lag del 3D en móviles.
+*/
+import LevelsFlip from '../components/LevelsFlip.astro';
+import Faculty from '../components/Faculty.astro';
+import AcademicInfo from '../components/AcademicInfo.astro';
+import Stats from '../components/Stats.astro'; // Añadido para dar prueba social
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+        title="Académico"
+        description="Conoce nuestro modelo educativo basado en el pensamiento crítico, tecnología STEAM y bilingüismo."
+>
+    <Navbar />
+
+    <div transition:name="page-header-transition">
+        <PageHeader
+                title="Excelencia Educativa"
+                subtitle="Modelo Pedagógico"
+                image="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=1200"
+        />
+    </div>
+
+    <main transition:animate="slide">
+
+        <Methodology />
+
+        <LevelsFlip />
+
+        <div class="py-12 bg-white">
+            <Stats />
+        </div>
+
+        <div id="docentes" class="scroll-mt-24">
+            <Faculty />
+        </div>
+
+        <div id="calendario" class="scroll-mt-24 bg-gray-50">
+            <AcademicInfo />
+        </div>
+
+        <section class="py-20 bg-white border-t border-gray-900">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-black uppercase tracking-tighter mb-8">¿Listo para formar parte?</h2>
+                <a href="/admisiones" class="inline-block bg-[#000089] text-white px-12 py-5 font-bold uppercase tracking-widest hover:bg-black transition-colors">
+                    Iniciar Proceso de Admisión →
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <Footer />
+</Layout>

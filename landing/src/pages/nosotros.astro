@@ -1,0 +1,93 @@
+---
+// src/pages/nosotros.astro
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import PageHeader from '../components/PageHeader.astro';
+import DirectorWelcome from '../components/DirectorWelcome.astro';
+import Institutional from '../components/Institutional.astro';
+import Leadership from '../components/Leadership.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+        title="Nuestra Identidad | Nosotros"
+        description="Conoce la historia, misión, visión y el equipo humano detrás de la Unidad Educativa Ernesto Che Guevara."
+>
+    <Navbar />
+
+    <div transition:name="page-header-transition">
+        <PageHeader
+                title="Nuestra Identidad"
+                subtitle="Historia y Valores"
+                image="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800&fit=crop"
+        />
+    </div>
+
+    <main transition:animate="fade">
+
+        <DirectorWelcome />
+
+        <div class="bg-white border-y border-gray-200">
+            <Institutional />
+        </div>
+
+        <section class="bg-[#000089] text-white py-24 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%) ; background-size: 10px 10px;"></div>
+
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="grid md:grid-cols-3 border border-white/20">
+
+                    <div class="p-12 border-b md:border-b-0 md:border-r border-white/20 group hover:bg-white/5 transition-colors">
+                        <span class="text-xs font-bold uppercase tracking-[0.3em] text-blue-300 mb-6 block">Valor 01</span>
+                        <h3 class="text-2xl font-black uppercase tracking-tighter mb-4">Integridad</h3>
+                        <div class="w-8 h-1 bg-white mb-6 group-hover:w-full transition-all duration-500"></div>
+                        <p class="text-blue-100 text-sm leading-relaxed font-medium">
+                            Actuamos con honestidad y coherencia, formando ciudadanos éticos que honran su palabra y compromiso con la sociedad.
+                        </p>
+                    </div>
+
+                    <div class="p-12 border-b md:border-b-0 md:border-r border-white/20 group hover:bg-white/5 transition-colors">
+                        <span class="text-xs font-bold uppercase tracking-[0.3em] text-blue-300 mb-6 block">Valor 02</span>
+                        <h3 class="text-2xl font-black uppercase tracking-tighter mb-4">Innovación</h3>
+                        <div class="w-8 h-1 bg-white mb-6 group-hover:w-full transition-all duration-500"></div>
+                        <p class="text-blue-100 text-sm leading-relaxed font-medium">
+                            La tecnología es nuestro lenguaje. Buscamos constantemente nuevas metodologías para transformar el aprendizaje en una aventura.
+                        </p>
+                    </div>
+
+                    <div class="p-12 group hover:bg-white/5 transition-colors">
+                        <span class="text-xs font-bold uppercase tracking-[0.3em] text-blue-300 mb-6 block">Valor 03</span>
+                        <h3 class="text-2xl font-black uppercase tracking-tighter mb-4">Comunidad</h3>
+                        <div class="w-8 h-1 bg-white mb-6 group-hover:w-full transition-all duration-500"></div>
+                        <p class="text-blue-100 text-sm leading-relaxed font-medium">
+                            Construimos puentes inquebrantables entre la escuela y la familia, entendiendo que la educación es un esfuerzo compartido.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <Leadership />
+
+        <section class="py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <div class="flex items-center justify-center gap-4 mb-12 text-gray-400">
+                    <div class="h-px w-12 bg-gray-200"></div>
+                    <span class="text-xs font-bold uppercase tracking-[0.3em]">Alianzas y Acreditaciones</span>
+                    <div class="h-px w-12 bg-gray-200"></div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-12 items-center opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-1000">
+                    <span class="text-xl md:text-2xl font-black text-gray-900 border-2 border-gray-900 px-4 py-2 hover:bg-gray-900 hover:text-white transition-colors cursor-default">CAMBRIDGE</span>
+                    <span class="text-xl md:text-2xl font-black text-gray-900 italic">Microsoft School</span>
+                    <span class="text-xl md:text-2xl font-black text-gray-900 tracking-tighter">Google <span class="font-light tracking-normal">Educación</span></span>
+                    <span class="text-xl md:text-2xl font-black text-gray-900 underline decoration-4 underline-offset-8">MINISTERIO</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <Footer />
+</Layout>

@@ -1,0 +1,234 @@
+@import "tailwindcss";
+
+/* =========================================
+   1. VARIABLES DE TEMA
+   ========================================= */
+:root {
+    /* Fondos */
+    --uecg-bg: #f3f4f6;
+    /* Fondo general de la app */
+    --uecg-card: #ffffff;
+    /* Fondo de tablas, topnav, modales */
+    --uecg-surface: #f9fafb;
+    /* Fondo de filtros (gray-50) */
+
+    /* Branding */
+    --uecg-blue: #000089;
+    --uecg-dark: #000060;
+
+    /* Textos y Líneas */
+    --uecg-text: #111827;
+    --uecg-gray: #6b7280;
+    --uecg-line: #e5e7eb;
+}
+
+[data-theme="dark"] {
+    /* 🌑 MODO OSCURO: Obsidian Slate (Ultra-Moderno, Neutro) */
+
+    /* Fondos (Escala de grises puros y profundos) */
+    --uecg-bg: #09090b;
+    /* Zinc 950 - El abismo */
+    --uecg-card: #121214;
+    /* Tarjetas sutilmente despegadas del fondo */
+    --uecg-surface: #1f1f22;
+    /* Hovers y elementos activos */
+
+    /* Branding (Azul Neón Suave) */
+    --uecg-blue: #3b82f6;
+    /* Blue 500 - Destaca perfectamente sobre el gris */
+    --uecg-dark: #000000;
+    /* Sidebar negro puro para enmarcar la app */
+
+    /* Textos y Líneas */
+    --uecg-text: #fafafa;
+    /* Zinc 50 - Blanco perla */
+    --uecg-gray: #a1a1aa;
+    /* Zinc 400 - Gris texto secundario */
+    --uecg-line: #27272a;
+    /* Zinc 800 - Bordes elegantes y definidos */
+}
+
+/* =========================================
+   2. INYECCIÓN A TAILWIND V4
+   ========================================= */
+@theme inline {
+    --color-uecg-blue: var(--uecg-blue);
+    --color-uecg-dark: var(--uecg-dark);
+    --color-uecg-text: var(--uecg-text);
+    --color-uecg-gray: var(--uecg-gray);
+    --color-uecg-line: var(--uecg-line);
+
+    --color-background: var(--uecg-bg);
+    --color-foreground: var(--uecg-text);
+}
+
+/* =========================================
+   3. ESTILOS BASE
+   ========================================= */
+@layer base {
+    body {
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        transition:
+            background-color 0.3s ease,
+            color 0.3s ease;
+    }
+}
+
+/* =========================================
+   4. INTERCEPTOR DE UTILIDADES (LA MAGIA)
+   ========================================= */
+@layer utilities {
+
+    /* 1. Obligamos a bg-white y bg-gray a usar nuestros tokens dinámicos */
+    .bg-white {
+        background-color: var(--uecg-card) !important;
+    }
+
+    .bg-gray-50 {
+        background-color: var(--uecg-surface) !important;
+    }
+
+    .bg-gray-100 {
+        background-color: var(--uecg-surface) !important;
+    }
+
+    /* 2. Arreglamos los bordes genéricos que usaste en algunos lados */
+    .border-gray-200 {
+        border-color: var(--uecg-line) !important;
+    }
+
+    .text-gray-400 {
+        color: var(--uecg-gray) !important;
+    }
+
+    /* 3. FIX CRÍTICO PARA EL TEXTO UECG-DARK */
+    /* El Sidebar usa bg-uecg-dark (se queda oscuro).
+       Pero los TÍTULOS usan text-uecg-dark.
+       En modo noche forzamos que el texto sea claro para que se lea. */
+    [data-theme="dark"] .text-uecg-dark {
+        color: var(--uecg-text) !important;
+    }
+
+    /* 4. 🔥 FIX PARA HOVERS EN MODO OSCURO (Obsidian Edition) */
+    [data-theme="dark"] .hover\:bg-blue-50\/30:hover {
+        background-color: rgba(59, 130, 246, 0.08) !important;
+    }
+
+    [data-theme="dark"] .bg-blue-50 {
+        background-color: rgba(59, 130, 246, 0.1) !important;
+        color: var(--uecg-blue) !important;
+        border-color: rgba(59, 130, 246, 0.2) !important;
+    }
+}
+
+/* =========================================
+   5. ANIMACIONES VIEW TRANSITIONS API
+   ========================================= */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+    z-index: 1;
+}
+
+::view-transition-new(root) {
+    z-index: 9999;
+    clip-path: circle(0% at top right);
+    animation: theme-wipe 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes theme-wipe {
+    0% {
+        clip-path: circle(0% at top right);
+    }
+
+    100% {
+        clip-path: circle(150% at top right);
+    }
+}
+
+/* =========================================
+   6. UI KIT & COMPONENTES
+   ========================================= */
+@layer components {
+    .swiss-grid {
+        display: grid;
+        border-left: 1px solid var(--color-uecg-line);
+        border-top: 1px solid var(--color-uecg-line);
+    }
+
+    .swiss-cell {
+        border-right: 1px solid var(--color-uecg-line);
+        border-bottom: 1px solid var(--color-uecg-line);
+        padding: 1.5rem;
+    }
+
+    .label-swiss {
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        font-weight: 700;
+        font-size: 0.75rem;
+        color: var(--color-uecg-blue);
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-swiss {
+        border-radius: 0;
+        padding: 0.75rem 1.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        background-color: transparent;
+        color: var(--color-uecg-blue);
+        border: 1px solid var(--color-uecg-blue);
+        transition: all 0.3s ease-out;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-swiss:hover {
+        background-color: var(--color-uecg-blue);
+        color: var(--color-background);
+        /* Cambiado para soportar modo oscuro */
+    }
+
+    /* Tratamiento de Imágenes */
+    .img-swiss {
+        filter: grayscale(100%);
+        transition: all 0.3s ease-out;
+    }
+
+    .img-swiss:hover {
+        filter: grayscale(0%);
+        transform: scale(1.05);
+    }
+
+    .img-wrapper-swiss {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--color-uecg-blue);
+    }
+
+    .img-wrapper-swiss img {
+        mix-blend-mode: multiply;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+
+    .img-wrapper-swiss:hover img {
+        opacity: 1;
+    }
+
+    /* Ajuste para imágenes en modo oscuro */
+    [data-theme="dark"] .img-wrapper-swiss img {
+        mix-blend-mode: screen;
+        opacity: 0.6;
+    }
+}

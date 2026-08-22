@@ -1,0 +1,78 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  HttpCode,
+  HttpStatus,
+  UseInterceptors,
+  Req,
+} from '@nestjs/common';
+import { TeacherAssignmentsService } from './teacher-assignments.service';
+import { CreateTeacherAssignmentDto } from './dto/create-teacher-assignment.dto';
+import { ApiTags, ApiOperation, ApiCookieAuth } from '@nestjs/swagger';
+import { IdempotencyInterceptor } from '../common/interceptors/idempotency.interceptor';
+import { CloneAssignmentsDto } from './dto/clone-assignments.dto';
+import { QueryTeacherAssignmentsDto } from './dto/query-teacher-assignments.dto';
+
+// 🔥 IMPORTACIONES ABAC
+import { AuthGuard } from '@nestjs/passport';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequirePermissions } from '../auth/decorators/permissions.decorator';
+import { SystemPermissions } from '../auth/constants/permissions.constant';
+
+@ApiTags('Carga Horaria (Asignación)')
+@ApiCookieAuth('uecg_access_token')
+@UseGuards(AuthGuard('jwt'), PermissionsGuard) // 🔥 Escudo Activado
+@Controller('teacher-assignments')
+export class TeacherAssignmentsController {
+  constructor(
+    private readonly teacherAssignmentsService: TeacherAssignmentsService,
+  ) {}
+
+  @Post()
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_TEACHER_ASSIGNMENT) // 🔥 ABAC
+  @UseInterceptors(IdempotencyInterceptor)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Asigna un docente a una materia en un curso específico',
+  })
+  create(@Body() createTeacherAssignmentDto: CreateTeacherAssignmentDto) {
+    return this.teacherAssignmentsService.create(createTeacherAssignmentDto);
+  }
+
+  @Post('clone')
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_TEACHER_ASSIGNMENT) // 🔥 ABAC
+  @UseInterceptors(IdempotencyInterceptor)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Clona carga horaria seleccionada hacia otros paralelos',
+  })
+  clone(@Body() cloneAssignmentsDto: CloneAssignmentsDto) {
+    return this.teacherAssignmentsService.cloneAssignments(cloneAssignmentsDto);
+  }
+
+  @Get()
+  // 🔓 Sin @RequirePermissions: La ruta está abierta para logueados, pero el Servicio filtra los datos.
+  @ApiOperation({ summary: 'Obtiene el listado de carga horaria' })
+  findAll(
+    @Query()
+    query: QueryTeacherAssignmentsDto,
+    @Req() req: any,
+  ) {
+    // 🔥 Pasamos el usuario para que el servicio aplique ABAC
+    return this.teacherAssignmentsService.findAll(query, req.user);
+  }
+
+  @Delete(':id')
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_TEACHER_ASSIGNMENT) // 🔥 ABAC
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Elimina una asignación de carga horaria' })
+  remove(@Param('id') id: string) {
+    return this.teacherAssignmentsService.remove(id);
+  }
+}
