@@ -1,6 +1,6 @@
 import { UsersRound, ShieldAlert, Database, ActivitySquare, Server, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { RootStats } from "../types/dashboard.types";
+import type { RootStats } from "../types/dashboard.types";
 
 interface RootMetricsWidgetProps {
   stats: RootStats | undefined;

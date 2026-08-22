@@ -1,8 +1,19 @@
+export type InstitutionDepartment =
+  | 'CHUQUISACA'
+  | 'LA_PAZ'
+  | 'COCHABAMBA'
+  | 'SANTA_CRUZ'
+  | 'POTOSI'
+  | 'ORURO'
+  | 'TARIJA'
+  | 'BENI'
+  | 'PANDO';
+
 export interface InstitutionPayload {
   rueCode: string;
   name: string;
   dependencyType: 'FISCAL' | 'PRIVADA' | 'CONVENIO';
-  department: string;
+  department: InstitutionDepartment;
   municipality: string;
   district: string;
   address: string;

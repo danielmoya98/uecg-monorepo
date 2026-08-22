@@ -1,6 +1,6 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import { DashboardService } from "../api/dashboard.service";
-import { RootStats, GlobalStats, TeacherStats } from "../types/dashboard.types";
+import type { RootStats, GlobalStats, TeacherStats } from "../types/dashboard.types";
 
 export function useRootStats(options?: Partial<UseQueryOptions<RootStats>>) {
   return useQuery<RootStats>({
