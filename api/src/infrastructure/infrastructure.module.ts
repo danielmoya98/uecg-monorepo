@@ -10,6 +10,40 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { PrismaModule } from '../prisma/prisma.module';
 import { FirebaseModule } from '../firebase/firebase.module';
 
+function getRedisConfig(configService: ConfigService) {
+  const redisUrl = configService.get<string>('REDIS_URL');
+  if (redisUrl) {
+    try {
+      const parsed = new URL(redisUrl);
+      const isTls = parsed.protocol === 'rediss:' || parsed.hostname.includes('upstash.io');
+      return {
+        host: parsed.hostname,
+        port: parsed.port ? parseInt(parsed.port, 10) : 6379,
+        password: parsed.password ? decodeURIComponent(parsed.password) : undefined,
+        tls: isTls,
+      };
+    } catch {
+      // fallback if URL parsing fails
+    }
+  }
+
+  const rawHost = configService.get<string>('REDIS_HOST', 'localhost');
+  const cleanHost = rawHost
+    .replace(/^https?:\/\//i, '')
+    .replace(/^rediss?:\/\//i, '')
+    .split('/')[0]
+    .split(':')[0];
+
+  const port = Number(configService.get<number>('REDIS_PORT', 6379));
+  const password = configService.get<string>('REDIS_PASSWORD') || undefined;
+  const isTls =
+    configService.get<string>('REDIS_TLS') === 'true' ||
+    cleanHost.includes('upstash.io') ||
+    rawHost.includes('upstash.io');
+
+  return { host: cleanHost, port, password, tls: isTls };
+}
+
 @Global()
 @Module({
   imports: [
@@ -39,35 +73,43 @@ import { FirebaseModule } from '../firebase/firebase.module';
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        store: await redisStore({
-          socket: {
-            host: configService.get<string>('REDIS_HOST', 'localhost'),
-            port: configService.get<number>('REDIS_PORT', 6379),
-          },
-          password: configService.get<string>('REDIS_PASSWORD'),
-          database: 0, // 🔥 DB 0 para Caché
-          ttl: 60000,
-        }),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const { host, port, password, tls } = getRedisConfig(configService);
+        return {
+          store: await redisStore({
+            socket: {
+              host,
+              port,
+              tls,
+            },
+            password,
+            database: 0, // 🔥 DB 0 para Caché
+            ttl: 60000,
+          }),
+        };
+      },
     }),
 
-    // 7. Colas Asíncronas con BullMQ (Usando DB 1 y Auto-limpieza)
+    // 7. Colas Asíncronas con BullMQ (Usando DB 0 / prefijo y Auto-limpieza)
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        connection: {
-          host: configService.get<string>('REDIS_HOST', 'localhost'),
-          port: configService.get<number>('REDIS_PORT', 6379),
-          password: configService.get<string>('REDIS_PASSWORD'),
-        },
-        defaultJobOptions: {
-          removeOnComplete: true, // Salva la memoria de tu Redis
-          removeOnFail: { age: 24 * 3600 },
-        },
-        prefix: '{uecg-bull}', // Agrupa las llaves limpiamente
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const { host, port, password, tls } = getRedisConfig(configService);
+        return {
+          connection: {
+            host,
+            port,
+            password,
+            tls: tls ? {} : undefined,
+          },
+          defaultJobOptions: {
+            removeOnComplete: true, // Salva la memoria de tu Redis
+            removeOnFail: { age: 24 * 3600 },
+          },
+          prefix: '{uecg-bull}', // Agrupa las llaves limpiamente
+        };
+      },
     }),
   ],
   // Exportamos lo que otros módulos necesitarán inyectar directamente
