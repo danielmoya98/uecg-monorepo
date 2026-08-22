@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import path from 'node:path';
-import { defineConfig, env } from 'prisma/config';
+import { defineConfig } from 'prisma/config';
 
 export default defineConfig({
   schema: path.join('prisma'),
@@ -8,6 +8,6 @@ export default defineConfig({
     path: 'prisma/migrations',
   },
   datasource: {
-    url: env('DATABASE_URL'),
+    url: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/uecg_db?schema=public',
   },
 });
