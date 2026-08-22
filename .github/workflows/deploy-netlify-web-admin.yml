@@ -29,6 +29,8 @@ jobs:
 
       - name: Build Web Admin
         working-directory: ./web-admin
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://ue-cheguevara-backend-1.onrender.com/api/v1' }}
         run: npm run build
 
       - name: Deploy to Netlify
