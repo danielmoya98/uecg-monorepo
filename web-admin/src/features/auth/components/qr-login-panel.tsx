@@ -12,7 +12,7 @@ export function QrLoginPanel() {
 
   const [challengeId, setChallengeId] = useState<string | null>(null)
   const [qrPayload, setQrPayload] = useState<string | null>(null)
-  const [timeLeft, setTimeLeft] = useState<number>(120)
+  const [timeLeft, setTimeLeft] = useState<number>(300)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false)
 
@@ -168,7 +168,7 @@ export function QrLoginPanel() {
           <div className="w-full max-w-xs bg-gray-200 h-1 overflow-hidden">
             <div
               className="bg-uecg-blue h-full transition-all duration-1000 ease-linear"
-              style={{ width: `${(timeLeft / 120) * 100}%` }}
+              style={{ width: `${(timeLeft / 300) * 100}%` }}
             />
           </div>
         </div>

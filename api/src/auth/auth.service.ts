@@ -456,18 +456,18 @@ export class AuthService {
     const challengeId = crypto.randomUUID();
     const key = `qr:challenge:${challengeId}`;
 
-    // Guarda en caché Redis con estado PENDING por 120 segundos
+    // Guarda en caché Redis con estado PENDING por 300 segundos (5 minutos)
     await this.cacheManager.set(
       key,
       JSON.stringify({ status: 'PENDING', createdAt: new Date().toISOString() }),
-      120000,
+      300000,
     );
 
     return {
       status: 'SUCCESS',
       challengeId,
       qrPayload: `uecg-web-auth:${challengeId}`,
-      expiresIn: 120,
+      expiresIn: 300,
     };
   }
 
