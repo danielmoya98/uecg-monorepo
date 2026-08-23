@@ -14,6 +14,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EncryptionService } from '../common/services/encryption.service'; // 🔥 IMPORTADO
 import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
+import { SystemPermissions } from '../auth/constants/permissions.constant';
 
 @Injectable()
 export class UsersService {
@@ -345,5 +346,58 @@ export class UsersService {
       newPassword: newRawPassword,
       fullName: targetUser.fullName,
     };
+  }
+
+  // ==========================================
+  // 3. VALIDACIÓN PEDAGÓGICA (DOCENTE / ASESOR)
+  // ==========================================
+  async validateTeacherAdvisor(userId: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        status: true,
+        role: {
+          select: {
+            name: true,
+            permissions: {
+              select: {
+                permission: {
+                  select: {
+                    action: true,
+                    subject: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('El usuario asignado como asesor no existe.');
+    }
+
+    if (user.status !== 'ACTIVE') {
+      throw new BadRequestException('El usuario asignado como asesor no está activo.');
+    }
+
+    const permissions =
+      user.role?.permissions.map(
+        (rp) => `${rp.permission.action}:${rp.permission.subject}`,
+      ) || [];
+
+    const isTeacher =
+      user.role?.name === 'DOCENTE' ||
+      permissions.includes(SystemPermissions.CREATE_OWN_ATTENDANCE) ||
+      permissions.includes(SystemPermissions.UPDATE_OWN_GRADE) ||
+      permissions.includes(SystemPermissions.MANAGE_ALL);
+
+    if (!isTeacher) {
+      throw new BadRequestException(
+        'El usuario asignado no tiene privilegios pedagógicos para ser tutor/asesor.',
+      );
+    }
   }
 }

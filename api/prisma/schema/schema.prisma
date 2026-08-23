@@ -314,6 +314,8 @@ model Classroom {
   baseRoom   PhysicalSpace? @relation("ClassroomBaseRoom", fields: [baseRoomId], references: [id])
 
   @@unique([academicYearId, level, grade, section, shift])
+  @@index([advisorId])
+  @@index([baseRoomId])
   @@map("classrooms")
 }
 
