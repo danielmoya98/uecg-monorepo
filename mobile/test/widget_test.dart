@@ -6,5 +6,8 @@ void main() {
   testWidgets('UECGApp basic smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const ProviderScope(child: UECGApp()));
     expect(find.byType(UECGApp), findsOneWidget);
+    await tester.pumpAndSettle(const Duration(seconds: 5));
   });
 }
+
+

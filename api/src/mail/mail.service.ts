@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { InstitutionConfigService } from '../institutions/institution-config.service';
 
 @Injectable()
 export class MailService {
@@ -10,7 +11,10 @@ export class MailService {
 
   private transporter: nodemailer.Transporter;
 
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private institutionConfig: InstitutionConfigService,
+  ) {
     // ======================================================
     // SMTP CONFIG
     // ======================================================
@@ -35,7 +39,7 @@ export class MailService {
   // ======================================================
 
   async sendPasswordResetEmail(to: string, fullName: string, code: string) {
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.institutionConfig.getOrNull();
 
     const senderName = institution?.name || 'Unidad Educativa';
 
@@ -133,7 +137,7 @@ export class MailService {
     studentName: string,
     updateUrl: string,
   ) {
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.institutionConfig.getOrNull();
 
     const senderName = institution?.name || 'Unidad Educativa';
 

@@ -26,6 +26,7 @@ import { SetupPasswordDto } from './dto/setup-password.dto';
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 import { RegisterFcmTokenDto } from './dto/register-fcm-token.dto';
 import { AuthorizeQrDto } from './dto/authorize-qr.dto';
+import { SetupInitialDirectorDto } from './dto/setup-initial-director.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from './interfaces/authenticated-user.interface';
@@ -90,6 +91,36 @@ export class AuthController {
       sameSite: sameSitePolicy,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+  }
+
+  // ======================================================
+  // SYSTEM STATUS & SETUP BOOTSTRAP
+  // ======================================================
+
+  @Get('system-status')
+  @ApiOperation({ summary: 'Verifica si el sistema está inicializado (usuarios e institución)' })
+  async getSystemStatus() {
+    return this.authService.getSystemStatus();
+  }
+
+  @Post('setup-initial-director')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Configuración de primer arranque: registra a la Directora y la Institución' })
+  async setupInitialDirector(
+    @Body() dto: SetupInitialDirectorDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const sessionMetadata = this.extractSessionMetadata(req);
+    const result = await this.authService.setupInitialDirector(dto, sessionMetadata);
+
+    this.setTokenCookies(
+      res,
+      result.tokens.accessToken,
+      result.tokens.refreshToken,
+    );
+
+    return result;
   }
 
   // ======================================================

@@ -17,6 +17,7 @@ import { AuthRecoveryService } from './services/auth-recovery.service';
 import { AuthMobileService } from './services/auth-mobile.service';
 import { RegisterGuardianDto } from './dto/register-guardian.dto';
 import { RegisterStudentDto } from './dto/register-student.dto';
+import { SetupInitialDirectorDto } from './dto/setup-initial-director.dto';
 
 @Injectable()
 export class AuthService {
@@ -623,4 +624,136 @@ export class AuthService {
       logs,
     };
   }
+
+  // ======================================================
+  // SYSTEM STATUS & INITIAL BOOTSTRAP WIZARD
+  // ======================================================
+
+  async getSystemStatus() {
+    const [userCount, institutionCount] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.institution.count(),
+    ]);
+
+    return {
+      isInitialized: userCount > 0 && institutionCount > 0,
+      hasUsers: userCount > 0,
+      hasInstitution: institutionCount > 0,
+      userCount,
+      institutionCount,
+    };
+  }
+
+  async setupInitialDirector(
+    dto: SetupInitialDirectorDto,
+    sessionMetadata?: SessionMetadata,
+  ) {
+    const [userCount, institutionCount] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.institution.count(),
+    ]);
+
+    if (userCount > 0 && institutionCount > 0) {
+      throw new ForbiddenException(
+        'El sistema ya cuenta con usuarios e institución configurados.',
+      );
+    }
+
+    const normalizedEmail = dto.email.trim().toLowerCase();
+
+    // Buscar rol administrativo
+    let role = await this.prisma.role.findFirst({
+      where: { name: { in: ['SUPER_ADMIN', 'ADMINISTRADOR', 'DIRECTOR'] } },
+      include: { permissions: { include: { permission: true } } },
+    });
+
+    if (!role) {
+      role = await this.prisma.role.create({
+        data: {
+          name: 'SUPER_ADMIN',
+          description: 'Administrador Principal / Director',
+        },
+        include: { permissions: { include: { permission: true } } },
+      });
+    }
+
+    const hashedPassword =
+      await this.authTokenService.hashPassword(dto.password);
+
+    // Transacción atómica de creación
+    const result = await this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email: normalizedEmail,
+          fullName: dto.fullName.trim(),
+          password: hashedPassword,
+          ci: dto.ci,
+          phone: dto.phone,
+          roleId: role.id,
+          status: 'ACTIVE',
+        },
+        include: {
+          role: {
+            include: {
+              permissions: {
+                include: { permission: true },
+              },
+            },
+          },
+        },
+      });
+
+      const institution = await tx.institution.create({
+        data: {
+          rueCode: dto.rueCode.trim(),
+          name: dto.institutionName.trim(),
+          dependencyType: dto.dependencyType,
+          department: dto.department,
+          municipality: dto.municipality.trim(),
+          district: dto.district.trim(),
+          address: dto.address.trim(),
+          phone: dto.institutionPhone,
+          email: dto.institutionEmail?.trim().toLowerCase(),
+          foundedYear: dto.foundedYear,
+          shifts: dto.shifts,
+          levels: dto.levels,
+          schedulingMode: dto.schedulingMode || 'FIXED_BASE',
+          directorId: user.id,
+        },
+      });
+
+      return { user, institution };
+    });
+
+    const userPermissions =
+      result.user.role?.permissions.map(
+        (rp) => `${rp.permission.action}:${rp.permission.subject}`,
+      ) || [];
+
+    const tokens = await this.authTokenService.generateTokens(
+      result.user.id,
+      result.user.email,
+      result.user.role?.name || 'SUPER_ADMIN',
+      userPermissions,
+      sessionMetadata,
+    );
+
+    return {
+      status: 'SUCCESS',
+      message: 'Sistema e institución inicializados exitosamente',
+      tokens: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+      },
+      user: {
+        id: result.user.id,
+        fullName: result.user.fullName,
+        email: result.user.email,
+        role: result.user.role?.name || 'SUPER_ADMIN',
+        permissions: userPermissions,
+      },
+      institution: result.institution,
+    };
+  }
 }
+

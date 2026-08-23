@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/router/__root'
+import { Route as SetupWizardRouteImport } from './app/router/setup-wizard'
 import { Route as SetupPasswordRouteImport } from './app/router/setup-password'
 import { Route as AuthenticatedRouteImport } from './app/router/_authenticated'
 import { Route as IndexRouteImport } from './app/router/index'
@@ -35,6 +36,11 @@ import { Route as AuthenticatedEnrollmentsIndexRouteImport } from './app/router/
 import { Route as AuthenticatedStudentsImportRouteImport } from './app/router/_authenticated/students.import'
 import { Route as AuthenticatedEnrollmentsNewRouteImport } from './app/router/_authenticated/enrollments.new'
 
+const SetupWizardRoute = SetupWizardRouteImport.update({
+  id: '/setup-wizard',
+  path: '/setup-wizard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SetupPasswordRoute = SetupPasswordRouteImport.update({
   id: '/setup-password',
   path: '/setup-password',
@@ -228,6 +234,7 @@ const AuthenticatedEnrollmentsNewRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/setup-password': typeof SetupPasswordRoute
+  '/setup-wizard': typeof SetupWizardRoute
   '/academic-years': typeof AuthenticatedAcademicYearsRoute
   '/attendance': typeof AuthenticatedAttendanceRoute
   '/audit': typeof AuthenticatedAuditRoute
@@ -254,6 +261,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/setup-password': typeof SetupPasswordRoute
+  '/setup-wizard': typeof SetupWizardRoute
   '/academic-years': typeof AuthenticatedAcademicYearsRoute
   '/attendance': typeof AuthenticatedAttendanceRoute
   '/audit': typeof AuthenticatedAuditRoute
@@ -280,6 +288,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/setup-password': typeof SetupPasswordRoute
+  '/setup-wizard': typeof SetupWizardRoute
   '/_authenticated/academic-years': typeof AuthenticatedAcademicYearsRoute
   '/_authenticated/attendance': typeof AuthenticatedAttendanceRoute
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
@@ -308,6 +317,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/setup-password'
+    | '/setup-wizard'
     | '/academic-years'
     | '/attendance'
     | '/audit'
@@ -334,6 +344,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/setup-password'
+    | '/setup-wizard'
     | '/academic-years'
     | '/attendance'
     | '/audit'
@@ -359,6 +370,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/setup-password'
+    | '/setup-wizard'
     | '/_authenticated/academic-years'
     | '/_authenticated/attendance'
     | '/_authenticated/audit'
@@ -387,10 +399,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   SetupPasswordRoute: typeof SetupPasswordRoute
+  SetupWizardRoute: typeof SetupWizardRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/setup-wizard': {
+      id: '/setup-wizard'
+      path: '/setup-wizard'
+      fullPath: '/setup-wizard'
+      preLoaderRoute: typeof SetupWizardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/setup-password': {
       id: '/setup-password'
       path: '/setup-password'
@@ -650,6 +670,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   SetupPasswordRoute: SetupPasswordRoute,
+  SetupWizardRoute: SetupWizardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
+import { InstitutionConfigService } from '../institutions/institution-config.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import type { Response } from 'express';
@@ -10,6 +11,7 @@ import type { Response } from 'express';
 export class ReportsService {
   constructor(
     private prisma: PrismaService,
+    private institutionConfig: InstitutionConfigService,
     @InjectQueue('reports-queue') private reportsQueue: Queue, // Inyectamos BullMQ
   ) {}
 
@@ -44,7 +46,7 @@ export class ReportsService {
     if (!enrollment) throw new NotFoundException('Inscripción no encontrada');
 
     const institution =
-      preloadedInstitution || (await this.prisma.institution.findFirst());
+      preloadedInstitution || (await this.institutionConfig.getOrNull());
 
     const camposMap = new Map<string, any>();
 

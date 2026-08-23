@@ -6,6 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DataUpdatesBroadcastService } from './data-updates-broadcast.service';
 import { DataUpdatesTransactionService } from './data-updates-transaction.service';
 import { UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { InstitutionConfigService } from '../institutions/institution-config.service';
 
 describe('DataUpdatesService - Pruebas Unitarias', () => {
   let service: DataUpdatesService;
@@ -47,6 +48,11 @@ describe('DataUpdatesService - Pruebas Unitarias', () => {
     emit: jest.fn(),
   };
 
+  const mockInstitutionConfig = {
+    get: jest.fn().mockImplementation(() => mockPrisma.institution.findFirst()),
+    getOrNull: jest.fn().mockImplementation(() => mockPrisma.institution.findFirst()),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -62,6 +68,7 @@ describe('DataUpdatesService - Pruebas Unitarias', () => {
           useValue: mockTransactionService,
         },
         { provide: EventEmitter2, useValue: mockEventEmitter },
+        { provide: InstitutionConfigService, useValue: mockInstitutionConfig },
       ],
     }).compile();
 

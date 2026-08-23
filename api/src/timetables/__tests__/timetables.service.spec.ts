@@ -20,6 +20,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Shift, SchedulingMode } from '../../../prisma/generated/client';
+import { InstitutionConfigService } from '../../institutions/institution-config.service';
 
 describe('TimetablesService - Pruebas Unitarias', () => {
   let service: TimetablesService;
@@ -55,12 +56,18 @@ describe('TimetablesService - Pruebas Unitarias', () => {
     add: jest.fn(),
   };
 
+  const mockInstitutionConfig = {
+    get: jest.fn().mockImplementation(() => mockPrisma.institution.findFirst()),
+    getOrNull: jest.fn().mockImplementation(() => mockPrisma.institution.findFirst()),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TimetablesService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: getQueueToken('export-queue'), useValue: mockQueue },
+        { provide: InstitutionConfigService, useValue: mockInstitutionConfig },
       ],
     }).compile();
 

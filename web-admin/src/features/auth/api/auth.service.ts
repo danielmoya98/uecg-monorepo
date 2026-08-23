@@ -16,6 +16,20 @@ export const AuthService = {
     return response.data.data ?? response.data
   },
 
+  getSystemStatus: async (): Promise<{
+    isInitialized: boolean;
+    hasUsers: boolean;
+    hasInstitution: boolean;
+  }> => {
+    const response = await api.get('/auth/system-status')
+    return response.data.data ?? response.data
+  },
+
+  setupInitialDirector: async (payload: any): Promise<LoginResponse> => {
+    const response = await api.post('/auth/setup-initial-director', payload)
+    return response.data.data ?? response.data
+  },
+
   createQrChallenge: async () => {
     const response = await api.post('/auth/qr-challenge')
     return response.data

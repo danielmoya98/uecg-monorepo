@@ -12,6 +12,8 @@ import { DataUpdatesTransactionService } from './data-updates-transaction.servic
 import { SubmitDataUpdateDto } from './dto/submit-data-update.dto';
 import { Prisma } from '../../prisma/generated/client';
 
+import { InstitutionConfigService } from '../institutions/institution-config.service';
+
 @Injectable()
 export class DataUpdatesService {
   constructor(
@@ -20,10 +22,11 @@ export class DataUpdatesService {
     private broadcastService: DataUpdatesBroadcastService,
     private transactionService: DataUpdatesTransactionService,
     private eventEmitter: EventEmitter2,
+    private institutionConfig: InstitutionConfigService,
   ) {}
 
   private async validateCampaignAndLimits(enrollmentId: string) {
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.institutionConfig.getOrNull();
 
     if (!institution || !institution.enableDigitalRudeUpdates) {
       throw new BadRequestException(
@@ -271,7 +274,7 @@ export class DataUpdatesService {
   }
 
   async markPhysicalDelivery(enrollmentId: string) {
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.institutionConfig.getOrNull();
     const maxUpdates = institution?.maxRudeUpdatesPerYear || 5;
 
     await this.prisma.enrollment.update({

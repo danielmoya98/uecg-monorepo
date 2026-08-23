@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'sonner'
 
 export const api = axios.create({
   baseURL:
@@ -10,7 +11,25 @@ export const api = axios.create({
   },
 
   withCredentials: true,
+  timeout: 45000, // 45s para acomodar cold starts en Render Free Tier
 })
+
+let coldStartToastId: string | number | null = null;
+
+api.interceptors.request.use((config) => {
+  // Detector de cold-start: si la petición tarda más de 3 segundos, alertar al usuario amistosamente
+  const timer = setTimeout(() => {
+    if (!coldStartToastId) {
+      coldStartToastId = toast.loading(
+        'El servidor escolar se está iniciando (arranque en frío Render). Un momento por favor...',
+        { duration: 15000 },
+      );
+    }
+  }, 3500);
+
+  (config as any)._coldStartTimer = timer;
+  return config;
+});
 
 let isRefreshing = false
 
@@ -50,6 +69,14 @@ const kickUserOut = () => {
 
 api.interceptors.response.use(
   (response) => {
+    if ((response.config as any)?._coldStartTimer) {
+      clearTimeout((response.config as any)._coldStartTimer);
+    }
+    if (coldStartToastId) {
+      toast.dismiss(coldStartToastId);
+      coldStartToastId = null;
+    }
+
     // Si la respuesta NestJS tiene un wrapper .data.data, lo desempaquetamos centralizadamente
     if (response.data && response.data.data !== undefined) {
       // Solo preservamos la estructura si hay metadata de paginación real (ej. total, totalPages, page, limit)
@@ -71,6 +98,13 @@ api.interceptors.response.use(
 
 
   async (error) => {
+    if ((error.config as any)?._coldStartTimer) {
+      clearTimeout((error.config as any)._coldStartTimer);
+    }
+    if (coldStartToastId) {
+      toast.dismiss(coldStartToastId);
+      coldStartToastId = null;
+    }
     const originalRequest = error.config
 
     if (

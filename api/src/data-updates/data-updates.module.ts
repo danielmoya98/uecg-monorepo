@@ -22,9 +22,12 @@ import { DataUpdatesListener } from './data-updates.listener';
 import { MailModule } from '../mail/mail.module';
 import { MailQueueModule } from '../queues/mail/mail.queue.module';
 
+import { InstitutionsModule } from '../institutions/institutions.module';
+
 @Module({
   imports: [
     PrismaModule,
+    InstitutionsModule,
     MailModule,
     MailQueueModule,
 

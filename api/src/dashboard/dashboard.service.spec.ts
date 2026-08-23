@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DashboardService } from './dashboard.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { InstitutionConfigService } from '../institutions/institution-config.service';
 
 describe('DashboardService - Pruebas Unitarias', () => {
   let service: DashboardService;
@@ -38,12 +39,18 @@ describe('DashboardService - Pruebas Unitarias', () => {
     del: jest.fn(),
   };
 
+  const mockInstitutionConfig = {
+    get: jest.fn().mockImplementation(() => mockPrisma.institution.findFirst()),
+    getOrNull: jest.fn().mockImplementation(() => mockPrisma.institution.findFirst()),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DashboardService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        { provide: InstitutionConfigService, useValue: mockInstitutionConfig },
       ],
     }).compile();
 
