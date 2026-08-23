@@ -113,6 +113,8 @@ export const ExportActionPanel = ({ isExporting, onExport }: ExportActionPanelPr
 
       <button
         onClick={onExport}
+        id="btn-generate-cards"
+        data-tour="btn-generate-cards"
         disabled={isExporting}
         type="button"
         className="w-full mt-auto py-5 px-4 font-black uppercase tracking-widest text-[11px] bg-uecg-blue text-white hover:bg-blue-600 transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed outline-none cursor-pointer"
