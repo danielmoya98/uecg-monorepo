@@ -113,7 +113,7 @@ export function Sidebar() {
       </div>
 
       {/* Navegación Categorizada con Acordeón */}
-      <nav className="flex-1 flex flex-col pt-4 gap-4 px-3 overflow-y-auto custom-scrollbar relative z-10">
+      <nav className="flex-1 flex flex-col pt-4 gap-3 px-3 overflow-y-auto custom-scrollbar relative z-10">
         {allowedCategories.map((category) => {
           const isCategoryOpen = openCategories[category.id] ?? true;
           const isSingleItem = category.items.length === 1 && category.id === "main";
