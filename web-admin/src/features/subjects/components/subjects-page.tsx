@@ -22,6 +22,8 @@ export default function SubjectsPage() {
     setSearchTerm,
     selectedLevel,
     setSelectedLevel,
+    selectedStatus,
+    setSelectedStatus,
     viewMode,
     setViewMode,
     allowedLevels,
@@ -39,6 +41,7 @@ export default function SubjectsPage() {
 
     createMutation,
     updateMutation,
+    toggleStatusMutation,
     deleteMutation,
   } = useSubjectsData()
 
@@ -83,6 +86,8 @@ export default function SubjectsPage() {
           onSearchChange={setSearchTerm}
           selectedLevel={selectedLevel}
           onLevelChange={setSelectedLevel}
+          selectedStatus={selectedStatus}
+          onStatusChange={setSelectedStatus}
           allowedLevels={allowedLevels}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
@@ -96,6 +101,12 @@ export default function SubjectsPage() {
               isPending={isPending}
               isFetching={isFetching}
               onAction={handleAction}
+              onToggleStatus={(subj) =>
+                toggleStatusMutation.mutate({
+                  id: subj.id,
+                  isActive: !subj.isActive,
+                })
+              }
               canManage={canManageSubjects}
             />
           ) : (

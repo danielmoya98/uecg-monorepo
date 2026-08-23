@@ -16,6 +16,7 @@ export const useSubjectsData = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const debouncedSearch = useDebounce(searchTerm, 500)
   const [selectedLevel, setSelectedLevel] = useState('')
+  const [selectedStatus, setSelectedStatus] = useState<string>('all')
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table')
 
   // 2. Estados del Cajón (Drawer)
@@ -26,7 +27,7 @@ export const useSubjectsData = () => {
   // Reiniciar paginación al cambiar filtros
   useEffect(() => {
     setPage(1)
-  }, [debouncedSearch, selectedLevel])
+  }, [debouncedSearch, selectedLevel, selectedStatus])
 
   // 3. Obtención de Datos de la Institución (para niveles permitidos)
   const { data: institution } = useQuery({
@@ -37,6 +38,12 @@ export const useSubjectsData = () => {
 
   const allowedLevels: string[] = institution?.levels || []
 
+  const isActiveFilter = (() => {
+    if (selectedStatus === 'active') return true
+    if (selectedStatus === 'inactive') return false
+    return undefined
+  })()
+
   // 4. Obtención de Materias (React Query)
   const {
     data: result,
@@ -44,20 +51,21 @@ export const useSubjectsData = () => {
     isFetching,
     refetch,
   } = useQuery({
-    queryKey: ['subjects', page, debouncedSearch, selectedLevel],
+    queryKey: ['subjects', page, debouncedSearch, selectedLevel, selectedStatus],
     queryFn: () =>
       SubjectsService.getAll(
         page,
         10,
         debouncedSearch,
-        selectedLevel || undefined
+        selectedLevel || undefined,
+        isActiveFilter
       ),
     staleTime: 60 * 1000,
     placeholderData: keepPreviousData,
   })
 
   // Normalización defensiva de datos
-  const displaySubjects = (() => {
+  const displaySubjects: Subject[] = (() => {
     if (Array.isArray(result)) {
       return result
     } else if (result && Array.isArray(result.data)) {
@@ -73,6 +81,8 @@ export const useSubjectsData = () => {
     return {
       total: displaySubjects.length,
       totalPages: Math.ceil(displaySubjects.length / 10) || 1,
+      page: 1,
+      limit: 10,
     }
   })()
 
@@ -100,6 +110,24 @@ export const useSubjectsData = () => {
     },
     onError: (error: any) => {
       const msg = error.response?.data?.message || 'Error al actualizar la materia'
+      toast.error(typeof msg === 'string' ? msg : msg[0])
+    },
+  })
+
+  const toggleStatusMutation = useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive?: boolean }) =>
+      SubjectsService.toggleStatus(id, isActive),
+    onSuccess: (updated) => {
+      toast.success(
+        updated.isActive
+          ? 'MATERIA ACTIVADA EN EL CATÁLOGO'
+          : 'MATERIA DESACTIVADA DEL CATÁLOGO'
+      )
+      queryClient.invalidateQueries({ queryKey: ['subjects'] })
+    },
+    onError: (error: any) => {
+      const msg =
+        error.response?.data?.message || 'Error al cambiar estado de la materia'
       toast.error(typeof msg === 'string' ? msg : msg[0])
     },
   })
@@ -137,6 +165,8 @@ export const useSubjectsData = () => {
     setSearchTerm,
     selectedLevel,
     setSelectedLevel,
+    selectedStatus,
+    setSelectedStatus,
     viewMode,
     setViewMode,
     allowedLevels,
@@ -158,6 +188,8 @@ export const useSubjectsData = () => {
     // Mutaciones
     createMutation,
     updateMutation,
+    toggleStatusMutation,
     deleteMutation,
   }
 }
+

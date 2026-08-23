@@ -1,15 +1,18 @@
 export interface Subject {
   id: string
   name: string
+  code?: string | null
   level: 'INICIAL' | 'PRIMARIA' | 'SECUNDARIA'
-  area?: string
+  area?: string | null
+  isActive?: boolean
   createdAt?: string
+  updatedAt?: string
 }
 
 export interface SubjectPaginationMeta {
   total: number
   totalPages: number
-  currentPage: number
+  page: number
   limit: number
 }
 
@@ -20,6 +23,9 @@ export interface SubjectsResponse {
 
 export interface SubjectPayload {
   name: string
+  code?: string
   level: 'INICIAL' | 'PRIMARIA' | 'SECUNDARIA'
   area?: string
+  isActive?: boolean
 }
+

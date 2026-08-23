@@ -8,6 +8,7 @@ interface SubjectsTableProps {
   isPending: boolean
   isFetching: boolean
   onAction: (mode: DrawerMode, subject: Subject) => void
+  onToggleStatus?: (subject: Subject) => void
   canManage: boolean
 }
 
@@ -16,6 +17,7 @@ export default function SubjectsTable({
   isPending,
   isFetching,
   onAction,
+  onToggleStatus,
   canManage,
 }: SubjectsTableProps) {
   if (isPending) {
@@ -62,11 +64,17 @@ export default function SubjectsTable({
               <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
                 Nombre de la Asignatura
               </th>
-              <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line w-40 text-center">
+              <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line w-28 text-center">
+                Sigla
+              </th>
+              <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line w-36 text-center">
                 Nivel
               </th>
               <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
                 Área de Conocimiento
+              </th>
+              <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line w-28 text-center">
+                Estado
               </th>
               {canManage && (
                 <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-24">
@@ -82,6 +90,7 @@ export default function SubjectsTable({
                 subject={subject}
                 index={index}
                 onAction={onAction}
+                onToggleStatus={onToggleStatus}
                 canManage={canManage}
               />
             ))}
@@ -96,10 +105,17 @@ interface SubjectsTableRowProps {
   subject: Subject
   index: number
   onAction: (mode: DrawerMode, subject: Subject) => void
+  onToggleStatus?: (subject: Subject) => void
   canManage: boolean
 }
 
-function SubjectsTableRow({ subject, index, onAction, canManage }: SubjectsTableRowProps) {
+function SubjectsTableRow({
+  subject,
+  index,
+  onAction,
+  onToggleStatus,
+  canManage,
+}: SubjectsTableRowProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -134,7 +150,9 @@ function SubjectsTableRow({ subject, index, onAction, canManage }: SubjectsTable
 
   return (
     <tr
-      className="border-b border-uecg-line hover:bg-blue-50/20 transition-colors duration-150 animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+      className={`border-b border-uecg-line hover:bg-blue-50/20 transition-colors duration-150 animate-in fade-in slide-in-from-bottom-2 fill-mode-both ${
+        !subject.isActive ? 'bg-gray-50/60 opacity-75' : ''
+      }`}
       style={{ animationDelay: `${index * 30}ms` }}
     >
       {/* 1. Nombre / Avatar */}
@@ -152,17 +170,30 @@ function SubjectsTableRow({ subject, index, onAction, canManage }: SubjectsTable
         </div>
       </td>
 
-      {/* 2. Nivel */}
+      {/* 2. Sigla / Código */}
+      <td className="px-5 py-3.5 border-r border-uecg-line text-center">
+        {subject.code ? (
+          <span className="text-[10px] font-mono font-black uppercase tracking-widest px-2 py-0.5 border border-uecg-line bg-gray-100 text-uecg-dark inline-block shadow-sm">
+            {subject.code}
+          </span>
+        ) : (
+          <span className="text-[10px] text-gray-300 font-bold tracking-widest">
+            —
+          </span>
+        )}
+      </td>
+
+      {/* 3. Nivel */}
       <td className="px-5 py-3.5 border-r border-uecg-line text-center">
         <span className="text-[9px] font-black uppercase tracking-widest px-2.5 py-0.5 border border-uecg-line bg-gray-50 text-uecg-text inline-block shadow-sm">
           {subject.level}
         </span>
       </td>
 
-      {/* 3. Área */}
+      {/* 4. Área */}
       <td className="px-5 py-3.5 border-r border-uecg-line">
         {subject.area ? (
-          <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 border border-blue-100 bg-blue-50 text-uecg-blue inline-block">
+          <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 border border-blue-100 bg-blue-50 text-uecg-blue inline-block truncate max-w-[280px]">
             {subject.area}
           </span>
         ) : (
@@ -172,7 +203,20 @@ function SubjectsTableRow({ subject, index, onAction, canManage }: SubjectsTable
         )}
       </td>
 
-      {/* 4. Operaciones (Solo si tiene permisos) */}
+      {/* 5. Estado Activo / Inactivo */}
+      <td className="px-5 py-3.5 border-r border-uecg-line text-center">
+        <span
+          className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 border inline-block ${
+            subject.isActive
+              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+              : 'bg-amber-50 text-amber-700 border-amber-200'
+          }`}
+        >
+          {subject.isActive ? 'ACTIVA' : 'INACTIVA'}
+        </span>
+      </td>
+
+      {/* 6. Operaciones (Solo si tiene permisos) */}
       {canManage && (
         <td className="px-5 py-3.5 text-center">
           <div ref={menuRef} className="relative inline-block text-left">
@@ -189,7 +233,7 @@ function SubjectsTableRow({ subject, index, onAction, canManage }: SubjectsTable
 
             {isOpen && (
               <div
-                className="absolute right-0 mt-1 w-44 bg-white border border-uecg-line shadow-2xl z-20 flex flex-col text-left animate-in fade-in zoom-in-95 duration-150"
+                className="absolute right-0 mt-1 w-48 bg-white border border-uecg-line shadow-2xl z-20 flex flex-col text-left animate-in fade-in zoom-in-95 duration-150"
                 role="menu"
                 aria-label="Operaciones"
               >
@@ -209,6 +253,19 @@ function SubjectsTableRow({ subject, index, onAction, canManage }: SubjectsTable
                 >
                   <Edit className="w-3.5 h-3.5" /> Editar Materia
                 </button>
+                {onToggleStatus && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsOpen(false)
+                      onToggleStatus(subject)
+                    }}
+                    className="flex items-center gap-2.5 px-3.5 py-3 text-[9px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all text-uecg-dark cursor-pointer text-left border-t border-uecg-line outline-none"
+                    role="menuitem"
+                  >
+                    {subject.isActive ? 'Desactivar Materia' : 'Activar Materia'}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => {

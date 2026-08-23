@@ -8,11 +8,19 @@ const LEVEL_LABELS: Record<string, string> = {
   SECUNDARIA: 'Secundaria',
 }
 
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'Todos los Estados' },
+  { value: 'active', label: 'Solo Activas' },
+  { value: 'inactive', label: 'Solo Inactivas' },
+]
+
 interface SubjectsFiltersProps {
   searchTerm: string
   onSearchChange: (value: string) => void
   selectedLevel: string
   onLevelChange: (value: string) => void
+  selectedStatus: string
+  onStatusChange: (value: string) => void
   allowedLevels: string[]
   viewMode: 'table' | 'grid'
   onViewModeChange: (mode: 'table' | 'grid') => void
@@ -23,6 +31,8 @@ export default function SubjectsFilters({
   onSearchChange,
   selectedLevel,
   onLevelChange,
+  selectedStatus,
+  onStatusChange,
   allowedLevels,
   viewMode,
   onViewModeChange,
@@ -42,7 +52,7 @@ export default function SubjectsFilters({
   }, [])
 
   return (
-    <div className="flex flex-col md:flex-row gap-4">
+    <div className="flex flex-col lg:flex-row gap-4">
       {/* Caja de Buscador y Botones de Vista */}
       <div className="flex flex-1 gap-2">
         <div className="relative flex-1 group">
@@ -50,7 +60,7 @@ export default function SubjectsFilters({
           <input
             ref={inputRef}
             type="text"
-            placeholder="BUSCAR MATERIA POR NOMBRE O ÁREA... (CTRL+K)"
+            placeholder="BUSCAR MATERIA POR NOMBRE, SIGLA O ÁREA... (CTRL+K)"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full h-full border border-uecg-line bg-white pl-11 pr-12 py-3.5 text-uecg-text focus:border-uecg-blue focus:outline-none focus:ring-2 focus:ring-uecg-blue uppercase text-[11px] font-bold tracking-widest placeholder:text-gray-400 transition-colors shadow-sm"
@@ -98,8 +108,8 @@ export default function SubjectsFilters({
         </div>
       </div>
 
-      {/* Selector de Niveles Suiza */}
-      <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+      {/* Selectores de Nivel y Estado Suiza */}
+      <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
         <SwissSelect
           value={selectedLevel}
           onChange={onLevelChange}
@@ -110,7 +120,16 @@ export default function SubjectsFilters({
           placeholder="Todos los Niveles"
           showFilterIcon
         />
+
+        <SwissSelect
+          value={selectedStatus}
+          onChange={onStatusChange}
+          options={STATUS_OPTIONS}
+          placeholder="Todos los Estados"
+          showFilterIcon
+        />
       </div>
     </div>
   )
 }
+
