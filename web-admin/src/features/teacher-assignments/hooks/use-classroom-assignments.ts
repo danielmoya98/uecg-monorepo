@@ -63,7 +63,21 @@ export const useClassroomAssignments = (classroom: Classroom | null, canManage: 
     },
   })
 
-  // 5. Mutación para clonar una malla curricular
+  // 5. Mutación para reasignar docente
+  const updateMutation = useMutation({
+    mutationFn: ({ id, teacherId }: { id: string; teacherId: string }) =>
+      TeacherAssignmentsService.update(id, { teacherId }),
+    onSuccess: () => {
+      toast.success('DOCENTE REASIGNADO EXITOSAMENTE')
+      queryClient.invalidateQueries({ queryKey: ['assignments', classroom?.id] })
+    },
+    onError: (error: any) => {
+      const msg = error.response?.data?.message || 'Error al reasignar el docente.'
+      toast.error(typeof msg === 'string' ? msg : msg[0])
+    },
+  })
+
+  // 6. Mutación para clonar una malla curricular
   const cloneMutation = useMutation({
     mutationFn: (payload: CloneTeacherAssignmentsPayload) =>
       TeacherAssignmentsService.clone(payload),
@@ -83,6 +97,7 @@ export const useClassroomAssignments = (classroom: Classroom | null, canManage: 
     isLoading: isLoadingAssignments || isLoadingSubjects,
     isFetchingAssignments,
     assignMutation,
+    updateMutation,
     deleteMutation,
     cloneMutation,
   }

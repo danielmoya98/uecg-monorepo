@@ -135,6 +135,7 @@ interface AssignmentPanelProps {
   onAssign: (formData: { subjectId: string; teacherId: string }) => void
   isAssignPending: boolean
   onDeleteRequest: (assignment: TeacherAssignment) => void
+  onReassignRequest?: (assignment: TeacherAssignment) => void
   onOpenCloneDrawer: (assignments: TeacherAssignment[]) => void
 }
 
@@ -149,6 +150,7 @@ export const AssignmentPanel = ({
   onAssign,
   isAssignPending,
   onDeleteRequest,
+  onReassignRequest,
   onOpenCloneDrawer,
 }: AssignmentPanelProps) => {
   const {
@@ -322,6 +324,7 @@ export const AssignmentPanel = ({
           assignments={assignments}
           isFetching={isFetchingAssignments}
           onDeleteRequest={onDeleteRequest}
+          onReassignRequest={onReassignRequest}
           canManage={canManage}
         />
       </div>

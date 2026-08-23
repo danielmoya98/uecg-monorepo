@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Body,
   Param,
   Delete,
@@ -14,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { TeacherAssignmentsService } from './teacher-assignments.service';
 import { CreateTeacherAssignmentDto } from './dto/create-teacher-assignment.dto';
+import { UpdateTeacherAssignmentDto } from './dto/update-teacher-assignment.dto';
 import { ApiTags, ApiOperation, ApiCookieAuth } from '@nestjs/swagger';
 import { IdempotencyInterceptor } from '../common/interceptors/idempotency.interceptor';
 import { CloneAssignmentsDto } from './dto/clone-assignments.dto';
@@ -66,6 +68,23 @@ export class TeacherAssignmentsController {
   ) {
     // 🔥 Pasamos el usuario para que el servicio aplique ABAC
     return this.teacherAssignmentsService.findAll(query, req.user);
+  }
+
+  @Patch(':id')
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_TEACHER_ASSIGNMENT) // 🔥 ABAC
+  @UseInterceptors(IdempotencyInterceptor)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Reasigna/actualiza el docente asignado a una materia en un curso',
+  })
+  update(
+    @Param('id') id: string,
+    @Body() updateTeacherAssignmentDto: UpdateTeacherAssignmentDto,
+  ) {
+    return this.teacherAssignmentsService.update(
+      id,
+      updateTeacherAssignmentDto,
+    );
   }
 
   @Delete(':id')
