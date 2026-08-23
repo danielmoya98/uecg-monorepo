@@ -22,6 +22,8 @@ import { BulkAttendanceDto } from './dto/bulk-attendance.dto';
 import { RegisterAttendanceDto } from './dto/register-attendance.dto';
 import { ManualAttendanceDto } from './dto/manual-attendance.dto';
 
+import { InstitutionConfigService } from '../institutions/institution-config.service';
+
 @Injectable()
 export class AttendanceService {
   private readonly logger = new Logger(AttendanceService.name);
@@ -30,6 +32,7 @@ export class AttendanceService {
     private prisma: PrismaService,
     private identityService: IdentityService,
     private eventEmitter: EventEmitter2, // 🔥 Reemplaza a FirebaseService
+    private institutionConfig: InstitutionConfigService, // 🔥 Inyección Unificada
     @Inject(CACHE_MANAGER) private cacheManager: Cache, // 🔥 Para evitar saturar la BD
   ) {}
 
@@ -46,22 +49,16 @@ export class AttendanceService {
   }
 
   // ==========================================
-  // HELPER: CACHÉ DE REGLAS DE INSTITUCIÓN
+  // HELPER: REGLAS DE INSTITUCIÓN (DESDE SERVICIO CENTRAL)
   // ==========================================
   private async getInstitutionRules() {
-    const cacheKey = 'institution_rules';
-    let rules = await this.cacheManager.get<any>(cacheKey);
-
-    if (!rules) {
-      rules = await this.prisma.institution.findFirst();
-      if (!rules)
-        throw new InternalServerErrorException(
-          'Reglas de la institución no configuradas.',
-        );
-      // Guardamos en caché por 1 hora (3600000 ms)
-      await this.cacheManager.set(cacheKey, rules, 3600000);
+    const institution = await this.institutionConfig.getOrNull();
+    if (!institution) {
+      throw new InternalServerErrorException(
+        'Reglas de la institución no configuradas.',
+      );
     }
-    return rules;
+    return institution;
   }
 
   // ==========================================

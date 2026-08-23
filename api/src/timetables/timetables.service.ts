@@ -16,10 +16,13 @@ import { renderToStream } from '@react-pdf/renderer';
 import { TimetableTemplate } from './templates/timetable.template';
 import React from 'react';
 
+import { InstitutionConfigService } from '../institutions/institution-config.service';
+
 @Injectable()
 export class TimetablesService {
   constructor(
     private prisma: PrismaService,
+    private institutionConfig: InstitutionConfigService,
     @InjectQueue('export-queue') private exportQueue: Queue,
   ) {}
 
@@ -56,7 +59,7 @@ export class TimetablesService {
         },
       }),
       this.prisma.classPeriod.findUnique({ where: { id: data.classPeriodId } }),
-      this.prisma.institution.findFirst(),
+      this.institutionConfig.get(),
     ]);
 
     if (!assignment)
@@ -257,9 +260,7 @@ export class TimetablesService {
 
     if (!slot) throw new NotFoundException('Casillero no encontrado');
 
-    const institution = await this.prisma.institution.findFirst();
-    if (!institution)
-      throw new NotFoundException('Configuración institucional no encontrada.');
+    const institution = await this.institutionConfig.get();
 
     const subject = slot.teacherAssignment.subject;
     const subjectName = subject.name.toLowerCase();

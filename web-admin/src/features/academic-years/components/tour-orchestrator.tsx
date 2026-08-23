@@ -44,7 +44,18 @@ export function TourOrchestrator() {
 
   // 1. Detección Inteligente y Auto-Inicio
   useEffect(() => {
-    if (!isDirectorOrAdmin || !selectedYearId || !wizardData || isActive) return
+    if (!isDirectorOrAdmin || isActive) return
+
+    // Caso de primer arranque (aún no se ha creado ninguna gestión escolar)
+    if (!selectedYearId) {
+      const isInitialDismissed = dismissedYears['initial-setup']
+      if (!isInitialDismissed) {
+        startTour(0)
+      }
+      return
+    }
+
+    if (!wizardData) return
 
     // Si ya está 100% completado en la BD, marcar como completado
     if (wizardData.percentage === 100) {

@@ -11,20 +11,50 @@ export class InstitutionConfigService {
   constructor(private readonly prisma: PrismaService) {}
 
   async get(): Promise<Institution> {
-    if (this.cache && Date.now() < this.cacheExpiry) {
-      return this.cache;
-    }
-
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.getOrNull();
     if (!institution) {
       throw new NotFoundException(
         'No se encontró la configuración de la Institución.',
       );
     }
-
-    this.cache = institution;
-    this.cacheExpiry = Date.now() + this.TTL;
     return institution;
+  }
+
+  async getOrNull(): Promise<Institution | null> {
+    if (this.cache && Date.now() < this.cacheExpiry) {
+      return this.cache;
+    }
+
+    const institution = await this.prisma.institution.findFirst({
+      include: { director: { select: { fullName: true, email: true } } },
+    });
+
+    if (institution) {
+      this.cache = institution;
+      this.cacheExpiry = Date.now() + this.TTL;
+    }
+
+    return institution;
+  }
+
+  async getAttendanceSettings() {
+    const inst = await this.get();
+    return {
+      enableQrAttendance: inst.enableQrAttendance,
+      enableBiometricAttendance: inst.enableBiometricAttendance,
+      lateToleranceMinutes: inst.lateToleranceMinutes,
+      absentToleranceMinutes: inst.absentToleranceMinutes,
+      notificationFrequency: inst.notificationFrequency,
+    };
+  }
+
+  async getCampaignSettings() {
+    const inst = await this.get();
+    return {
+      enableDigitalRudeUpdates: inst.enableDigitalRudeUpdates,
+      maxRudeUpdatesPerYear: inst.maxRudeUpdatesPerYear,
+      activeNotificationChannels: inst.activeNotificationChannels,
+    };
   }
 
   invalidate() {

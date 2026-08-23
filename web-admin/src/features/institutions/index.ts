@@ -4,6 +4,7 @@ export { default as CampaignSettingsPanel } from './components/campaign-settings
 export { default as AttendanceSettingsPanel } from './components/attendance-settings-panel';
 export { default as SwissSelect } from './components/swiss-select';
 export { default as SettingsPage } from './components/settings-page';
+export { default as SetupWizardPage } from './components/setup-wizard/setup-wizard-page';
 export * from './components/ui-parts';
 
 // Hooks Co-localizados

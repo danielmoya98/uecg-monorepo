@@ -90,6 +90,13 @@ export class InstitutionsController {
     return result;
   }
 
+  // --- INSTITUCIÓN ACTUAL (SINGLE-TENANT / CORE) ---
+  @Get('current')
+  @ApiOperation({ summary: 'Obtiene los datos de la institución actual' })
+  getCurrent() {
+    return this.institutionsService.getCurrent();
+  }
+
   // ==========================================
   // 📦 2. RUTAS DINÁMICAS Y CRUD (VAN AL FINAL)
   // ==========================================

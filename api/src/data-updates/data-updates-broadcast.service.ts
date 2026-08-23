@@ -19,6 +19,7 @@ import { MailService } from '../mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
 
 import { MailQueueService } from '../queues/mail/mail.queue.service';
+import { InstitutionConfigService } from '../institutions/institution-config.service';
 
 @Injectable()
 export class DataUpdatesBroadcastService {
@@ -26,13 +27,10 @@ export class DataUpdatesBroadcastService {
 
   constructor(
     private readonly prisma: PrismaService,
-
     private readonly firebaseService: FirebaseService,
-
     private readonly mailService: MailService,
-
     private readonly jwtService: JwtService,
-
+    private readonly institutionConfig: InstitutionConfigService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
     private readonly mailQueueService: MailQueueService,
@@ -240,7 +238,7 @@ export class DataUpdatesBroadcastService {
   // ======================================================
 
   async broadcastUpdateCampaign(enrollmentId: string) {
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.institutionConfig.getOrNull();
 
     const channels = institution?.activeNotificationChannels || [];
 
@@ -286,7 +284,7 @@ export class DataUpdatesBroadcastService {
   // ======================================================
 
   async broadcastToClassroom(classroomId: string) {
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.institutionConfig.getOrNull();
 
     const channels = institution?.activeNotificationChannels || [];
 
@@ -371,7 +369,7 @@ export class DataUpdatesBroadcastService {
       return cached;
     }
 
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.institutionConfig.getOrNull();
 
     const channels = institution?.activeNotificationChannels || [];
 

@@ -6,10 +6,12 @@ import { ReportsService } from './reports.service';
 import { ReportsProcessor } from './reports.processor';
 import { PrismaModule } from '../prisma/prisma.module';
 
+import { InstitutionsModule } from '../institutions/institutions.module';
+
 @Module({
   imports: [
     PrismaModule,
-    // 🗑️ ELIMINAMOS TimetablesModule, ya no lo necesitamos
+    InstitutionsModule,
 
     BullModule.registerQueue({
       name: 'reports-queue',

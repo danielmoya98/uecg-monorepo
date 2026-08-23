@@ -14,6 +14,7 @@ const archiver = require('archiver');
 // Importamos tu componente React-PDF
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+import { InstitutionConfigService } from '../institutions/institution-config.service';
 import { BolivianLibreta } from './templates/BolivianLibreta';
 
 @Processor('reports-queue')
@@ -21,8 +22,9 @@ export class ReportsProcessor extends WorkerHost {
   private readonly logger = new Logger(ReportsProcessor.name);
 
   constructor(
-    private prisma: PrismaService,
-    private reportsService: ReportsService,
+    private readonly reportsService: ReportsService,
+    private readonly prisma: PrismaService,
+    private readonly institutionConfig: InstitutionConfigService,
     private eventEmitter: EventEmitter2,
   ) {
     super();
@@ -91,7 +93,7 @@ export class ReportsProcessor extends WorkerHost {
     archive.pipe(output);
 
     // Preparamos la institución una sola vez para evitar consultas N+1 en la base de datos
-    const institution = await this.prisma.institution.findFirst();
+    const institution = await this.institutionConfig.getOrNull();
 
     // 3. Generamos PDFs en Bucle
     for (const enrollment of enrollments) {
