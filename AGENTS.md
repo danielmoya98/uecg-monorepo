@@ -4,9 +4,10 @@ Este repositorio contiene la plataforma integral de la **Unidad Educativa Colegi
 
 ## 📌 Reglas Fundamentales
 
-1. **Flujo GitFlow**:
+1. **Flujo GitFlow y Preservación de Ramas**:
    - Trabajar siempre sobre `develop` o ramas `feature/<scope>-<nombre>`.
    - `main` es exclusiva para versiones de producción.
+   - **Preservación de Historial**: NO eliminar las ramas `feature/*` tras realizar el merge. Deben mantenerse como historial y trazabilidad del proyecto.
 2. **Conventional Commits**:
    - Formato estricto: `<type>(<scope>): <descripción>` (ej. `feat(api): ...`, `fix(mobile): ...`, `refactor(web-admin): ...`).
 3. **Verificación Cruzada de API (Web-Admin & Mobile)**:

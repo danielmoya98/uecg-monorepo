@@ -33,7 +33,7 @@ El desarrollo en este repositorio sigue estrictamente el modelo **GitFlow** y la
 
 - **`main`**: Rama de producción lista para despliegues.
 - **`develop`**: Rama de integración donde converge el trabajo activo.
-- **`feature/<scope>-<nombre>`**: Nuevas características creadas desde `develop`.
+- **`feature/<scope>-<nombre>`**: Nuevas características creadas desde `develop` (se conservan tras el merge como historial, sin eliminar).
 - **`release/vX.Y.Z`**: Preparación de versiones.
 - **`hotfix/<nombre>`**: Correcciones críticas urgentes desde `main`.
 
