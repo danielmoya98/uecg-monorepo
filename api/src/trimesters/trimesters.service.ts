@@ -8,7 +8,11 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateTrimesterDto } from './dto/update-trimester.dto';
-import { Prisma, TrimesterName } from '../../prisma/generated/client';
+import {
+  AcademicStatus,
+  Prisma,
+  TrimesterName,
+} from '../../prisma/generated/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
@@ -43,6 +47,7 @@ export class TrimestersService {
         {
           academicYearId,
           name: TrimesterName.PRIMER_TRIMESTRE,
+          order: 1,
           startDate: new Date(startDate),
           endDate: t1End,
           isOpen: false,
@@ -50,6 +55,7 @@ export class TrimestersService {
         {
           academicYearId,
           name: TrimesterName.SEGUNDO_TRIMESTRE,
+          order: 2,
           startDate: t2Start,
           endDate: t2End,
           isOpen: false,
@@ -57,6 +63,7 @@ export class TrimestersService {
         {
           academicYearId,
           name: TrimesterName.TERCER_TRIMESTRE,
+          order: 3,
           startDate: t3Start,
           endDate: new Date(endDate),
           isOpen: false,
@@ -66,13 +73,22 @@ export class TrimestersService {
   }
 
   // ==========================================
-  // API PÚBLICA (Controladores)
+  // API PÚBLICA (Controladores / Servicios)
   // ==========================================
 
   async getByAcademicYear(academicYearId: string) {
     return this.prisma.trimester.findMany({
       where: { academicYearId },
-      orderBy: { name: 'asc' },
+      orderBy: { order: 'asc' },
+    });
+  }
+
+  async getActiveTrimesterForYear(academicYearId: string) {
+    return this.prisma.trimester.findFirst({
+      where: {
+        academicYearId,
+        isOpen: true,
+      },
     });
   }
 
@@ -80,7 +96,7 @@ export class TrimestersService {
     // 1. Obtener el trimestre y el Agregado Padre (AcademicYear)
     const trimester = await this.prisma.trimester.findUnique({
       where: { id },
-      include: { academicYear: true }, // 🔥 Necesario para la validación de fronteras
+      include: { academicYear: true },
     });
 
     if (!trimester) throw new NotFoundException('Trimestre no encontrado');
@@ -92,14 +108,14 @@ export class TrimestersService {
       ? new Date(data.endDate)
       : trimester.endDate;
 
-    // 2. Validaciones Lógicas
+    // 2. Validaciones Lógicas Básicas
     if (newStartDate >= newEndDate) {
       throw new BadRequestException(
         'La fecha de inicio debe ser menor a la fecha de fin',
       );
     }
 
-    // 🔥 Boundary Validation: El trimestre no puede salirse de la gestión
+    // Boundary Validation: El trimestre no puede salirse de los límites de la gestión
     if (
       newStartDate < trimester.academicYear.startDate ||
       newEndDate > trimester.academicYear.endDate
@@ -109,28 +125,80 @@ export class TrimestersService {
       );
     }
 
-    // 3. Captura de Evento de Dominio
-    const isClosing = trimester.isOpen === true && data.isOpen === false;
+    // Regla de Negocio: No se puede abrir un trimestre en una gestión no activa
+    if (data.isOpen === true && trimester.academicYear.status !== AcademicStatus.ACTIVE) {
+      throw new BadRequestException(
+        `No se puede abrir un trimestre en una gestión con estado '${trimester.academicYear.status}'. La gestión debe estar 'ACTIVE'.`,
+      );
+    }
 
-    // 4. Actualización
-    const updatedTrimester = await this.prisma.trimester.update({
-      where: { id },
-      data: {
-        ...(data.startDate && { startDate: newStartDate }), // Usamos las fechas ya procesadas
-        ...(data.endDate && { endDate: newEndDate }),
-        ...(data.isOpen !== undefined && { isOpen: data.isOpen }),
+    // 3. Validación de No-Solapamiento con trimestres vecinos
+    const siblingTrimesters = await this.prisma.trimester.findMany({
+      where: {
+        academicYearId: trimester.academicYearId,
+        id: { not: id },
       },
+      orderBy: { order: 'asc' },
     });
 
-    // 5. Side-effects (Desacoplados) e invalidación de caché
+    for (const sibling of siblingTrimesters) {
+      if (sibling.order < trimester.order && newStartDate < sibling.endDate) {
+        throw new BadRequestException(
+          `La fecha de inicio se solapa con el ${sibling.name} (finaliza el ${sibling.endDate.toISOString().split('T')[0]}).`,
+        );
+      }
+      if (sibling.order > trimester.order && newEndDate > sibling.startDate) {
+        throw new BadRequestException(
+          `La fecha de fin se solapa con el ${sibling.name} (inicia el ${sibling.startDate.toISOString().split('T')[0]}).`,
+        );
+      }
+    }
+
+    // 4. Captura de Transición de Estados
+    const isOpening = trimester.isOpen === false && data.isOpen === true;
+    const isClosing = trimester.isOpen === true && data.isOpen === false;
+
+    // 5. Actualización Atómica (Mutua Exclusión: Solo 1 trimestre abierto por gestión)
+    const updatedTrimester = await this.prisma.$transaction(async (tx) => {
+      if (data.isOpen === true) {
+        // Cierra cualquier otro trimestre abierto de la misma gestión
+        await tx.trimester.updateMany({
+          where: {
+            academicYearId: trimester.academicYearId,
+            id: { not: id },
+            isOpen: true,
+          },
+          data: { isOpen: false },
+        });
+      }
+
+      return tx.trimester.update({
+        where: { id },
+        data: {
+          ...(data.startDate && { startDate: newStartDate }),
+          ...(data.endDate && { endDate: newEndDate }),
+          ...(data.isOpen !== undefined && { isOpen: data.isOpen }),
+        },
+      });
+    });
+
+    // 6. Invalidación de Caché
     await this.cacheManager.del(this.CURRENT_ACTIVE_CACHE_KEY);
 
-    if (isClosing) {
-      // Notifica al sistema. Luego puedes tener un listener que encole un Job en BullMQ
-      // para calcular promedios finales o bloquear la subida de notas.
+    // 7. Eventos de Dominio
+    if (isOpening) {
+      this.eventEmitter.emit('trimester.opened', {
+        trimesterId: updatedTrimester.id,
+        academicYearId: updatedTrimester.academicYearId,
+        name: updatedTrimester.name,
+        order: updatedTrimester.order,
+      });
+    } else if (isClosing) {
       this.eventEmitter.emit('trimester.closed', {
         trimesterId: updatedTrimester.id,
         academicYearId: updatedTrimester.academicYearId,
+        name: updatedTrimester.name,
+        order: updatedTrimester.order,
       });
     }
 
