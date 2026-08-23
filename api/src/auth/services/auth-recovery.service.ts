@@ -1,26 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-
 import * as crypto from 'crypto';
-
 import * as bcrypt from 'bcrypt';
-
 import { PrismaService } from '../../prisma/prisma.service';
-
 import { EncryptionService } from '../../common/services/encryption.service';
-
 import { EventEmitter2 } from '@nestjs/event-emitter';
-
 import { AuthTokenService } from './auth-token.service';
 
 @Injectable()
 export class AuthRecoveryService {
   constructor(
     private prisma: PrismaService,
-
     private encryptionService: EncryptionService,
-
     private eventEmitter: EventEmitter2,
-
     private authTokenService: AuthTokenService,
   ) {}
 
@@ -38,16 +29,15 @@ export class AuthRecoveryService {
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [
-          { email: ciOrEmail },
-
+          { email: ciOrEmail.trim().toLowerCase() },
           ...(searchHash
             ? [
+                { ciHash: searchHash as string },
                 {
                   student: {
                     ciHash: searchHash as string,
                   },
                 },
-
                 {
                   guardian: {
                     ciHash: searchHash as string,
@@ -63,10 +53,11 @@ export class AuthRecoveryService {
     // ANTI ENUMERACIÓN
     // ======================================================
 
-    if (!user || !user.recoveryEmail) {
+    const targetEmail = user?.recoveryEmail || user?.email;
+
+    if (!user || !targetEmail) {
       return {
         status: 'SUCCESS',
-
         message: 'Si la cuenta existe, se ha enviado un código.',
       };
     }
@@ -82,17 +73,13 @@ export class AuthRecoveryService {
     // ======================================================
 
     const hashedResetCode = await bcrypt.hash(resetCode, 10);
-
     const expiresAt = new Date();
-
     expiresAt.setMinutes(expiresAt.getMinutes() + 15);
 
     await this.prisma.user.update({
       where: { id: user.id },
-
       data: {
         resetCode: hashedResetCode,
-
         resetCodeExpiresAt: expiresAt,
       },
     });
@@ -102,16 +89,13 @@ export class AuthRecoveryService {
     // ======================================================
 
     this.eventEmitter.emit('auth.password_reset.requested', {
-      email: user.recoveryEmail,
-
+      email: targetEmail,
       fullName: user.fullName,
-
       code: resetCode,
     });
 
     return {
       status: 'SUCCESS',
-
       message: 'Si la cuenta existe, se ha enviado un código.',
     };
   }
@@ -134,16 +118,15 @@ export class AuthRecoveryService {
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [
-          { email: ciOrEmail },
-
+          { email: ciOrEmail.trim().toLowerCase() },
           ...(searchHash
             ? [
+                { ciHash: searchHash as string },
                 {
                   student: {
                     ciHash: searchHash as string,
                   },
                 },
-
                 {
                   guardian: {
                     ciHash: searchHash as string,
@@ -156,28 +139,25 @@ export class AuthRecoveryService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado');
+      throw new UnauthorizedException('Código o identificador inválido');
     }
 
     // ======================================================
-    // EXPIRACIÓN
+    // EXPIRACIÓN Y VALIDACIÓN OTP
     // ======================================================
 
     if (
       !user.resetCodeExpiresAt ||
+      !user.resetCode ||
       new Date() > (user.resetCodeExpiresAt as Date)
     ) {
-      throw new UnauthorizedException('Código expirado');
+      throw new UnauthorizedException('Código expirado o inválido');
     }
 
-    // ======================================================
-    // VALIDACIÓN OTP HASH
-    // ======================================================
-
-    const isCodeValid = await bcrypt.compare(code, user.resetCode || '');
+    const isCodeValid = await bcrypt.compare(code, user.resetCode);
 
     if (!isCodeValid) {
-      throw new UnauthorizedException('Código inválido');
+      throw new UnauthorizedException('Código expirado o inválido');
     }
 
     // ======================================================
@@ -189,24 +169,19 @@ export class AuthRecoveryService {
 
     await this.prisma.user.update({
       where: { id: user.id },
-
       data: {
         password: hashedPassword,
-
         resetCode: null,
-
         resetCodeExpiresAt: null,
-
         failedLoginAttempts: 0,
-
         lockoutUntil: null,
       },
     });
 
     return {
       status: 'SUCCESS',
-
       message: 'Contraseña actualizada correctamente',
     };
   }
 }
+

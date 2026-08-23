@@ -4,42 +4,29 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
-
 import { JwtService } from '@nestjs/jwt';
-
 import { EventEmitter2 } from '@nestjs/event-emitter';
-
 import { PrismaService } from '../prisma/prisma.service';
-
 import { AuthTokenService } from './services/auth-token.service';
-
 import { AuthPasswordService } from './services/auth-password.service';
-
 import { AuthRecoveryService } from './services/auth-recovery.service';
-
 import { AuthMobileService } from './services/auth-mobile.service';
+import { RegisterGuardianDto } from './dto/register-guardian.dto';
+import { RegisterStudentDto } from './dto/register-student.dto';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-
   private readonly MAX_LOGIN_ATTEMPTS = 5;
-
   private readonly LOCKOUT_DURATION_MINUTES = 15;
 
   constructor(
     private prisma: PrismaService,
-
     private jwtService: JwtService,
-
     private eventEmitter: EventEmitter2,
-
     private authTokenService: AuthTokenService,
-
     private authPasswordService: AuthPasswordService,
-
     private authRecoveryService: AuthRecoveryService,
-
     private authMobileService: AuthMobileService,
   ) {}
 
@@ -48,12 +35,10 @@ export class AuthService {
   // ======================================================
 
   async login(email: string, pass: string) {
-    // 🔥 CORRECCIÓN CRÍTICA: Normalizamos el email para evitar fallos por mayúsculas/minúsculas
     const normalizedEmail = email.trim().toLowerCase();
 
     const user = await this.prisma.user.findUnique({
-      where: { email: normalizedEmail }, // <-- Usamos el email normalizado aquí
-
+      where: { email: normalizedEmail },
       include: {
         role: {
           include: {
@@ -73,8 +58,7 @@ export class AuthService {
 
     if (!user) {
       this.eventEmitter.emit('auth.login.failed', {
-        email: normalizedEmail, // <-- Reportamos el email normalizado en el evento
-
+        email: normalizedEmail,
         reason: 'USER_NOT_FOUND',
       });
 
@@ -87,8 +71,7 @@ export class AuthService {
 
     if (user.status === 'INACTIVE') {
       this.eventEmitter.emit('auth.login.failed', {
-        email,
-
+        email: normalizedEmail,
         reason: 'ACCOUNT_DISABLED',
       });
 
@@ -99,14 +82,15 @@ export class AuthService {
     // ACCOUNT LOCKED
     // ======================================================
 
-    if (user.lockoutUntil && user.lockoutUntil > new Date()) {
+    const now = new Date();
+
+    if (user.lockoutUntil && user.lockoutUntil > now) {
       const remaining = Math.ceil(
-        (user.lockoutUntil.getTime() - new Date().getTime()) / 60000,
+        (user.lockoutUntil.getTime() - now.getTime()) / 60000,
       );
 
       this.eventEmitter.emit('auth.account.locked', {
         userId: user.id,
-
         email: user.email,
       });
 
@@ -114,6 +98,12 @@ export class AuthService {
         `Cuenta bloqueada. Intente en ${remaining} minutos.`,
       );
     }
+
+    // Si la ventana de bloqueo ya expiró, reiniciamos el conteo base de intentos a 0
+    const currentFailedAttempts =
+      user.lockoutUntil && user.lockoutUntil <= now
+        ? 0
+        : user.failedLoginAttempts;
 
     // ======================================================
     // PASSWORD VALIDATION
@@ -129,39 +119,31 @@ export class AuthService {
     // ======================================================
 
     if (!isMatch) {
-      const newAttempts = user.failedLoginAttempts + 1;
-
+      const newAttempts = currentFailedAttempts + 1;
       let lockoutDate: Date | null = null;
 
       if (newAttempts >= this.MAX_LOGIN_ATTEMPTS) {
-        lockoutDate = new Date();
-
-        lockoutDate.setMinutes(
-          lockoutDate.getMinutes() + this.LOCKOUT_DURATION_MINUTES,
+        lockoutDate = new Date(
+          Date.now() + this.LOCKOUT_DURATION_MINUTES * 60000,
         );
 
         this.eventEmitter.emit('auth.account.locked', {
           userId: user.id,
-
           email: user.email,
         });
       }
 
       await this.prisma.user.update({
         where: { id: user.id },
-
         data: {
           failedLoginAttempts: newAttempts,
-
           lockoutUntil: lockoutDate,
         },
       });
 
       this.eventEmitter.emit('auth.login.failed', {
         userId: user.id,
-
         email: user.email,
-
         reason: 'INVALID_PASSWORD',
       });
 
@@ -174,12 +156,9 @@ export class AuthService {
 
     await this.prisma.user.update({
       where: { id: user.id },
-
       data: {
         lastLoginAt: new Date(),
-
         failedLoginAttempts: 0,
-
         lockoutUntil: null,
       },
     });
@@ -192,10 +171,8 @@ export class AuthService {
       const setupToken = await this.jwtService.signAsync(
         {
           sub: user.id,
-
           type: 'setup_password',
         },
-
         {
           expiresIn: '15m',
         },
@@ -203,9 +180,7 @@ export class AuthService {
 
       return {
         status: 'SETUP_REQUIRED',
-
         message: 'Debe cambiar su contraseña',
-
         setupToken,
       };
     }
@@ -220,7 +195,7 @@ export class AuthService {
       ) || [];
 
     // ======================================================
-    // SINGLE SESSION STRATEGY
+    // SESSION TOKENS GENERATION
     // ======================================================
 
     this.logger.log(`🔐 Generando nueva sesión para ${user.email}`);
@@ -238,30 +213,20 @@ export class AuthService {
 
     this.eventEmitter.emit('auth.login.success', {
       userId: user.id,
-
       email: user.email,
-
       role: user.role?.name || 'GUEST',
     });
 
     return {
       status: 'SUCCESS',
-
       user: {
         id: user.id,
-
         fullName: user.fullName,
-
         email: user.email,
-
         role: user.role?.name || 'GUEST',
-
         permissions: userPermissions,
       },
-
-      // Tokens are returned separately so the controller can set httpOnly cookies.
-      // They are NOT included in the final JSON response to the client.
-      _tokens: {
+      tokens: {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
       },
@@ -280,7 +245,6 @@ export class AuthService {
       where: {
         id: decoded.sub,
       },
-
       include: {
         role: {
           include: {
@@ -306,7 +270,6 @@ export class AuthService {
     if (!isRefreshTokenValid) {
       this.eventEmitter.emit('auth.refresh.failed', {
         userId: user.id,
-
         email: user.email,
       });
 
@@ -331,16 +294,12 @@ export class AuthService {
 
     this.eventEmitter.emit('auth.refresh.success', {
       userId: user.id,
-
       email: user.email,
     });
 
     return {
       status: 'SUCCESS',
-
-      // Tokens are returned separately so the controller can set httpOnly cookies.
-      // They are NOT included in the final JSON response to the client.
-      _tokens: {
+      tokens: {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
       },
@@ -382,11 +341,11 @@ export class AuthService {
   // MOBILE REGISTER
   // ======================================================
 
-  async registerGuardian(dto: any) {
+  async registerGuardian(dto: RegisterGuardianDto) {
     return this.authMobileService.registerGuardian(dto);
   }
 
-  async registerStudent(dto: any) {
+  async registerStudent(dto: RegisterStudentDto) {
     return this.authMobileService.registerStudent(dto);
   }
 
@@ -397,7 +356,6 @@ export class AuthService {
   async logout(userId: string) {
     await this.prisma.user.update({
       where: { id: userId },
-
       data: {
         hashedRefreshToken: null,
       },
@@ -409,7 +367,6 @@ export class AuthService {
 
     return {
       status: 'SUCCESS',
-
       message: 'Sesión cerrada exitosamente',
     };
   }
@@ -436,7 +393,6 @@ export class AuthService {
     if (!currentTokens.includes(fcmToken)) {
       await this.prisma.user.update({
         where: { id: userId },
-
         data: {
           fcmTokens: [...currentTokens, fcmToken],
         },
@@ -444,15 +400,14 @@ export class AuthService {
 
       this.eventEmitter.emit('auth.fcm.registered', {
         userId,
-
         token: fcmToken.substring(0, 20) + '...',
       });
     }
 
     return {
       status: 'SUCCESS',
-
       message: 'Dispositivo registrado',
     };
   }
 }
+

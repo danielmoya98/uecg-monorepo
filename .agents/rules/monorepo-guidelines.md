@@ -15,9 +15,9 @@ Este documento establece las reglas arquitectónicas, estándares de desarrollo,
 
 ---
 
-## 🌿 2. Flujo de Ramas (GitFlow)
+## 🌿 2. Flujo de Ramas (GitFlow) y Política de Historial
 
-El repositorio sigue estrictamente el modelo **GitFlow**:
+El repositorio sigue estrictamente el modelo **GitFlow** con política de preservación histórica de ramas:
 
 1. **`main`**:
    - Rama de producción. Solo código estable, probado y listo para despliegue productivo.
@@ -28,12 +28,16 @@ El repositorio sigue estrictamente el modelo **GitFlow**:
 3. **`feature/<scope>-<nombre-descriptivo>`**:
    - Ramas de características (ej. `feature/api-auth-biometrics`, `feature/mobile-offline-cache`, `feature/web-admin-grade-sheet`).
    - Se desprenden de `develop` y se integran mediante Pull Request hacia `develop`.
+   - **Preservación Histórica Obligatoria**: **NO eliminar las ramas `feature/*` tras realizar el merge**. Deben mantenerse intactas como historial y trazabilidad del proyecto.
 4. **`release/vX.Y.Z`**:
    - Ramas de estabilización y preparación de versiones.
    - Se crean desde `develop`, se pulen y se fusionan tanto en `main` como en `develop` (con tag de versión).
 5. **`hotfix/<nombre-descriptivo>`**:
    - Parches urgentes para producción (ej. `hotfix/jwt-expiration-patch`).
    - Se crean directamente desde `main` y se fusionan en `main` y `develop`.
+
+> [!NOTE]
+> **Política de Retención de Ramas**: Para mantener una auditoría completa del ciclo de vida y desarrollo del código, no se debe activar la opción "Delete branch" tras completar merges o Pull Requests de ramas `feature/*`.
 
 ---
 

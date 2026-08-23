@@ -70,41 +70,57 @@ export class AuthMobileService {
     const newUser = await this.prisma.user.create({
       data: {
         email: institutionalEmail,
-
         password: hashedPassword,
-
         fullName: `${guardian.names} ${guardian.lastNamePaterno || ''}`.trim(),
-
         roleId: rolePadre.id,
-
         guardianId: guardian.id,
-
         recoveryEmail: dto.recoveryEmail,
-
         requiresPasswordChange: false,
+      },
+      include: {
+        role: {
+          include: {
+            permissions: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        },
       },
     });
 
+    const userPermissions =
+      newUser.role?.permissions.map(
+        (rp) => `${rp.permission.action}:${rp.permission.subject}`,
+      ) || [];
+
+    const tokens = await this.authTokenService.generateTokens(
+      newUser.id,
+      newUser.email,
+      newUser.role?.name || 'PADRE',
+      userPermissions,
+    );
+
     return {
       status: 'SUCCESS',
-
       user: {
         id: newUser.id,
-
         fullName: newUser.fullName,
-
         role: 'PADRE',
-
         email: newUser.email,
+        permissions: userPermissions,
+      },
+      tokens: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
       },
     };
   }
 
   async registerStudent(dto: RegisterStudentDto) {
     const startDate = new Date(dto.birthDate);
-
     const endDate = new Date(startDate);
-
     endDate.setDate(endDate.getDate() + 1);
 
     const ciHash = this.encryptionService.generateBlindIndex(dto.ci);
@@ -112,17 +128,15 @@ export class AuthMobileService {
     const student = await this.prisma.student.findFirst({
       where: {
         ciHash: ciHash as string,
-
         birthDate: {
           gte: startDate,
-
           lt: endDate,
         },
       },
     });
 
     if (!student) {
-      throw new UnauthorizedException('Datos inválidos');
+      throw new UnauthorizedException('Datos inválidos o estudiante no registrado');
     }
 
     const existingUser = await this.prisma.user.findFirst({
@@ -132,7 +146,7 @@ export class AuthMobileService {
     });
 
     if (existingUser) {
-      throw new ConflictException('Cuenta ya existente');
+      throw new ConflictException('Ya existe una cuenta para este estudiante');
     }
 
     const roleStudent = await this.prisma.role.findUnique({
@@ -158,20 +172,13 @@ export class AuthMobileService {
     const newUser = await this.prisma.user.create({
       data: {
         email: institutionalEmail,
-
         password: hashedPassword,
-
         fullName: `${student.names} ${student.lastNamePaterno || ''}`.trim(),
-
         roleId: roleStudent.id,
-
         studentId: student.id,
-
         recoveryEmail: dto.recoveryEmail,
-
         requiresPasswordChange: false,
       },
-
       include: {
         role: {
           include: {
@@ -193,28 +200,22 @@ export class AuthMobileService {
     const tokens = await this.authTokenService.generateTokens(
       newUser.id,
       newUser.email,
-      newUser.role?.name || 'GUEST',
+      newUser.role?.name || 'ESTUDIANTE',
       userPermissions,
     );
 
     return {
       status: 'SUCCESS',
-
-      // Tokens are returned separately so the controller can set httpOnly cookies.
-      // They are NOT included in the final JSON response to the client.
-      _tokens: {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-      },
-
       user: {
         id: newUser.id,
-
         fullName: newUser.fullName,
-
-        role: newUser.role?.name,
-
+        role: newUser.role?.name || 'ESTUDIANTE',
         email: newUser.email,
+        permissions: userPermissions,
+      },
+      tokens: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
       },
     };
   }

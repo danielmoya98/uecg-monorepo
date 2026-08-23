@@ -27,7 +27,10 @@ class AuthRepository {
       final data = response.data['data'];
 
       // Guardamos el JWT
-      await SecureStorageService.saveToken(data['access_token']);
+      final token = data['accessToken'] ?? data['access_token'];
+      if (token != null) {
+        await SecureStorageService.saveToken(token);
+      }
 
       // 🔥 LA MAGIA: Sincronizar Token FCM
       String? fcmToken = await FirebaseMessaging.instance.getToken();
@@ -52,7 +55,10 @@ class AuthRepository {
       final data = response.data['data'];
 
       // Guardamos el JWT
-      await SecureStorageService.saveToken(data['access_token']);
+      final token = data['accessToken'] ?? data['access_token'];
+      if (token != null) {
+        await SecureStorageService.saveToken(token);
+      }
 
       // 🔥 Sincronizar Token FCM
       String? fcmToken = await FirebaseMessaging.instance.getToken();
@@ -76,7 +82,11 @@ class AuthRepository {
       final data = response.data['data'];
 
       // Guardamos el JWT
-      await SecureStorageService.saveToken(data['access_token']);
+      final token = data['accessToken'] ?? data['access_token'];
+      if (token != null) {
+        await SecureStorageService.saveToken(token);
+      }
+
 
       // 🔥 Sincronizar Token FCM
       String? fcmToken = await FirebaseMessaging.instance.getToken();
