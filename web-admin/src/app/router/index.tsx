@@ -3,17 +3,20 @@ import { LoginPage, AuthService } from '@/features/auth'
 
 export const Route = createFileRoute('/')({
   beforeLoad: async () => {
+    let status: { isInitialized: boolean; hasUsers: boolean; hasInstitution: boolean } | null = null
     try {
-      const status = await AuthService.getSystemStatus()
-      if (!status.isInitialized) {
-        throw redirect({
-          to: '/setup-wizard' as any,
-        })
-      }
-    } catch (e: any) {
-      if (e?.to || e?.isRedirect) throw e
+      status = await AuthService.getSystemStatus()
+    } catch {
+      // API no disponible o arrancando en frío
+    }
+
+    if (status && !status.isInitialized) {
+      throw redirect({
+        to: '/setup-wizard' as any,
+      })
     }
   },
   component: LoginPage,
 })
+
 
