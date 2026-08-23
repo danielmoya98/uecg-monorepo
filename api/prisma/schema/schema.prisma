@@ -744,14 +744,20 @@ model Trimester {
   id             String        @id @default(uuid())
   academicYearId String        @map("academic_year_id")
   name           TrimesterName
+  order          Int           @default(1)
   startDate      DateTime      @map("start_date") @db.Date
   endDate        DateTime      @map("end_date") @db.Date
   isOpen         Boolean       @default(false) @map("is_open")
+
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
 
   academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
   grades       Grade[]
 
   @@unique([academicYearId, name])
+  @@unique([academicYearId, order])
+  @@index([academicYearId, isOpen])
   @@map("trimesters")
 }
 

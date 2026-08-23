@@ -2613,9 +2613,12 @@ export const TrimesterScalarFieldEnum = {
   id: 'id',
   academicYearId: 'academicYearId',
   name: 'name',
+  order: 'order',
   startDate: 'startDate',
   endDate: 'endDate',
-  isOpen: 'isOpen'
+  isOpen: 'isOpen',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type TrimesterScalarFieldEnum = (typeof TrimesterScalarFieldEnum)[keyof typeof TrimesterScalarFieldEnum]
