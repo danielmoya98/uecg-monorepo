@@ -3,6 +3,7 @@ import YearSelector from "./topnav/year-selector";
 import NotificationBell from "./topnav/notification-bell";
 import UserProfileDropdown from "./topnav/user-profile-dropdown";
 import ThemeSwitcher from "./topnav/theme-switcher";
+import DirectorTourButton from "./topnav/director-tour-button";
 import { useRouteContext } from "@tanstack/react-router";
 
 export function TopNav() {
@@ -16,13 +17,11 @@ export function TopNav() {
         {!isAdmin && <GlobalSearch />}
       </div>
 
-      <div className="flex items-center gap-4 md:gap-6">
-        {!isAdmin && (
-          <>
-            <YearSelector />
-            <div className="h-6 w-px bg-uecg-line hidden md:block" />
-          </>
-        )}
+      <div className="flex items-center gap-3 md:gap-5">
+        <DirectorTourButton />
+
+        <YearSelector />
+        <div className="h-6 w-px bg-uecg-line hidden md:block" />
 
         <div className="flex items-center gap-2">
           <NotificationBell />
