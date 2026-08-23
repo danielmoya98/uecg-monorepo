@@ -13,6 +13,7 @@ describe('SubjectsController', () => {
     findAll: jest.fn(),
     findOne: jest.fn(),
     update: jest.fn(),
+    toggleStatus: jest.fn(),
     remove: jest.fn(),
   };
 
@@ -112,9 +113,28 @@ describe('SubjectsController', () => {
     });
   });
 
+  describe('toggleStatus (Alternar Estado)', () => {
+    it('debe delegar en SubjectsService.toggleStatus y retornar el registro actualizado', async () => {
+      const mockUpdated = {
+        id: 'subj-x',
+        name: 'Biología',
+        level: 'SECUNDARIA',
+        isActive: false,
+      };
+      mockSubjectsService.toggleStatus.mockResolvedValue(mockUpdated);
+
+      const result = await controller.toggleStatus('subj-x', false);
+
+      expect(result).toEqual(mockUpdated);
+      expect(service.toggleStatus).toHaveBeenCalledWith('subj-x', false);
+    });
+  });
+
   describe('remove (Eliminar Materia)', () => {
     it('debe delegar en SubjectsService.remove y retornar el mensaje de éxito', async () => {
-      const mockResponse = { message: 'Materia eliminada correctamente' };
+      const mockResponse = {
+        message: 'Materia eliminada correctamente del catálogo.',
+      };
       mockSubjectsService.remove.mockResolvedValue(mockResponse);
 
       const result = await controller.remove('subj-x');

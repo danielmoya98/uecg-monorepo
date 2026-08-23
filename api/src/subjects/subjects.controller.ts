@@ -107,6 +107,26 @@ export class SubjectsController {
     return this.subjectsService.update(id, updateSubjectDto);
   }
 
+  @Patch(':id/status')
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_SUBJECT) // 🔥 ABAC
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Activa o desactiva una materia en el catálogo institucional',
+  })
+  @ApiOkResponse({
+    description: 'Estado de la materia actualizado exitosamente.',
+    type: SubjectEntity,
+  })
+  @ApiNotFoundResponse({
+    description: 'No se encontró la materia a modificar.',
+  })
+  toggleStatus(
+    @Param('id') id: string,
+    @Body('isActive') isActive?: boolean,
+  ) {
+    return this.subjectsService.toggleStatus(id, isActive);
+  }
+
   @Delete(':id')
   @RequirePermissions(SystemPermissions.MANAGE_ALL_SUBJECT) // 🔥 ABAC
   @HttpCode(HttpStatus.OK)

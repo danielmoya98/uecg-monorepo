@@ -217,8 +217,10 @@ export type AcademicYearScalarFieldEnum = (typeof AcademicYearScalarFieldEnum)[k
 export const SubjectScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  code: 'code',
   level: 'level',
   area: 'area',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
