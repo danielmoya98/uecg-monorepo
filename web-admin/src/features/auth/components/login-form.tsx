@@ -6,6 +6,8 @@ import {
   EyeOff,
   Loader2,
   LockKeyhole,
+  Mail,
+  QrCode,
   ShieldCheck,
 } from 'lucide-react'
 
@@ -15,10 +17,12 @@ import {
   type LoginFormValues,
 } from '../schemas/auth.schema'
 import { useLogin } from '../hooks/use-login'
+import { QrLoginPanel } from './qr-login-panel'
 
 export function LoginForm() {
   const loginMutation = useLogin()
   const [showPassword, setShowPassword] = useState(false)
+  const [activeTab, setActiveTab] = useState<'CREDENTIALS' | 'QR'>('CREDENTIALS')
 
   const {
     register,
@@ -35,7 +39,7 @@ export function LoginForm() {
   const onSubmit = (data: LoginFormValues) => {
     loginMutation.mutate({
       email: data.email.trim().toLowerCase(),
-      password: data.password
+      password: data.password,
     })
   }
 
@@ -60,11 +64,7 @@ export function LoginForm() {
   )
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex w-full flex-col gap-6"
-      noValidate
-    >
+    <div className="flex w-full flex-col gap-6">
       <header className="mb-2 border-b border-uecg-line pb-5">
         <div className="flex items-center gap-2 mb-2 text-uecg-blue">
           <ShieldCheck
@@ -78,61 +78,89 @@ export function LoginForm() {
         </div>
 
         <h2 className="text-3xl font-black tracking-tighter uppercase text-uecg-dark leading-none">
-          Credenciales
+          Identificación
         </h2>
+
+        {/* SELECTOR DE PESTAÑAS SUIZO */}
+        <div className="grid grid-cols-2 gap-2 mt-4 bg-gray-100 p-1 border border-uecg-line">
+          <button
+            type="button"
+            onClick={() => setActiveTab('CREDENTIALS')}
+            className={`py-2 px-3 text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              activeTab === 'CREDENTIALS'
+                ? 'bg-white text-uecg-dark shadow-sm border border-uecg-line'
+                : 'text-uecg-gray hover:text-uecg-dark'
+            }`}
+          >
+            <Mail className="w-3.5 h-3.5" /> Credenciales
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('QR')}
+            className={`py-2 px-3 text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              activeTab === 'QR'
+                ? 'bg-white text-uecg-dark shadow-sm border border-uecg-line'
+                : 'text-uecg-gray hover:text-uecg-dark'
+            }`}
+          >
+            <QrCode className="w-3.5 h-3.5" /> Acceso QR
+          </button>
+        </div>
       </header>
 
-      <div className="flex flex-col gap-5">
-        <SwissInput
-          id="email"
-          type="email"
-          label="Correo Institucional"
-          placeholder="ejemplo@uecg.edu.bo"
-          className="font-bold text-xs bg-gray-50 focus:bg-white transition-colors"
-          error={errors.email?.message}
-          disabled={
-            loginMutation.isPending
-          }
-          autoComplete="username"
-          inputMode="email"
-          required
-          {...register('email')}
-        />
+      {activeTab === 'CREDENTIALS' ? (
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex w-full flex-col gap-6"
+          noValidate
+        >
+          <div className="flex flex-col gap-5">
+            <SwissInput
+              id="email"
+              type="email"
+              label="Correo Institucional"
+              placeholder="ejemplo@uecg.edu.bo"
+              className="font-bold text-xs bg-gray-50 focus:bg-white transition-colors"
+              error={errors.email?.message}
+              disabled={loginMutation.isPending}
+              autoComplete="username"
+              inputMode="email"
+              required
+              {...register('email')}
+            />
 
-        <SwissInput
-          id="password"
-          type={showPassword ? 'text' : 'password'}
-          label="Contraseña"
-          placeholder="••••••••"
-          className="font-mono tracking-widest text-lg bg-gray-50 focus:bg-white transition-colors"
-          error={errors.password?.message}
-          disabled={
-            loginMutation.isPending
-          }
-          autoComplete="current-password"
-          rightElement={passwordRightElement}
-          required
-          {...register('password')}
-        />
-      </div>
+            <SwissInput
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              label="Contraseña"
+              placeholder="••••••••"
+              className="font-mono tracking-widest text-lg bg-gray-50 focus:bg-white transition-colors"
+              error={errors.password?.message}
+              disabled={loginMutation.isPending}
+              autoComplete="current-password"
+              rightElement={passwordRightElement}
+              required
+              {...register('password')}
+            />
+          </div>
 
-      <button
-        type="submit"
-        disabled={
-          loginMutation.isPending
-        }
-        className="w-full mt-4 py-4 px-6 bg-uecg-dark text-white font-black text-[11px] uppercase tracking-widest hover:bg-uecg-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 cursor-pointer"
-      >
-        {loginMutation.isPending ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : (
-          <LockKeyhole className="w-4 h-4" />
-        )}
+          <button
+            type="submit"
+            disabled={loginMutation.isPending}
+            className="w-full mt-4 py-4 px-6 bg-uecg-dark text-white font-black text-[11px] uppercase tracking-widest hover:bg-uecg-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 cursor-pointer"
+          >
+            {loginMutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <LockKeyhole className="w-4 h-4" />
+            )}
 
-        {loginMutation.isPending
-          ? 'Validando...'
-          : 'Autorizar Ingreso'}
-      </button>
-    </form>
+            {loginMutation.isPending ? 'Validando...' : 'Autorizar Ingreso'}
+          </button>
+        </form>
+      ) : (
+        <QrLoginPanel />
+      )}
+    </div>
   )
 }

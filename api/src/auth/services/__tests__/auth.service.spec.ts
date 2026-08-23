@@ -9,12 +9,20 @@ import { AuthPasswordService } from '../auth-password.service';
 import { AuthRecoveryService } from '../auth-recovery.service';
 import { AuthMobileService } from '../auth-mobile.service';
 
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+
 describe('AuthService', () => {
   let service: AuthService;
   let prisma: PrismaService;
   let authTokenService: AuthTokenService;
   let jwtService: JwtService;
   let eventEmitter: EventEmitter2;
+
+  const mockCacheManager = {
+    get: jest.fn(),
+    set: jest.fn(),
+    del: jest.fn(),
+  };
 
   const mockPrismaService = {
     user: {
@@ -23,6 +31,9 @@ describe('AuthService', () => {
     },
     userSession: {
       deleteMany: jest.fn(),
+    },
+    auditLog: {
+      findMany: jest.fn(),
     },
   };
 
@@ -71,6 +82,7 @@ describe('AuthService', () => {
         { provide: AuthPasswordService, useValue: mockAuthPasswordService },
         { provide: AuthRecoveryService, useValue: mockAuthRecoveryService },
         { provide: AuthMobileService, useValue: mockAuthMobileService },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();
 

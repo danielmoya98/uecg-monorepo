@@ -1,11 +1,15 @@
 import {
   Injectable,
+  Inject,
   UnauthorizedException,
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthTokenService, SessionMetadata } from './services/auth-token.service';
 import { AuthPasswordService } from './services/auth-password.service';
@@ -28,6 +32,7 @@ export class AuthService {
     private authPasswordService: AuthPasswordService,
     private authRecoveryService: AuthRecoveryService,
     private authMobileService: AuthMobileService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   // ======================================================
@@ -440,6 +445,175 @@ export class AuthService {
     return {
       status: 'SUCCESS',
       message: 'Dispositivo registrado',
+    };
+  }
+
+  // ======================================================
+  // QR CODE CHALLENGE-RESPONSE LOGIN (WhatsApp Web Style)
+  // ======================================================
+
+  async createQrChallenge() {
+    const challengeId = crypto.randomUUID();
+    const key = `qr:challenge:${challengeId}`;
+
+    // Guarda en caché Redis con estado PENDING por 120 segundos
+    await this.cacheManager.set(
+      key,
+      JSON.stringify({ status: 'PENDING', createdAt: new Date().toISOString() }),
+      120000,
+    );
+
+    return {
+      status: 'SUCCESS',
+      challengeId,
+      qrPayload: `uecg-web-auth:${challengeId}`,
+      expiresIn: 120,
+    };
+  }
+
+  async authorizeQrChallenge(
+    userId: string,
+    challengeId: string,
+    sessionMetadata?: SessionMetadata,
+  ) {
+    const key = `qr:challenge:${challengeId}`;
+    const rawData = await this.cacheManager.get<string>(key);
+
+    if (!rawData) {
+      throw new UnauthorizedException('El código QR ha expirado o no es válido');
+    }
+
+    let parsed: any;
+    try {
+      parsed = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
+    } catch {
+      parsed = rawData;
+    }
+
+    if (parsed.status !== 'PENDING') {
+      throw new UnauthorizedException('El código QR ya ha sido procesado');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        role: {
+          include: {
+            permissions: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user || user.status !== 'ACTIVE') {
+      throw new UnauthorizedException('Usuario no válido o inactivo');
+    }
+
+    const userPermissions = user.role.permissions.map(
+      (rp) => `${rp.permission.action}:${rp.permission.subject}`,
+    );
+
+    // Generar tokens para la sesión Web autorizada
+    const tokens = await this.authTokenService.generateTokens(
+      user.id,
+      user.email,
+      user.role.name,
+      userPermissions,
+      sessionMetadata || {
+        deviceType: 'WEB',
+        deviceName: 'Navegador Web (Login QR)',
+      },
+    );
+
+    // Actualizar estado en Redis a AUTHORIZED por 60 segundos
+    await this.cacheManager.set(
+      key,
+      JSON.stringify({
+        status: 'AUTHORIZED',
+        user: {
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role.name,
+          permissions: userPermissions,
+        },
+        tokens,
+      }),
+      60000,
+    );
+
+    this.eventEmitter.emit('auth.qr.authorized', {
+      userId: user.id,
+      challengeId,
+      deviceType: sessionMetadata?.deviceType || 'WEB',
+    });
+
+    return {
+      status: 'SUCCESS',
+      message: 'Inicio de sesión en Web autorizado con éxito',
+    };
+  }
+
+  async getQrChallengeStatus(challengeId: string) {
+    const key = `qr:challenge:${challengeId}`;
+    const rawData = await this.cacheManager.get<string>(key);
+
+    if (!rawData) {
+      return { status: 'EXPIRED' };
+    }
+
+    let parsed: any;
+    try {
+      parsed = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
+    } catch {
+      parsed = rawData;
+    }
+
+    if (parsed.status === 'PENDING') {
+      return { status: 'PENDING' };
+    }
+
+    if (parsed.status === 'AUTHORIZED') {
+      // Inmediatamente eliminamos el challenge para evitar reutilización
+      await this.cacheManager.del(key);
+
+      return {
+        status: 'AUTHORIZED',
+        user: parsed.user,
+        tokens: parsed.tokens,
+      };
+    }
+
+    return { status: 'EXPIRED' };
+  }
+
+  // ======================================================
+  // PERSONAL SECURITY & ACTIVITY LOGS
+  // ======================================================
+
+  async getPersonalSecurityLogs(userId: string) {
+    const logs = await this.prisma.auditLog.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: 8,
+      select: {
+        id: true,
+        method: true,
+        route: true,
+        statusCode: true,
+        ipAddress: true,
+        userAgent: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      status: 'SUCCESS',
+      logs,
     };
   }
 }

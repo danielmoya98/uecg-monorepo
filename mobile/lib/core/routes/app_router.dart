@@ -3,9 +3,9 @@ import '../../features/onboarding/presentation/screens/splash_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/onboarding/presentation/screens/welcome_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
-// 1. Importamos las nuevas pantallas
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
+import '../../features/auth/presentation/screens/web_qr_scanner_screen.dart';
 import '../../features/dashboard/presentation/screens/student_dashboard.dart';
 import '../../features/dashboard/presentation/screens/parent_dashboard.dart';
 import '../../features/dashboard/presentation/screens/teacher_dashboard.dart';
@@ -36,6 +36,7 @@ class AppRouter {
       GoRoute(path: '/dashboard/teacher', builder: (context, state) => const TeacherDashboard()),
       GoRoute(path: '/attendance/qr', builder: (context, state) => const QRAttendanceScreen()),
       GoRoute(path: '/attendance/manual', builder: (context, state) => const ManualAttendanceScreen()),
+      GoRoute(path: '/scanner/web-login', builder: (context, state) => const WebQrScannerScreen()),
       GoRoute(path: '/course-detail', builder: (context, state) => const CourseDetailScreen()),
     ],
   );
