@@ -26,7 +26,40 @@ export class CreatePhysicalSpaceDto {
   @IsNotEmpty()
   type: SpaceType;
 
-  // 🗑️ ELIMINAMOS EL CAMPO CAPACITY DE AQUÍ
+  @ApiProperty({
+    description: 'Capacidad máxima de alumnos/aforo del espacio',
+    example: 35,
+    required: false,
+  })
+  @IsOptional()
+  capacity?: number;
+
+  @ApiProperty({
+    description: 'Pabellón o bloque donde se ubica el espacio',
+    example: 'Bloque Primaria',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  building?: string;
+
+  @ApiProperty({
+    description: 'Piso o nivel del espacio',
+    example: 'Piso 1',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  floor?: string;
+
+  @ApiProperty({
+    description: 'Descripción o equipamiento disponible',
+    example: 'Cuenta con proyector y pizarra interactiva',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  description?: string;
 
   @ApiProperty({ description: 'Si el espacio está habilitado para su uso' })
   @IsBoolean()

@@ -10,7 +10,7 @@ import { CustomSelect } from './custom-select'
 import { ClassroomsService } from '../api/classrooms.service'
 import { UsersService } from '@/features/users/api/users.service'
 import { InstitutionsService } from '@/features/institutions/api/institutions.service'
-import { PhysicalSpacesService } from '@/features/physical-spaces/api/physical-spaces.service'
+import { PhysicalSpacesService } from '@/features/physical-spaces'
 import type { Classroom, ClassroomPayload } from '../types/classrooms.types'
 
 interface ClassroomDrawerProps {
