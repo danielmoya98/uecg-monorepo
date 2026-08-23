@@ -2,9 +2,9 @@ export { default as AcademicYearDrawer } from './components/academic-year-drawer
 export { default as TrimestersDrawer } from './components/trimesters-drawer'
 export * from './components/academic-years-ui'
 export { default as AcademicYearsPage } from './components/academic-years-page'
+export { SetupWizardWidget } from './components/setup-wizard-widget'
 
-
-export { useAcademicYearsData } from './hooks/use-academic-years-data'
+export { useAcademicYearsData, useAcademicYearReadiness } from './hooks/use-academic-years-data'
 export { useAcademicYearsDrawers } from './hooks/use-academic-years-drawers'
 export { useTrimestersData } from './hooks/use-trimesters-data'
 

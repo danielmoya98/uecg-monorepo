@@ -46,6 +46,12 @@ export class AcademicYearsController {
     return this.academicYearsService.findCurrentActive();
   }
 
+  @Get('readiness')
+  @ApiOperation({ summary: 'Obtiene el diagnóstico de preparación y progreso de la gestión escolar' })
+  getReadiness(@Query('academicYearId') academicYearId?: string) {
+    return this.academicYearsService.getReadiness(academicYearId);
+  }
+
   @Get()
   @ApiOperation({ summary: 'Obtiene el listado de gestiones académicas' })
   findAll(@Query() query: PaginationDto) {

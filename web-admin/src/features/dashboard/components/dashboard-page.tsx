@@ -3,6 +3,7 @@ import { useRootStats, useGlobalStats, useTeacherStats } from '../hooks/use-dash
 import RootMetricsWidget from './root-metrics-widget'
 import GlobalMetricsWidget from './global-metrics-widget'
 import TeacherMetricsWidget from './teacher-metrics-widget'
+import { SetupWizardWidget } from '@/features/academic-years'
 
 export default function DashboardPage() {
   const { can, canAny, user } = useRouteContext({ from: '/_authenticated' })
@@ -14,6 +15,7 @@ export default function DashboardPage() {
     { action: 'read:all', subject: 'Student' },
     { action: 'manage:all', subject: 'Institution' },
     { action: 'read:all', subject: 'Grade' },
+    { action: 'manage:all', subject: 'AcademicYear' },
   ])
 
   const showTeacherLayer = canAny([
@@ -33,8 +35,8 @@ export default function DashboardPage() {
   })
 
   return (
-    <div className="flex flex-col gap-10 max-w-7xl mx-auto pb-10 transition-all duration-500">
-      <header className="mb-2">
+    <div className="flex flex-col gap-8 max-w-7xl mx-auto pb-10 transition-all duration-500">
+      <header className="mb-0">
         <h1 className="text-3xl font-black uppercase tracking-tighter text-uecg-text">
           Hola, <span className="text-uecg-blue">{user?.fullName?.split(' ')[0] || 'Usuario'}</span>
         </h1>
@@ -48,7 +50,12 @@ export default function DashboardPage() {
         </p>
       </header>
 
-      <div className="flex flex-col gap-12">
+      {/* ASISTENTE DE PREPARACIÓN DE GESTIÓN (DIRECTORES Y ADMINS) */}
+      {(showAdminLayer || showRootLayer) && (
+        <SetupWizardWidget />
+      )}
+
+      <div className="flex flex-col gap-10">
         {showRootLayer && (
           <RootMetricsWidget stats={rootStats} isLoading={isLoadingRoot} />
         )}
