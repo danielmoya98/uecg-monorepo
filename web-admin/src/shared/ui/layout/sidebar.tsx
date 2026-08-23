@@ -157,11 +157,14 @@ export function Sidebar() {
                           pathname === link.href ||
                           (link.href !== "/dashboard" && pathname.startsWith(link.href));
                         const Icon = link.icon;
+                        const tourId = `tour-nav-${link.href.replace('/', '')}`;
 
                         return (
                           <Link
                             key={link.name}
                             to={link.href as any}
+                            id={tourId}
+                            data-tour={tourId}
                             className={`flex items-center gap-3 py-2.5 px-3.5 transition-all duration-200 ease-out overflow-hidden relative group cursor-pointer ${
                               isActive ? "bg-uecg-blue shadow-md text-white" : "hover:bg-white/5 text-white/70 hover:text-white"
                             }`}
@@ -197,11 +200,14 @@ export function Sidebar() {
                       pathname === link.href ||
                       (link.href !== "/dashboard" && pathname.startsWith(link.href));
                     const Icon = link.icon;
+                    const tourId = `tour-nav-${link.href.replace('/', '')}`;
 
                     return (
                       <Link
                         key={link.name}
                         to={link.href as any}
+                        id={tourId}
+                        data-tour={tourId}
                         title={!isExpanded ? link.name : ""}
                         className={`flex items-center gap-3.5 py-3 transition-all duration-200 ease-out overflow-hidden relative group cursor-pointer ${
                           isExpanded ? "px-4" : "justify-center px-0"
