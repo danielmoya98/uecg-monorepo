@@ -67,9 +67,13 @@ export class ClassroomsController {
   @Get(':id')
   // 🔓 Lectura abierta (Solo requiere JWT)
   @ApiOperation({ summary: 'Obtiene un curso por su ID' })
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.classroomsService.findOne(id);
+  findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: any,
+  ) {
+    return this.classroomsService.findOne(id, req.user);
   }
+
 
   @Patch(':id')
   @RequirePermissions(SystemPermissions.MANAGE_ALL_CLASSROOM) // 🔥 ABAC: Solo Dirección
