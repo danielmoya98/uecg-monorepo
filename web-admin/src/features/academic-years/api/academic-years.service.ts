@@ -27,9 +27,19 @@ export const AcademicYearsService = {
   /**
    * Obtiene los datos detallados de la gestión académica que se encuentra activa actualmente.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCurrent: async (): Promise<any> => {
-    const response = await api.get('/academic-years/current')
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   getCurrent: async (): Promise<any> => {
+     const response = await api.get('/academic-years/current')
+     return response.data
+   },
+
+  /**
+   * Obtiene el diagnóstico y progreso de preparación de la gestión escolar (Setup Wizard).
+   */
+  getReadiness: async (academicYearId?: string): Promise<import('../types/academic-years.types').AcademicYearReadinessResponse> => {
+    const response = await api.get('/academic-years/readiness', {
+      params: academicYearId ? { academicYearId } : {},
+    })
     return response.data
   },
 

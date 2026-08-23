@@ -101,3 +101,11 @@ export const useAcademicYearsData = () => {
     isDeleting: deleteMutation.isPending,
   }
 }
+
+export const useAcademicYearReadiness = (academicYearId?: string) => {
+  return useQuery({
+    queryKey: ['academicYearReadiness', academicYearId],
+    queryFn: () => AcademicYearsService.getReadiness(academicYearId),
+    staleTime: 30 * 1000, // 30 segundos de cache fresco
+  })
+}
