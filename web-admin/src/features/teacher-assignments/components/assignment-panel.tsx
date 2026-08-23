@@ -300,6 +300,8 @@ export const AssignmentPanel = ({
             <div className="md:col-span-3">
               <button
                 type="submit"
+                id="btn-link-teacher-assignment"
+                data-tour="btn-link-teacher-assignment"
                 disabled={isAssignPending}
                 className="w-full py-3 font-black uppercase tracking-widest text-[10px] bg-uecg-dark text-white hover:bg-uecg-blue transition-colors flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm outline-none cursor-pointer"
               >

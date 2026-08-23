@@ -33,6 +33,8 @@ export const AcademicYearsHeader = ({ onOpenCreate }: AcademicYearsHeaderProps) 
     </div>
     <button
       type="button"
+      id="btn-new-academic-year"
+      data-tour="btn-new-academic-year"
       onClick={onOpenCreate}
       className="px-5 py-3 font-bold uppercase tracking-widest text-[11px] bg-uecg-blue text-white hover:bg-uecg-dark transition-colors flex items-center gap-2 cursor-pointer"
     >
@@ -283,6 +285,8 @@ export const AcademicYearsTable = ({
                 <button
                   role="menuitem"
                   type="button"
+                  id="btn-open-trimesters"
+                  data-tour="btn-open-trimesters"
                   onClick={() => { setDropdownState(null); onOpenTrimesters(y); }}
                   className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-uecg-blue hover:text-white transition-colors border-t border-uecg-line cursor-pointer border-none bg-transparent w-full text-left outline-none"
                 >

@@ -1,6 +1,7 @@
 import { createFileRoute, redirect, Outlet } from '@tanstack/react-router'
 import { PrivateDashboardLayout } from '@/app/layouts/private-dashboard-layout'
 import { SocketProvider } from '@/features/identity'
+import { TourOrchestrator } from '@/features/academic-years'
 
 // Eliminamos los prefijos visuales y centralizamos la aduana de red
 export const Route = createFileRoute('/_authenticated')({
@@ -22,6 +23,7 @@ export const Route = createFileRoute('/_authenticated')({
 function AuthenticatedRouteComponent() {
   return (
     <SocketProvider>
+      <TourOrchestrator />
       <PrivateDashboardLayout>
         {/* 🔥 ESTO INDICA A TANSTACK QUE AQUÍ VAN LAS SUBPÁGINAS */}
         <Outlet />
