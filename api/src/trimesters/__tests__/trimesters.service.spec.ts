@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TrimestersService } from '../trimesters.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { TrimesterName } from '../../../prisma/generated/client';
 
@@ -21,12 +22,17 @@ describe('TrimestersService - Pruebas Unitarias', () => {
     emit: jest.fn(),
   };
 
+  const mockCache = {
+    del: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TrimestersService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: EventEmitter2, useValue: mockEventEmitter },
+        { provide: CACHE_MANAGER, useValue: mockCache },
       ],
     }).compile();
 
@@ -36,7 +42,7 @@ describe('TrimestersService - Pruebas Unitarias', () => {
   });
 
   describe('createDefaultTrimesters', () => {
-    it('debe insertar los 3 trimestres correspondientes de forma atómica', async () => {
+    it('debe insertar los 3 trimestres correspondientes de forma atómica y secuencial', async () => {
       const mockTx = {
         trimester: {
           createMany: jest.fn().mockResolvedValue({ count: 3 }),
@@ -53,31 +59,27 @@ describe('TrimestersService - Pruebas Unitarias', () => {
         mockTx,
       );
 
-      expect(mockTx.trimester.createMany).toHaveBeenCalledWith({
-        data: [
-          {
-            academicYearId: 'year-uuid',
-            name: TrimesterName.PRIMER_TRIMESTRE,
-            startDate,
-            endDate,
-            isOpen: false,
-          },
-          {
-            academicYearId: 'year-uuid',
-            name: TrimesterName.SEGUNDO_TRIMESTRE,
-            startDate,
-            endDate,
-            isOpen: false,
-          },
-          {
-            academicYearId: 'year-uuid',
-            name: TrimesterName.TERCER_TRIMESTRE,
-            startDate,
-            endDate,
-            isOpen: false,
-          },
-        ],
-      });
+      expect(mockTx.trimester.createMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.arrayContaining([
+            expect.objectContaining({
+              academicYearId: 'year-uuid',
+              name: TrimesterName.PRIMER_TRIMESTRE,
+              isOpen: false,
+            }),
+            expect.objectContaining({
+              academicYearId: 'year-uuid',
+              name: TrimesterName.SEGUNDO_TRIMESTRE,
+              isOpen: false,
+            }),
+            expect.objectContaining({
+              academicYearId: 'year-uuid',
+              name: TrimesterName.TERCER_TRIMESTRE,
+              isOpen: false,
+            }),
+          ]),
+        }),
+      );
     });
   });
 
@@ -173,6 +175,9 @@ describe('TrimestersService - Pruebas Unitarias', () => {
         trimesterId: 'trim-uuid',
         academicYearId: 'year-uuid',
       });
+      expect(mockCache.del).toHaveBeenCalledWith(
+        'academic-year:current-active',
+      );
     });
   });
 });

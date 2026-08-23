@@ -310,19 +310,41 @@ export class AcademicYearsService {
   // ======================================================
 
   async update(id: string, data: UpdateAcademicYearDto) {
-    if (data.startDate && data.endDate && data.startDate >= data.endDate) {
-      throw new BadRequestException(
-        'La fecha de inicio debe ser menor a la fecha de fin.',
-      );
-    }
-
     const updatedYear = await this.prisma.$transaction(async (tx) => {
       const currentYear = await tx.academicYear.findUnique({
         where: { id },
+        include: {
+          trimesters: true,
+        },
       });
 
       if (!currentYear) {
         throw new NotFoundException('Gestión académica no encontrada');
+      }
+
+      // Validación robusta de fechas (incluso si solo se pasa startDate o endDate)
+      const effectiveStart = data.startDate
+        ? new Date(data.startDate)
+        : currentYear.startDate;
+      const effectiveEnd = data.endDate
+        ? new Date(data.endDate)
+        : currentYear.endDate;
+
+      if (effectiveStart >= effectiveEnd) {
+        throw new BadRequestException(
+          'La fecha de inicio debe ser menor a la fecha de fin.',
+        );
+      }
+
+      // Validación de fronteras con los trimestres existentes
+      if (currentYear.trimesters && currentYear.trimesters.length > 0) {
+        for (const trim of currentYear.trimesters) {
+          if (trim.startDate < effectiveStart || trim.endDate > effectiveEnd) {
+            throw new BadRequestException(
+              `No se puede actualizar el rango: el trimestre ${trim.name} quedaría fuera de los límites de la gestión.`,
+            );
+          }
+        }
       }
 
       if (data.year) {
@@ -393,6 +415,18 @@ export class AcademicYearsService {
       if (classroomsCount > 0) {
         throw new ConflictException(
           'No se puede eliminar la gestión porque tiene cursos y paralelos asignados. Cámbiela a estado CLOSED.',
+        );
+      }
+
+      const enrollmentsCount = await tx.enrollment.count({
+        where: {
+          academicYearId: id,
+        },
+      });
+
+      if (enrollmentsCount > 0) {
+        throw new ConflictException(
+          'No se puede eliminar la gestión porque tiene inscripciones registradas. Cámbiela a estado CLOSED.',
         );
       }
 

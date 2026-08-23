@@ -7,5 +7,6 @@ import { TrimestersModule } from '../trimesters/trimesters.module';
   imports: [TrimestersModule],
   controllers: [AcademicYearsController],
   providers: [AcademicYearsService],
+  exports: [AcademicYearsService],
 })
 export class AcademicYearsModule {}
