@@ -178,16 +178,30 @@ class AuthRepository {
     }
   }
 
-  // 10. OBTENER PERFIL ACTUAL
+  // 10. OBTENER PERFIL ACTUAL (Universal para DOCENTE, PADRE, ESTUDIANTE)
+  Future<Map<String, dynamic>> getUserProfile() async {
+    try {
+      final response = await _dio.get('/users/profile');
+      final data = response.data['data'] ?? response.data;
+      return data as Map<String, dynamic>;
+    } catch (_) {
+      try {
+        final response = await _dio.get('/auth/me');
+        final data = response.data['user'] ?? response.data['data'] ?? response.data;
+        return data as Map<String, dynamic>;
+      } catch (e) {
+        throw Exception('Error al obtener perfil de usuario');
+      }
+    }
+  }
+
+  // Compatibilidad con perfiles de tutor
   Future<Map<String, dynamic>> getGuardianProfile() async {
     try {
       final response = await _dio.get('/guardians/me');
       return response.data['data'] ?? response.data;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        throw Exception('No pudimos cargar tus datos familiares. Acércate a secretaría.');
-      }
-      throw Exception('Error al conectar con el servidor.');
+    } catch (_) {
+      return await getUserProfile();
     }
   }
 }

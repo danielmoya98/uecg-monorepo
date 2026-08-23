@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // <-- Paquete para renderizar tus SVGs
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/services/secure_storage_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -174,7 +175,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.zero),
                               ),
-                              onPressed: () => context.go('/welcome'),
+                              onPressed: () async {
+                                await SecureStorageService.setOnboardingSeen(true);
+                                if (context.mounted) context.go('/welcome');
+                              },
                               child: const Text('INGRESAR AL SISTEMA',
                                   style: TextStyle(
                                       letterSpacing: 2.0,
@@ -187,7 +191,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextButton(
-                                onPressed: () => context.go('/welcome'),
+                                onPressed: () async {
+                                  await SecureStorageService.setOnboardingSeen(true);
+                                  if (context.mounted) context.go('/welcome');
+                                },
                                 style: TextButton.styleFrom(
                                     foregroundColor: AppTheme.slateGray),
                                 child: Text('SALTAR',

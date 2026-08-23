@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // <-- Paquete clave para SVG
 import 'package:flutter_animate/flutter_animate.dart'; // <-- Paquete clave para animaciones pro
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/services/secure_storage_service.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -56,18 +57,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _checkAuthAndNavigate();
   }
 
-  void _checkAuthAndNavigate() {
+  Future<void> _checkAuthAndNavigate() async {
     final authState = ref.read(authProvider);
 
-    if (authState.status == AuthStatus.authenticated) {
-      final role = authState.user?['role'] ?? 'ESTUDIANTE';
-      if (role == 'DOCENTE') {
+    if (authState.status == AuthStatus.authenticated && authState.user != null) {
+      final role = (authState.user?['role'] ?? 'ESTUDIANTE').toString().toUpperCase();
+      if (role == 'DOCENTE' || role.contains('TEACHER')) {
         context.go('/dashboard/teacher');
-      } else if (role == 'PADRE' || role == 'TUTOR') {
+      } else if (role == 'PADRE' || role == 'TUTOR' || role.contains('GUARDIAN')) {
         context.go('/dashboard/parent');
       } else {
         context.go('/dashboard/student');
       }
+      return;
+    }
+
+    final hasSeenOnboarding = await SecureStorageService.hasSeenOnboarding();
+    if (!mounted) return;
+    if (hasSeenOnboarding) {
+      context.go('/welcome');
     } else {
       context.go('/onboarding');
     }

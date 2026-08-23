@@ -6,6 +6,7 @@ class SecureStorageService {
   static const _refreshTokenKey = 'uecg_refresh_token';
   static const _quickPinKey = 'uecg_quick_pin_hash';
   static const _cachedUserKey = 'uecg_cached_user_profile';
+  static const _onboardingSeenKey = 'uecg_onboarding_seen';
 
   // ==========================================
   // TOKENS
@@ -30,6 +31,19 @@ class SecureStorageService {
   static Future<void> deleteToken() async {
     await _storage.delete(key: _tokenKey);
     await _storage.delete(key: _refreshTokenKey);
+  }
+
+  // ==========================================
+  // ONBOARDING FIRST-TIME TRACKER
+  // ==========================================
+
+  static Future<void> setOnboardingSeen(bool seen) async {
+    await _storage.write(key: _onboardingSeenKey, value: seen ? 'true' : 'false');
+  }
+
+  static Future<bool> hasSeenOnboarding() async {
+    final val = await _storage.read(key: _onboardingSeenKey);
+    return val == 'true';
   }
 
   // ==========================================

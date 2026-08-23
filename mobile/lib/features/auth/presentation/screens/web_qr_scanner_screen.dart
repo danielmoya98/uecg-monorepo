@@ -52,6 +52,7 @@ class _WebQrScannerScreenState extends ConsumerState<WebQrScannerScreen> {
     if (!mounted) return;
 
     final token = await SecureStorageService.getToken();
+    if (!mounted) return;
     if (token == null || token.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
