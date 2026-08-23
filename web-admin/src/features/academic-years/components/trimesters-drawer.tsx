@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Save, Loader2, CalendarRange, Lock, Unlock } from 'lucide-react'
+import { X, Save, Loader2, CalendarRange, Lock, Unlock, AlertCircle } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { toast } from 'sonner'
 import { useTrimestersData } from '../hooks/use-trimesters-data'
 import type { AcademicYearData, Trimester } from '../types/academic-years.types'
 
@@ -19,6 +20,13 @@ const TrimesterCard = ({ trimester, onUpdate, isUpdating }: TrimesterCardProps) 
   const [endDate, setEndDate] = useState(trimester.endDate.substring(0, 10))
   const [isOpen, setIsOpen] = useState(trimester.isOpen)
 
+  // Sincronizar estado local cuando se actualice la lista de trimestres
+  useEffect(() => {
+    setStartDate(trimester.startDate.substring(0, 10))
+    setEndDate(trimester.endDate.substring(0, 10))
+    setIsOpen(trimester.isOpen)
+  }, [trimester.startDate, trimester.endDate, trimester.isOpen])
+
   const formatName = (name: string) =>
     name
       .replace('_', ' ')
@@ -27,9 +35,14 @@ const TrimesterCard = ({ trimester, onUpdate, isUpdating }: TrimesterCardProps) 
       .replace('TERCER', '3ER')
 
   const handleSave = () => {
+    if (startDate >= endDate) {
+      toast.error('La fecha de inicio debe ser anterior a la fecha de fin.')
+      return
+    }
+
     onUpdate(trimester.id, {
-      startDate: new Date(startDate).toISOString(),
-      endDate: new Date(endDate).toISOString(),
+      startDate: `${startDate}T00:00:00.000Z`,
+      endDate: `${endDate}T00:00:00.000Z`,
       isOpen,
     })
   }
@@ -99,7 +112,7 @@ const TrimesterCard = ({ trimester, onUpdate, isUpdating }: TrimesterCardProps) 
           />
           <span
             className={`text-[10px] font-black uppercase tracking-widest ${
-              isOpen ? 'text-green-600' : 'text-uecg-gray'
+              isOpen ? 'text-green-600 font-bold' : 'text-uecg-gray'
             }`}
           >
             {isOpen ? 'SISTEMA ABIERTO' : 'SISTEMA CERRADO'}
@@ -231,11 +244,15 @@ export default function TrimestersDrawer({ isOpen, onClose, academicYear }: Trim
 
             {/* Contenido */}
             <div className="p-5 flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4">
-              <p className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest leading-relaxed bg-gray-50 border border-uecg-line p-3">
-                Establezca las fechas límite para cada periodo.{' '}
-                <strong className="text-uecg-dark">Abra el sistema</strong> únicamente cuando sea época
-                de centralización de notas.
-              </p>
+              <div className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest leading-relaxed bg-blue-50/50 border border-blue-200 p-3 flex flex-col gap-1">
+                <span className="text-uecg-blue font-black flex items-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  Regla de Exclusividad de Periodos
+                </span>
+                <p>
+                  Solo puede existir <strong>un único trimestre abierto a la vez</strong>. Al activar la casilla de un trimestre, el sistema cerrará automáticamente los demás de forma atómica.
+                </p>
+              </div>
               {isLoading ? (
                 <div className="flex justify-center p-10">
                   <Loader2 className="w-8 h-8 animate-spin text-uecg-blue" />
