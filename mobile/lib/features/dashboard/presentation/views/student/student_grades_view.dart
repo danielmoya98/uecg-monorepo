@@ -127,7 +127,7 @@ class _StudentGradesViewState extends State<StudentGradesView> {
               const SizedBox(height: 8),
               Text(
                 average,
-                style: textTheme.displayLarge?.copyWith(fontSize: 44, color: AppTheme.swissBlue, fontWeight: FontWeight.black),
+                style: textTheme.displayLarge?.copyWith(fontSize: 44, color: AppTheme.swissBlue, fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 4),
               Text(
