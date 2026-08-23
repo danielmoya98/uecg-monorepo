@@ -27,6 +27,7 @@ class _WebQrScannerScreenState extends ConsumerState<WebQrScannerScreen> {
     for (final barcode in capture.barcodes) {
       final String? rawValue = barcode.rawValue;
       if (rawValue != null && rawValue.startsWith('uecg-web-auth:')) {
+        setState(() => _isProcessing = true);
         final challengeId = rawValue.replaceFirst('uecg-web-auth:', '');
         _handleAuthorize(challengeId);
         break;
@@ -35,7 +36,6 @@ class _WebQrScannerScreenState extends ConsumerState<WebQrScannerScreen> {
   }
 
   Future<void> _handleAuthorize(String challengeId) async {
-    setState(() => _isProcessing = true);
     await _cameraController.stop();
 
     if (!mounted) return;
