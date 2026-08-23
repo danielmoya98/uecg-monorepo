@@ -20,14 +20,28 @@ export type PhysicalSpaceModel = runtime.Types.Result.DefaultSelection<Prisma.$P
 
 export type AggregatePhysicalSpace = {
   _count: PhysicalSpaceCountAggregateOutputType | null
+  _avg: PhysicalSpaceAvgAggregateOutputType | null
+  _sum: PhysicalSpaceSumAggregateOutputType | null
   _min: PhysicalSpaceMinAggregateOutputType | null
   _max: PhysicalSpaceMaxAggregateOutputType | null
+}
+
+export type PhysicalSpaceAvgAggregateOutputType = {
+  capacity: number | null
+}
+
+export type PhysicalSpaceSumAggregateOutputType = {
+  capacity: number | null
 }
 
 export type PhysicalSpaceMinAggregateOutputType = {
   id: string | null
   name: string | null
   type: $Enums.SpaceType | null
+  capacity: number | null
+  building: string | null
+  floor: string | null
+  description: string | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -37,6 +51,10 @@ export type PhysicalSpaceMaxAggregateOutputType = {
   id: string | null
   name: string | null
   type: $Enums.SpaceType | null
+  capacity: number | null
+  building: string | null
+  floor: string | null
+  description: string | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,6 +64,10 @@ export type PhysicalSpaceCountAggregateOutputType = {
   id: number
   name: number
   type: number
+  capacity: number
+  building: number
+  floor: number
+  description: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -53,10 +75,22 @@ export type PhysicalSpaceCountAggregateOutputType = {
 }
 
 
+export type PhysicalSpaceAvgAggregateInputType = {
+  capacity?: true
+}
+
+export type PhysicalSpaceSumAggregateInputType = {
+  capacity?: true
+}
+
 export type PhysicalSpaceMinAggregateInputType = {
   id?: true
   name?: true
   type?: true
+  capacity?: true
+  building?: true
+  floor?: true
+  description?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -66,6 +100,10 @@ export type PhysicalSpaceMaxAggregateInputType = {
   id?: true
   name?: true
   type?: true
+  capacity?: true
+  building?: true
+  floor?: true
+  description?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -75,6 +113,10 @@ export type PhysicalSpaceCountAggregateInputType = {
   id?: true
   name?: true
   type?: true
+  capacity?: true
+  building?: true
+  floor?: true
+  description?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -119,6 +161,18 @@ export type PhysicalSpaceAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: PhysicalSpaceAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: PhysicalSpaceSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: PhysicalSpaceMinAggregateInputType
@@ -149,6 +203,8 @@ export type PhysicalSpaceGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: PhysicalSpaceCountAggregateInputType | true
+  _avg?: PhysicalSpaceAvgAggregateInputType
+  _sum?: PhysicalSpaceSumAggregateInputType
   _min?: PhysicalSpaceMinAggregateInputType
   _max?: PhysicalSpaceMaxAggregateInputType
 }
@@ -157,10 +213,16 @@ export type PhysicalSpaceGroupByOutputType = {
   id: string
   name: string
   type: $Enums.SpaceType
+  capacity: number | null
+  building: string | null
+  floor: string | null
+  description: string | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
   _count: PhysicalSpaceCountAggregateOutputType | null
+  _avg: PhysicalSpaceAvgAggregateOutputType | null
+  _sum: PhysicalSpaceSumAggregateOutputType | null
   _min: PhysicalSpaceMinAggregateOutputType | null
   _max: PhysicalSpaceMaxAggregateOutputType | null
 }
@@ -187,6 +249,10 @@ export type PhysicalSpaceWhereInput = {
   id?: Prisma.StringFilter<"PhysicalSpace"> | string
   name?: Prisma.StringFilter<"PhysicalSpace"> | string
   type?: Prisma.EnumSpaceTypeFilter<"PhysicalSpace"> | $Enums.SpaceType
+  capacity?: Prisma.IntNullableFilter<"PhysicalSpace"> | number | null
+  building?: Prisma.StringNullableFilter<"PhysicalSpace"> | string | null
+  floor?: Prisma.StringNullableFilter<"PhysicalSpace"> | string | null
+  description?: Prisma.StringNullableFilter<"PhysicalSpace"> | string | null
   isActive?: Prisma.BoolFilter<"PhysicalSpace"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PhysicalSpace"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PhysicalSpace"> | Date | string
@@ -198,6 +264,10 @@ export type PhysicalSpaceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  capacity?: Prisma.SortOrderInput | Prisma.SortOrder
+  building?: Prisma.SortOrderInput | Prisma.SortOrder
+  floor?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -212,6 +282,10 @@ export type PhysicalSpaceWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PhysicalSpaceWhereInput | Prisma.PhysicalSpaceWhereInput[]
   name?: Prisma.StringFilter<"PhysicalSpace"> | string
   type?: Prisma.EnumSpaceTypeFilter<"PhysicalSpace"> | $Enums.SpaceType
+  capacity?: Prisma.IntNullableFilter<"PhysicalSpace"> | number | null
+  building?: Prisma.StringNullableFilter<"PhysicalSpace"> | string | null
+  floor?: Prisma.StringNullableFilter<"PhysicalSpace"> | string | null
+  description?: Prisma.StringNullableFilter<"PhysicalSpace"> | string | null
   isActive?: Prisma.BoolFilter<"PhysicalSpace"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PhysicalSpace"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PhysicalSpace"> | Date | string
@@ -223,12 +297,18 @@ export type PhysicalSpaceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  capacity?: Prisma.SortOrderInput | Prisma.SortOrder
+  building?: Prisma.SortOrderInput | Prisma.SortOrder
+  floor?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PhysicalSpaceCountOrderByAggregateInput
+  _avg?: Prisma.PhysicalSpaceAvgOrderByAggregateInput
   _max?: Prisma.PhysicalSpaceMaxOrderByAggregateInput
   _min?: Prisma.PhysicalSpaceMinOrderByAggregateInput
+  _sum?: Prisma.PhysicalSpaceSumOrderByAggregateInput
 }
 
 export type PhysicalSpaceScalarWhereWithAggregatesInput = {
@@ -238,6 +318,10 @@ export type PhysicalSpaceScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"PhysicalSpace"> | string
   name?: Prisma.StringWithAggregatesFilter<"PhysicalSpace"> | string
   type?: Prisma.EnumSpaceTypeWithAggregatesFilter<"PhysicalSpace"> | $Enums.SpaceType
+  capacity?: Prisma.IntNullableWithAggregatesFilter<"PhysicalSpace"> | number | null
+  building?: Prisma.StringNullableWithAggregatesFilter<"PhysicalSpace"> | string | null
+  floor?: Prisma.StringNullableWithAggregatesFilter<"PhysicalSpace"> | string | null
+  description?: Prisma.StringNullableWithAggregatesFilter<"PhysicalSpace"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"PhysicalSpace"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PhysicalSpace"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PhysicalSpace"> | Date | string
@@ -247,6 +331,10 @@ export type PhysicalSpaceCreateInput = {
   id?: string
   name: string
   type?: $Enums.SpaceType
+  capacity?: number | null
+  building?: string | null
+  floor?: string | null
+  description?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -258,6 +346,10 @@ export type PhysicalSpaceUncheckedCreateInput = {
   id?: string
   name: string
   type?: $Enums.SpaceType
+  capacity?: number | null
+  building?: string | null
+  floor?: string | null
+  description?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -269,6 +361,10 @@ export type PhysicalSpaceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  building?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -280,6 +376,10 @@ export type PhysicalSpaceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  building?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -291,6 +391,10 @@ export type PhysicalSpaceCreateManyInput = {
   id?: string
   name: string
   type?: $Enums.SpaceType
+  capacity?: number | null
+  building?: string | null
+  floor?: string | null
+  description?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -300,6 +404,10 @@ export type PhysicalSpaceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  building?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -309,6 +417,10 @@ export type PhysicalSpaceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  building?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -323,15 +435,27 @@ export type PhysicalSpaceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
+  building?: Prisma.SortOrder
+  floor?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type PhysicalSpaceAvgOrderByAggregateInput = {
+  capacity?: Prisma.SortOrder
 }
 
 export type PhysicalSpaceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
+  building?: Prisma.SortOrder
+  floor?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -341,9 +465,17 @@ export type PhysicalSpaceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
+  building?: Prisma.SortOrder
+  floor?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type PhysicalSpaceSumOrderByAggregateInput = {
+  capacity?: Prisma.SortOrder
 }
 
 export type PhysicalSpaceCreateNestedOneWithoutBaseClassroomsInput = {
@@ -386,6 +518,10 @@ export type PhysicalSpaceCreateWithoutBaseClassroomsInput = {
   id?: string
   name: string
   type?: $Enums.SpaceType
+  capacity?: number | null
+  building?: string | null
+  floor?: string | null
+  description?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -396,6 +532,10 @@ export type PhysicalSpaceUncheckedCreateWithoutBaseClassroomsInput = {
   id?: string
   name: string
   type?: $Enums.SpaceType
+  capacity?: number | null
+  building?: string | null
+  floor?: string | null
+  description?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -422,6 +562,10 @@ export type PhysicalSpaceUpdateWithoutBaseClassroomsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  building?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -432,6 +576,10 @@ export type PhysicalSpaceUncheckedUpdateWithoutBaseClassroomsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  building?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -442,6 +590,10 @@ export type PhysicalSpaceCreateWithoutScheduleSlotsInput = {
   id?: string
   name: string
   type?: $Enums.SpaceType
+  capacity?: number | null
+  building?: string | null
+  floor?: string | null
+  description?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -452,6 +604,10 @@ export type PhysicalSpaceUncheckedCreateWithoutScheduleSlotsInput = {
   id?: string
   name: string
   type?: $Enums.SpaceType
+  capacity?: number | null
+  building?: string | null
+  floor?: string | null
+  description?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -478,6 +634,10 @@ export type PhysicalSpaceUpdateWithoutScheduleSlotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  building?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -488,6 +648,10 @@ export type PhysicalSpaceUncheckedUpdateWithoutScheduleSlotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  building?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -538,6 +702,10 @@ export type PhysicalSpaceSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   name?: boolean
   type?: boolean
+  capacity?: boolean
+  building?: boolean
+  floor?: boolean
+  description?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -550,6 +718,10 @@ export type PhysicalSpaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   name?: boolean
   type?: boolean
+  capacity?: boolean
+  building?: boolean
+  floor?: boolean
+  description?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -559,6 +731,10 @@ export type PhysicalSpaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   name?: boolean
   type?: boolean
+  capacity?: boolean
+  building?: boolean
+  floor?: boolean
+  description?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -568,12 +744,16 @@ export type PhysicalSpaceSelectScalar = {
   id?: boolean
   name?: boolean
   type?: boolean
+  capacity?: boolean
+  building?: boolean
+  floor?: boolean
+  description?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PhysicalSpaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["physicalSpace"]>
+export type PhysicalSpaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "capacity" | "building" | "floor" | "description" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["physicalSpace"]>
 export type PhysicalSpaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   baseClassrooms?: boolean | Prisma.PhysicalSpace$baseClassroomsArgs<ExtArgs>
   scheduleSlots?: boolean | Prisma.PhysicalSpace$scheduleSlotsArgs<ExtArgs>
@@ -592,6 +772,10 @@ export type $PhysicalSpacePayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     name: string
     type: $Enums.SpaceType
+    capacity: number | null
+    building: string | null
+    floor: string | null
+    description: string | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1023,6 +1207,10 @@ export interface PhysicalSpaceFieldRefs {
   readonly id: Prisma.FieldRef<"PhysicalSpace", 'String'>
   readonly name: Prisma.FieldRef<"PhysicalSpace", 'String'>
   readonly type: Prisma.FieldRef<"PhysicalSpace", 'SpaceType'>
+  readonly capacity: Prisma.FieldRef<"PhysicalSpace", 'Int'>
+  readonly building: Prisma.FieldRef<"PhysicalSpace", 'String'>
+  readonly floor: Prisma.FieldRef<"PhysicalSpace", 'String'>
+  readonly description: Prisma.FieldRef<"PhysicalSpace", 'String'>
   readonly isActive: Prisma.FieldRef<"PhysicalSpace", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"PhysicalSpace", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PhysicalSpace", 'DateTime'>

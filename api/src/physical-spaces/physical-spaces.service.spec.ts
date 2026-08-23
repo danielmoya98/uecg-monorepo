@@ -18,9 +18,11 @@ describe('PhysicalSpacesService - Pruebas Unitarias', () => {
     },
     scheduleSlot: {
       findFirst: jest.fn(),
+      count: jest.fn(),
     },
     classroom: {
       findFirst: jest.fn(),
+      count: jest.fn(),
     },
   };
 
@@ -173,6 +175,22 @@ describe('PhysicalSpacesService - Pruebas Unitarias', () => {
       await expect(service.update('1', dto)).rejects.toThrow(ConflictException);
     });
 
+    it('debe lanzar ConflictException si se intenta desactivar un espacio con horarios asignados', async () => {
+      const space = {
+        id: '1',
+        name: 'Aula 101',
+        type: 'SALON',
+        isActive: true,
+      };
+      mockPrisma.physicalSpace.findUnique.mockResolvedValue(space);
+      mockPrisma.scheduleSlot.count.mockResolvedValue(3);
+      mockPrisma.classroom.count.mockResolvedValue(0);
+
+      const dto = { isActive: false };
+
+      await expect(service.update('1', dto)).rejects.toThrow(ConflictException);
+    });
+
     it('debe actualizar el espacio físico si los datos son válidos', async () => {
       const space = {
         id: '1',
@@ -182,6 +200,8 @@ describe('PhysicalSpacesService - Pruebas Unitarias', () => {
       };
       mockPrisma.physicalSpace.findUnique.mockResolvedValue(space);
       mockPrisma.physicalSpace.findFirst.mockResolvedValue(null);
+      mockPrisma.scheduleSlot.count.mockResolvedValue(0);
+      mockPrisma.classroom.count.mockResolvedValue(0);
       mockPrisma.physicalSpace.update.mockResolvedValue({
         ...space,
         name: 'Aula 101 Modificada',

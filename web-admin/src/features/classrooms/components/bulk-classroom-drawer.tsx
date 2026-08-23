@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { CustomSelect } from './custom-select'
 import { ClassroomsService } from '../api/classrooms.service'
 import { InstitutionsService } from '@/features/institutions/api/institutions.service'
-import { PhysicalSpacesService } from '@/features/physical-spaces/api/physical-spaces.service'
+import { PhysicalSpacesService } from '@/features/physical-spaces'
 import type { BulkClassroomPayload } from '../types/classrooms.types'
 
 interface BulkClassroomDrawerProps {

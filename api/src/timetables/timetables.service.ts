@@ -120,6 +120,18 @@ export class TimetablesService {
     }
 
     if (finalSpaceId) {
+      const space = await this.prisma.physicalSpace.findUnique({
+        where: { id: finalSpaceId },
+      });
+      if (!space) {
+        throw new NotFoundException('El espacio físico seleccionado no existe.');
+      }
+      if (!space.isActive) {
+        throw new BadRequestException(
+          `El espacio físico "${space.name}" se encuentra inactivo y no puede ser programado en el horario.`,
+        );
+      }
+
       const spaceConflict = await this.prisma.scheduleSlot.findFirst({
         where: {
           physicalSpaceId: finalSpaceId,
@@ -254,6 +266,18 @@ export class TimetablesService {
     }
 
     if (physicalSpaceId) {
+      const space = await this.prisma.physicalSpace.findUnique({
+        where: { id: physicalSpaceId },
+      });
+      if (!space) {
+        throw new NotFoundException('El espacio físico seleccionado no existe.');
+      }
+      if (!space.isActive) {
+        throw new BadRequestException(
+          `El espacio físico "${space.name}" se encuentra inactivo y no puede ser programado en el horario.`,
+        );
+      }
+
       const spaceConflict = await this.prisma.scheduleSlot.findFirst({
         where: {
           physicalSpaceId: physicalSpaceId,

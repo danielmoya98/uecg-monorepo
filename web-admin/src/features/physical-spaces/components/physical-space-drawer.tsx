@@ -110,6 +110,10 @@ export default function PhysicalSpaceDrawer({ isOpen, onClose, mode, data }: Phy
     defaultValues: {
       name: '',
       type: 'SALON',
+      capacity: null,
+      building: '',
+      floor: '',
+      description: '',
       isActive: true,
     },
   })
@@ -123,12 +127,20 @@ export default function PhysicalSpaceDrawer({ isOpen, onClose, mode, data }: Phy
         reset({
           name: data.name,
           type: data.type,
+          capacity: data.capacity ?? null,
+          building: data.building ?? '',
+          floor: data.floor ?? '',
+          description: data.description ?? '',
           isActive: data.isActive,
         })
       } else {
         reset({
           name: '',
           type: 'SALON',
+          capacity: null,
+          building: '',
+          floor: '',
+          description: '',
           isActive: true,
         })
       }
@@ -296,6 +308,71 @@ export default function PhysicalSpaceDrawer({ isOpen, onClose, mode, data }: Phy
                     {errors.type.message}
                   </p>
                 )}
+              </div>
+
+              {/* AFORO / CAPACIDAD */}
+              <div>
+                <label className="label-swiss !text-[10px] !mb-1.5 block">
+                  Capacidad de Aforo (Opcional)
+                </label>
+                <input
+                  type="number"
+                  {...register('capacity', {
+                    setValueAs: (v) => (v === '' || v === null || isNaN(Number(v)) ? null : Number(v)),
+                  })}
+                  placeholder="Ej. 35"
+                  disabled={mutation.isPending}
+                  className={`w-full border bg-white px-3 py-3 text-xs font-bold uppercase tracking-widest outline-none shadow-sm ${
+                    errors.capacity ? 'border-red-500' : 'border-uecg-line focus:border-uecg-blue'
+                  }`}
+                />
+                {errors.capacity && (
+                  <p className="text-[10px] text-red-500 mt-1.5 font-bold uppercase tracking-widest">
+                    {errors.capacity.message}
+                  </p>
+                )}
+              </div>
+
+              {/* PABELLÓN / PISO */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="label-swiss !text-[10px] !mb-1.5 block">
+                    Pabellón / Bloque
+                  </label>
+                  <input
+                    type="text"
+                    {...register('building')}
+                    placeholder="Ej. Bloque A"
+                    disabled={mutation.isPending}
+                    className="w-full border border-uecg-line focus:border-uecg-blue bg-white px-3 py-3 text-xs font-bold uppercase tracking-widest outline-none shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label className="label-swiss !text-[10px] !mb-1.5 block">
+                    Piso / Nivel
+                  </label>
+                  <input
+                    type="text"
+                    {...register('floor')}
+                    placeholder="Ej. Piso 1"
+                    disabled={mutation.isPending}
+                    className="w-full border border-uecg-line focus:border-uecg-blue bg-white px-3 py-3 text-xs font-bold uppercase tracking-widest outline-none shadow-sm"
+                  />
+                </div>
+              </div>
+
+              {/* DESCRIPCIÓN */}
+              <div>
+                <label className="label-swiss !text-[10px] !mb-1.5 block">
+                  Descripción / Equipamiento (Opcional)
+                </label>
+                <input
+                  type="text"
+                  {...register('description')}
+                  placeholder="Ej. Equipado con 30 computadoras y proyector"
+                  disabled={mutation.isPending}
+                  className="w-full border border-uecg-line focus:border-uecg-blue bg-white px-3 py-3 text-xs font-bold uppercase tracking-widest outline-none shadow-sm"
+                />
               </div>
 
               <label className="flex items-center gap-4 border border-uecg-line p-5 cursor-pointer hover:border-uecg-blue transition-colors shadow-sm bg-white mt-2">
