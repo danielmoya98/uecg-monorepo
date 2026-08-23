@@ -490,6 +490,16 @@ export class AuthService {
       parsed = rawData;
     }
 
+    if (parsed.status === 'AUTHORIZED') {
+      if (parsed.user?.id === userId) {
+        return {
+          status: 'SUCCESS',
+          message: 'Inicio de sesión en Web autorizado con éxito',
+        };
+      }
+      throw new UnauthorizedException('El código QR ya ha sido autorizado por otro usuario');
+    }
+
     if (parsed.status !== 'PENDING') {
       throw new UnauthorizedException('El código QR ya ha sido procesado');
     }
@@ -578,9 +588,6 @@ export class AuthService {
     }
 
     if (parsed.status === 'AUTHORIZED') {
-      // Inmediatamente eliminamos el challenge para evitar reutilización
-      await this.cacheManager.del(key);
-
       return {
         status: 'AUTHORIZED',
         user: parsed.user,
