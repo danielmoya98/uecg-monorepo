@@ -311,6 +311,13 @@ export type EnumEducationLevelFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumEducationLevelFilter<$PrismaModel> | $Enums.EducationLevel
 }
 
+export type EnumSpaceTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.SpaceType | Prisma.EnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SpaceType[] | Prisma.ListEnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SpaceType[] | Prisma.ListEnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSpaceTypeNullableFilter<$PrismaModel> | $Enums.SpaceType | null
+}
+
 export type EnumEducationLevelWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.EducationLevel | Prisma.EnumEducationLevelFieldRefInput<$PrismaModel>
   in?: $Enums.EducationLevel[] | Prisma.ListEnumEducationLevelFieldRefInput<$PrismaModel>
@@ -319,6 +326,16 @@ export type EnumEducationLevelWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEducationLevelFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEducationLevelFilter<$PrismaModel>
+}
+
+export type EnumSpaceTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SpaceType | Prisma.EnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SpaceType[] | Prisma.ListEnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SpaceType[] | Prisma.ListEnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSpaceTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.SpaceType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSpaceTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSpaceTypeNullableFilter<$PrismaModel>
 }
 
 export type EnumShiftFilter<$PrismaModel = never> = {
@@ -916,6 +933,13 @@ export type NestedEnumEducationLevelFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumEducationLevelFilter<$PrismaModel> | $Enums.EducationLevel
 }
 
+export type NestedEnumSpaceTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.SpaceType | Prisma.EnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SpaceType[] | Prisma.ListEnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SpaceType[] | Prisma.ListEnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSpaceTypeNullableFilter<$PrismaModel> | $Enums.SpaceType | null
+}
+
 export type NestedEnumEducationLevelWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.EducationLevel | Prisma.EnumEducationLevelFieldRefInput<$PrismaModel>
   in?: $Enums.EducationLevel[] | Prisma.ListEnumEducationLevelFieldRefInput<$PrismaModel>
@@ -924,6 +948,16 @@ export type NestedEnumEducationLevelWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEducationLevelFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEducationLevelFilter<$PrismaModel>
+}
+
+export type NestedEnumSpaceTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SpaceType | Prisma.EnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SpaceType[] | Prisma.ListEnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SpaceType[] | Prisma.ListEnumSpaceTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSpaceTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.SpaceType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSpaceTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSpaceTypeNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumShiftFilter<$PrismaModel = never> = {

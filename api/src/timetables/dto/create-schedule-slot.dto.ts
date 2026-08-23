@@ -10,12 +10,12 @@ import {
 
 export class CreateScheduleSlotDto {
   @ApiProperty({
-    description: 'Día de la semana (1 = Lunes, 5 = Viernes)',
+    description: 'Día de la semana (1 = Lunes, 6 = Sábado)',
     example: 1,
   })
   @IsInt()
   @Min(1)
-  @Max(5)
+  @Max(6)
   dayOfWeek: number;
 
   @ApiProperty({

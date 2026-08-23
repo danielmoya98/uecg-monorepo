@@ -275,6 +275,8 @@ model Subject {
   code     String? // Ej. "MAT", "FIS", "LIT" (Sigla o código oficial)
   level    EducationLevel // Para filtrar
   area     String? // Ej. "Ciencia, Tecnología y Producción", "Comunidad y Sociedad"
+  requiresSpecialSpace Boolean    @default(false) @map("requires_special_space")
+  allowedSpaceType     SpaceType? @map("allowed_space_type")
   isActive Boolean        @default(true) @map("is_active")
 
   assignments TeacherAssignment[]
