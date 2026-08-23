@@ -44,6 +44,18 @@ export const TeacherAssignmentsService = {
     return response.data.data !== undefined ? response.data.data : response.data
   },
 
+  update: async (
+    id: string,
+    data: { teacherId: string },
+  ): Promise<TeacherAssignment> => {
+    const response = await api.patch(`/teacher-assignments/${id}`, data, {
+      headers: {
+        'x-idempotency-key': crypto.randomUUID(),
+      },
+    })
+    return response.data.data !== undefined ? response.data.data : response.data
+  },
+
   delete: async (id: string): Promise<TeacherAssignment> => {
     const response = await api.delete(`/teacher-assignments/${id}`)
     return response.data.data !== undefined ? response.data.data : response.data

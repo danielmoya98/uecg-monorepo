@@ -1,10 +1,11 @@
-import { Trash2 } from 'lucide-react'
+import { Trash2, UserCheck } from 'lucide-react'
 import type { TeacherAssignment } from '../types/teacher-assignments.types'
 
 interface AssignmentsTableProps {
   assignments: TeacherAssignment[]
   isFetching: boolean
   onDeleteRequest: (assignment: TeacherAssignment) => void
+  onReassignRequest?: (assignment: TeacherAssignment) => void
   canManage: boolean // Propiedad ABAC inyectada
 }
 
@@ -12,6 +13,7 @@ export const AssignmentsTable = ({
   assignments,
   isFetching,
   onDeleteRequest,
+  onReassignRequest,
   canManage,
 }: AssignmentsTableProps) => {
   const colSpanCount = canManage ? 3 : 2
@@ -28,8 +30,8 @@ export const AssignmentsTable = ({
               Docente Asignado
             </th>
             {canManage && (
-              <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-20">
-                Quitar
+              <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-28">
+                Acciones
               </th>
             )}
           </tr>
@@ -52,7 +54,7 @@ export const AssignmentsTable = ({
             assignments.map((a) => (
               <tr
                 key={a.id}
-                className="border-b border-uecg-line hover:bg-red-50/20 transition-colors group"
+                className="border-b border-uecg-line hover:bg-gray-50 transition-colors group"
               >
                 <td className="px-4 py-3 border-r border-uecg-line">
                   <p className="font-black uppercase tracking-tight text-uecg-text text-xs">
@@ -66,14 +68,26 @@ export const AssignmentsTable = ({
                 </td>
                 {canManage && (
                   <td className="px-4 py-3 text-center">
-                    <button
-                      type="button"
-                      onClick={() => onDeleteRequest(a)}
-                      className="text-uecg-line hover:text-red-600 transition-colors focus:outline-none outline-none cursor-pointer"
-                      title="Eliminar asignación"
-                    >
-                      <Trash2 className="w-4 h-4 mx-auto" />
-                    </button>
+                    <div className="flex items-center justify-center gap-2">
+                      {onReassignRequest && (
+                        <button
+                          type="button"
+                          onClick={() => onReassignRequest(a)}
+                          className="text-uecg-gray hover:text-uecg-blue transition-colors focus:outline-none outline-none cursor-pointer p-1"
+                          title="Reasignar Docente Titular"
+                        >
+                          <UserCheck className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => onDeleteRequest(a)}
+                        className="text-uecg-gray hover:text-red-600 transition-colors focus:outline-none outline-none cursor-pointer p-1"
+                        title="Eliminar asignación"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 )}
               </tr>
