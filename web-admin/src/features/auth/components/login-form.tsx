@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useNavigate } from '@tanstack/react-router'
 import {
   Eye,
   EyeOff,
@@ -9,6 +10,8 @@ import {
   Mail,
   QrCode,
   ShieldCheck,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react'
 
 import { SwissInput } from '@/shared/ui/swiss-input'
@@ -17,13 +20,15 @@ import {
   type LoginFormValues,
 } from '../schemas/auth.schema'
 import { useLogin } from '../hooks/use-login'
+import { AuthService } from '../api/auth.service'
 import { QrLoginPanel } from './qr-login-panel'
 
 export function LoginForm() {
   const loginMutation = useLogin()
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [activeTab, setActiveTab] = useState<'CREDENTIALS' | 'QR'>('CREDENTIALS')
-
+  const [isUninitialized, setIsUninitialized] = useState(false)
   const {
     register,
     handleSubmit,
@@ -35,6 +40,21 @@ export function LoginForm() {
       password: '',
     },
   })
+
+  useEffect(() => {
+    let mounted = true
+    AuthService.getSystemStatus()
+      .then((status) => {
+        if (mounted && !status.isInitialized) {
+          setIsUninitialized(true)
+          navigate({ to: '/setup-wizard' as any })
+        }
+      })
+      .catch(() => {})
+    return () => {
+      mounted = false
+    }
+  }, [navigate])
 
   const onSubmit = (data: LoginFormValues) => {
     loginMutation.mutate({
@@ -65,6 +85,24 @@ export function LoginForm() {
 
   return (
     <div className="flex w-full flex-col gap-6">
+      {isUninitialized && (
+        <div className="p-3 bg-blue-50 border border-uecg-blue text-uecg-blue flex items-center justify-between gap-3 animate-in fade-in duration-300">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 shrink-0" />
+            <span className="text-[10px] font-black uppercase tracking-wider">
+              Sistema sin inicializar
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/setup-wizard' as any })}
+            className="text-[10px] font-black uppercase tracking-wider bg-uecg-blue text-white px-2 py-1 flex items-center gap-1 hover:bg-blue-700 transition-colors cursor-pointer"
+          >
+            Setup Wizard <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+      )}
+
       <header className="mb-2 border-b border-uecg-line pb-5">
         <div className="flex items-center gap-2 mb-2 text-uecg-blue">
           <ShieldCheck
