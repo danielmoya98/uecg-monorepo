@@ -384,14 +384,21 @@ describe('TimetablesService - Pruebas Unitarias', () => {
       ).rejects.toThrow(ConflictException);
     });
 
-    it('debe permitir cambiar de aula en FIXED_BASE si la asignatura es Educación Física', async () => {
+    it('debe permitir cambiar de aula en FIXED_BASE si la asignatura tiene requiresSpecialSpace en true', async () => {
       mockPrisma.scheduleSlot.findUnique.mockResolvedValue({
         id: 'slot-1',
-        teacherAssignment: { subject: { name: 'Educación Física' } },
+        teacherAssignment: {
+          subject: { name: 'Laboratorio de Química', requiresSpecialSpace: true },
+        },
         classroom: { id: 'classroom-id' },
       });
       mockPrisma.institution.findFirst.mockResolvedValue({
         schedulingMode: SchedulingMode.FIXED_BASE,
+      });
+      mockPrisma.physicalSpace.findUnique.mockResolvedValue({
+        id: 'new-space',
+        name: 'Laboratorio',
+        isActive: true,
       });
       mockPrisma.scheduleSlot.findFirst.mockResolvedValue(null); // Sin choques
       mockPrisma.scheduleSlot.update.mockResolvedValue({
@@ -403,6 +410,108 @@ describe('TimetablesService - Pruebas Unitarias', () => {
 
       expect(result).toEqual({ id: 'slot-1', physicalSpaceId: 'new-space' });
       expect(mockPrisma.scheduleSlot.update).toHaveBeenCalled();
+    });
+  });
+
+  describe('downloadZip', () => {
+    it('debe lanzar BadRequestException si el nombre del archivo contiene caracteres inválidos o path traversal', async () => {
+      const mockRes: any = {
+        set: jest.fn(),
+      };
+
+      await expect(
+        service.downloadZip('../secret.txt', mockRes),
+      ).rejects.toThrow(BadRequestException);
+
+      await expect(
+        service.downloadZip('malicious.sh', mockRes),
+      ).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('getMySchedule', () => {
+    it('debe obtener los slots del docente cuando el usuario tiene rol DOCENTE', async () => {
+      mockPrisma.user = {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'teacher-user-id',
+          role: { name: 'DOCENTE' },
+        }),
+      };
+
+      mockPrisma.scheduleSlot.findMany.mockResolvedValue([
+        { id: 'slot-1', dayOfWeek: 1 },
+      ]);
+
+      const result = await service.getMySchedule('teacher-user-id');
+
+      expect(result).toEqual({
+        role: 'DOCENTE',
+        slots: [{ id: 'slot-1', dayOfWeek: 1 }],
+      });
+      expect(mockPrisma.scheduleSlot.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { teacherId: 'teacher-user-id' },
+        }),
+      );
+    });
+
+    it('debe obtener los slots del curso cuando el usuario es ESTUDIANTE con inscripción activa', async () => {
+      mockPrisma.user = {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'student-user-id',
+          role: { name: 'ESTUDIANTE' },
+          student: {
+            enrollments: [
+              {
+                classroomId: 'classroom-id-1',
+                classroom: { id: 'classroom-id-1', grade: '3ro', section: 'A' },
+              },
+            ],
+          },
+        }),
+      };
+
+      mockPrisma.scheduleSlot.findMany.mockResolvedValue([
+        { id: 'slot-2', dayOfWeek: 2 },
+      ]);
+
+      const result = await service.getMySchedule('student-user-id');
+
+      expect(result).toEqual({
+        role: 'ESTUDIANTE',
+        classroom: { id: 'classroom-id-1', grade: '3ro', section: 'A' },
+        slots: [{ id: 'slot-2', dayOfWeek: 2 }],
+      });
+    });
+  });
+
+  describe('getTodaySchedule', () => {
+    it('debe filtrar los slots correspondientes al día actual en Bolivia', async () => {
+      mockPrisma.user = {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'teacher-user-id',
+          role: { name: 'DOCENTE' },
+        }),
+      };
+
+      const now = new Date();
+      const boliviaDate = new Date(
+        now.toLocaleString('en-US', { timeZone: 'America/La_Paz' }),
+      );
+      const jsDay = boliviaDate.getDay();
+      const todayDayOfWeek = jsDay === 0 ? 7 : jsDay;
+
+      mockPrisma.scheduleSlot.findMany.mockResolvedValue([
+        { id: 'slot-today', dayOfWeek: todayDayOfWeek },
+        { id: 'slot-other', dayOfWeek: todayDayOfWeek === 1 ? 2 : 1 },
+      ]);
+
+      const result = await service.getTodaySchedule('teacher-user-id');
+
+      expect(result.role).toBe('DOCENTE');
+      expect(result.dayOfWeek).toBe(todayDayOfWeek);
+      expect(result.slots.length).toBe(1);
+      expect(result.slots[0].id).toBe('slot-today');
     });
   });
 });

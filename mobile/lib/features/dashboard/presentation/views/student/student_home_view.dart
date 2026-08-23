@@ -1,30 +1,77 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_theme.dart';
-import '../../../../../core/widgets/swiss_card.dart';
-import '../../../../../core/widgets/swiss_header.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uecg_app/core/theme/app_theme.dart';
+import 'package:uecg_app/core/widgets/swiss_card.dart';
+import 'package:uecg_app/core/widgets/swiss_header.dart';
+import 'package:uecg_app/features/timetables/presentation/providers/timetables_provider.dart';
 
-class StudentHomeView extends StatelessWidget {
+class StudentHomeView extends ConsumerWidget {
   const StudentHomeView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+    final todayScheduleState = ref.watch(todayScheduleProvider);
+
     return ListView(
       padding: const EdgeInsets.all(24.0),
       children: [
-        const SwissHeader(greeting: 'HOLA 👋', title: 'JUAN (3RO A)'),
+        const SwissHeader(greeting: 'HOLA 👋', title: 'ESTUDIANTE'),
         const SizedBox(height: 24),
         SwissCard(
           label: 'HORARIO DE HOY',
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('08:00 – Matemática', style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.inkBlack)),
-              const SizedBox(height: 8),
-              Text('09:30 – Historia', style: textTheme.bodyLarge),
-              const SizedBox(height: 8),
-              Text('11:00 – Inglés', style: textTheme.bodyLarge),
-            ],
+          content: todayScheduleState.when(
+            data: (slots) {
+              if (slots.isEmpty) {
+                return Text(
+                  'No tienes clases programadas para hoy.',
+                  style: textTheme.bodyMedium?.copyWith(color: AppTheme.slateGray),
+                );
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: slots.take(4).map((slot) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${slot.startTime} – ${slot.subjectName}',
+                            style: textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.inkBlack,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          slot.locationName,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: AppTheme.slateGray,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              );
+            },
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.swissBlue),
+                ),
+              ),
+            ),
+            error: (_, __) => Text(
+              'No se pudo cargar el horario de hoy.',
+              style: textTheme.bodyMedium?.copyWith(color: Colors.red.shade700),
+            ),
           ),
         ),
         SwissCard(

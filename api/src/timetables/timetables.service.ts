@@ -52,7 +52,7 @@ export class TimetablesService {
         include: {
           classroom: true,
           teacher: { select: { fullName: true } },
-          subject: { select: { name: true } },
+          subject: true,
         },
       }),
       this.prisma.classPeriod.findUnique({ where: { id: data.classPeriodId } }),
@@ -93,8 +93,11 @@ export class TimetablesService {
     }
 
     let finalSpaceId: string | null | undefined = data.physicalSpaceId;
-    const subjectName = assignment.subject.name.toLowerCase();
+    const subject = assignment.subject;
+    const subjectName = subject.name.toLowerCase();
     const isSpecialSubject =
+      Boolean(subject.requiresSpecialSpace) ||
+      Boolean(subject.allowedSpaceType) ||
       subjectName.includes('educación física') ||
       subjectName.includes('educacion fisica');
 
@@ -227,13 +230,17 @@ export class TimetablesService {
   }
 
   async downloadZip(fileName: string, res: Response) {
-    const filePath = path.join(process.cwd(), 'temp-exports', fileName);
+    const safeFileName = path.basename(fileName);
+    if (!safeFileName.endsWith('.zip') || safeFileName !== fileName) {
+      throw new BadRequestException('Nombre de archivo no válido.');
+    }
+    const filePath = path.join(process.cwd(), 'temp-exports', safeFileName);
     if (!fs.existsSync(filePath)) {
       throw new NotFoundException('El archivo ya no existe o expiró.');
     }
     res.set({
       'Content-Type': 'application/zip',
-      'Content-Disposition': `attachment; filename="${fileName}"`,
+      'Content-Disposition': `attachment; filename="${safeFileName}"`,
     });
     const fileStream = fs.createReadStream(filePath);
     fileStream.pipe(res);
@@ -254,8 +261,11 @@ export class TimetablesService {
     if (!institution)
       throw new NotFoundException('Configuración institucional no encontrada.');
 
-    const subjectName = slot.teacherAssignment.subject.name.toLowerCase();
+    const subject = slot.teacherAssignment.subject;
+    const subjectName = subject.name.toLowerCase();
     const isSpecialSubject =
+      Boolean(subject.requiresSpecialSpace) ||
+      Boolean(subject.allowedSpaceType) ||
       subjectName.includes('educación física') ||
       subjectName.includes('educacion fisica');
 
@@ -301,5 +311,219 @@ export class TimetablesService {
       where: { id },
       data: { physicalSpaceId },
     });
+  }
+
+  async getMySchedule(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        role: true,
+        student: {
+          include: {
+            enrollments: {
+              where: { status: 'INSCRITO' },
+              include: { classroom: true },
+              orderBy: { date: 'desc' },
+              take: 1,
+            },
+          },
+        },
+        guardian: {
+          include: {
+            students: {
+              include: {
+                student: {
+                  include: {
+                    enrollments: {
+                      where: { status: 'INSCRITO' },
+                      include: { classroom: true },
+                      orderBy: { date: 'desc' },
+                      take: 1,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) throw new NotFoundException('Usuario no encontrado.');
+
+    const roleName = user.role.name;
+
+    // 1. Docente
+    if (roleName === 'DOCENTE' || roleName === 'PROFESOR') {
+      const slots = await this.prisma.scheduleSlot.findMany({
+        where: { teacherId: userId },
+        include: {
+          classPeriod: true,
+          classroom: true,
+          teacherAssignment: {
+            include: {
+              subject: true,
+              teacher: { select: { id: true, fullName: true } },
+            },
+          },
+          physicalSpace: true,
+        },
+        orderBy: [{ dayOfWeek: 'asc' }, { classPeriod: { order: 'asc' } }],
+      });
+
+      return {
+        role: 'DOCENTE',
+        slots,
+      };
+    }
+
+    // 2. Estudiante
+    if (roleName === 'ESTUDIANTE' || user.student) {
+      const activeEnrollment = user.student?.enrollments?.[0];
+      if (!activeEnrollment) {
+        return {
+          role: 'ESTUDIANTE',
+          classroom: null,
+          slots: [],
+        };
+      }
+
+      const slots = await this.prisma.scheduleSlot.findMany({
+        where: { classroomId: activeEnrollment.classroomId },
+        include: {
+          classPeriod: true,
+          classroom: true,
+          teacherAssignment: {
+            include: {
+              subject: true,
+              teacher: { select: { id: true, fullName: true } },
+            },
+          },
+          physicalSpace: true,
+        },
+        orderBy: [{ dayOfWeek: 'asc' }, { classPeriod: { order: 'asc' } }],
+      });
+
+      return {
+        role: 'ESTUDIANTE',
+        classroom: activeEnrollment.classroom,
+        slots,
+      };
+    }
+
+    // 3. Tutor / Padre de Familia
+    if (roleName === 'TUTOR' || roleName === 'PADRE' || user.guardian) {
+      const children = user.guardian?.students || [];
+      const childrenSchedules = await Promise.all(
+        children.map(async (relation) => {
+          const student = relation.student;
+          const activeEnrollment = student?.enrollments?.[0];
+          if (!activeEnrollment) {
+            return {
+              student: { id: student.id, name: student.names },
+              classroom: null,
+              slots: [],
+            };
+          }
+
+          const slots = await this.prisma.scheduleSlot.findMany({
+            where: { classroomId: activeEnrollment.classroomId },
+            include: {
+              classPeriod: true,
+              classroom: true,
+              teacherAssignment: {
+                include: {
+                  subject: true,
+                  teacher: { select: { id: true, fullName: true } },
+                },
+              },
+              physicalSpace: true,
+            },
+            orderBy: [{ dayOfWeek: 'asc' }, { classPeriod: { order: 'asc' } }],
+          });
+
+          return {
+            student: {
+              id: student.id,
+              name: `${student.names} ${student.lastNamePaterno || ''}`.trim(),
+            },
+            classroom: activeEnrollment.classroom,
+            slots,
+          };
+        }),
+      );
+
+      return {
+        role: 'TUTOR',
+        children: childrenSchedules,
+      };
+    }
+
+    // Fallback: Administradores u otro personal
+    return {
+      role: roleName,
+      slots: [],
+    };
+  }
+
+  async getTodaySchedule(userId: string) {
+    const fullSchedule: any = await this.getMySchedule(userId);
+
+    // Determinamos el día de la semana actual en Bolivia (UTC-4)
+    const now = new Date();
+    const boliviaDate = new Date(
+      now.toLocaleString('en-US', { timeZone: 'America/La_Paz' }),
+    );
+    const jsDay = boliviaDate.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+    const dayOfWeek = jsDay === 0 ? 7 : jsDay;
+
+    const dayNames: Record<number, string> = {
+      1: 'Lunes',
+      2: 'Martes',
+      3: 'Miércoles',
+      4: 'Jueves',
+      5: 'Viernes',
+      6: 'Sábado',
+      7: 'Domingo',
+    };
+
+    const isoDate = `${boliviaDate.getFullYear()}-${String(
+      boliviaDate.getMonth() + 1,
+    ).padStart(2, '0')}-${String(boliviaDate.getDate()).padStart(2, '0')}`;
+
+    if (fullSchedule.slots) {
+      const todaySlots = fullSchedule.slots.filter(
+        (s: any) => s.dayOfWeek === dayOfWeek,
+      );
+      return {
+        ...fullSchedule,
+        dayOfWeek,
+        dayName: dayNames[dayOfWeek] || 'Desconocido',
+        date: isoDate,
+        slots: todaySlots,
+      };
+    }
+
+    if (fullSchedule.children) {
+      const childrenToday = fullSchedule.children.map((child: any) => ({
+        ...child,
+        slots: child.slots.filter((s: any) => s.dayOfWeek === dayOfWeek),
+      }));
+      return {
+        ...fullSchedule,
+        dayOfWeek,
+        dayName: dayNames[dayOfWeek] || 'Desconocido',
+        date: isoDate,
+        children: childrenToday,
+      };
+    }
+
+    return {
+      ...fullSchedule,
+      dayOfWeek,
+      dayName: dayNames[dayOfWeek] || 'Desconocido',
+      date: isoDate,
+      slots: [],
+    };
   }
 }
