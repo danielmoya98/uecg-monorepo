@@ -25,10 +25,16 @@ export class InstitutionsService {
       throw new ConflictException('El Código RUE ya está registrado');
 
     const institution = await this.prisma.institution.create({ data });
+    this.institutionConfig.invalidate();
     return {
       data: institution,
       message: 'Institución registrada exitosamente',
     };
+  }
+
+  async getCurrent() {
+    const institution = await this.institutionConfig.getOrNull();
+    return { data: institution };
   }
 
   async findAll(query: PaginationDto) {
@@ -89,6 +95,7 @@ export class InstitutionsService {
       where: { id },
       data: updateData,
     });
+    this.institutionConfig.invalidate();
     return { data: updated, message: 'Datos institucionales actualizados' };
   }
 

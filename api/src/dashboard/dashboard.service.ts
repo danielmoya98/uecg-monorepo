@@ -7,6 +7,7 @@ import type { Cache } from 'cache-manager';
 import { OnEvent } from '@nestjs/event-emitter';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { InstitutionConfigService } from '../institutions/institution-config.service';
 
 @Injectable()
 export class DashboardService {
@@ -14,7 +15,7 @@ export class DashboardService {
 
   constructor(
     private readonly prisma: PrismaService,
-
+    private readonly institutionConfig: InstitutionConfigService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
@@ -190,7 +191,7 @@ export class DashboardService {
           },
         }),
 
-        this.prisma.institution.findFirst(),
+        this.institutionConfig.getOrNull(),
       ]);
 
     const payload = {

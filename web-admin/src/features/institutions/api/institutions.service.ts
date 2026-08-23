@@ -11,10 +11,22 @@ export const InstitutionsService = {
    * Obtiene la ficha de la institución actual.
    */
   getCurrent: async (): Promise<Institution | null> => {
-    const response = await api.get('/institutions?limit=1');
-    const data = response.data;
-    const list = Array.isArray(data) ? data : data?.data || [];
-    return list.length > 0 ? list[0] : null;
+    try {
+      const response = await api.get('/institutions/current');
+      const data = response.data;
+      if (data && typeof data === 'object' && 'id' in data) {
+        return data as Institution;
+      }
+      if (data?.data && typeof data.data === 'object' && 'id' in data.data) {
+        return data.data as Institution;
+      }
+      return null;
+    } catch {
+      const response = await api.get('/institutions?limit=1');
+      const data = response.data;
+      const list = Array.isArray(data) ? data : data?.data || [];
+      return list.length > 0 ? list[0] : null;
+    }
   },
 
   /**
