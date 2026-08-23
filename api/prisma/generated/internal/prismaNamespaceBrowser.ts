@@ -427,6 +427,10 @@ export const PhysicalSpaceScalarFieldEnum = {
   id: 'id',
   name: 'name',
   type: 'type',
+  capacity: 'capacity',
+  building: 'building',
+  floor: 'floor',
+  description: 'description',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

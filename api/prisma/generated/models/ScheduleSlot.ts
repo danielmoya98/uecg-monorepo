@@ -258,6 +258,7 @@ export type ScheduleSlotWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   classroomId_dayOfWeek_classPeriodId?: Prisma.ScheduleSlotClassroomIdDayOfWeekClassPeriodIdCompoundUniqueInput
   teacherId_dayOfWeek_classPeriodId?: Prisma.ScheduleSlotTeacherIdDayOfWeekClassPeriodIdCompoundUniqueInput
+  physicalSpaceId_dayOfWeek_classPeriodId?: Prisma.ScheduleSlotPhysicalSpaceIdDayOfWeekClassPeriodIdCompoundUniqueInput
   AND?: Prisma.ScheduleSlotWhereInput | Prisma.ScheduleSlotWhereInput[]
   OR?: Prisma.ScheduleSlotWhereInput[]
   NOT?: Prisma.ScheduleSlotWhereInput | Prisma.ScheduleSlotWhereInput[]
@@ -272,7 +273,7 @@ export type ScheduleSlotWhereUniqueInput = Prisma.AtLeast<{
   classroom?: Prisma.XOR<Prisma.ClassroomScalarRelationFilter, Prisma.ClassroomWhereInput>
   teacher?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   physicalSpace?: Prisma.XOR<Prisma.PhysicalSpaceNullableScalarRelationFilter, Prisma.PhysicalSpaceWhereInput> | null
-}, "id" | "classroomId_dayOfWeek_classPeriodId" | "teacherId_dayOfWeek_classPeriodId">
+}, "id" | "classroomId_dayOfWeek_classPeriodId" | "teacherId_dayOfWeek_classPeriodId" | "physicalSpaceId_dayOfWeek_classPeriodId">
 
 export type ScheduleSlotOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -385,6 +386,12 @@ export type ScheduleSlotClassroomIdDayOfWeekClassPeriodIdCompoundUniqueInput = {
 
 export type ScheduleSlotTeacherIdDayOfWeekClassPeriodIdCompoundUniqueInput = {
   teacherId: string
+  dayOfWeek: number
+  classPeriodId: string
+}
+
+export type ScheduleSlotPhysicalSpaceIdDayOfWeekClassPeriodIdCompoundUniqueInput = {
+  physicalSpaceId: string
   dayOfWeek: number
   classPeriodId: string
 }

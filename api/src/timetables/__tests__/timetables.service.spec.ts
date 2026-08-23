@@ -46,6 +46,9 @@ describe('TimetablesService - Pruebas Unitarias', () => {
     institution: {
       findFirst: jest.fn(),
     },
+    physicalSpace: {
+      findUnique: jest.fn(),
+    },
   };
 
   const mockQueue = {
@@ -64,6 +67,11 @@ describe('TimetablesService - Pruebas Unitarias', () => {
     service = module.get<TimetablesService>(TimetablesService);
 
     jest.clearAllMocks();
+    mockPrisma.physicalSpace.findUnique.mockResolvedValue({
+      id: 'space-id',
+      name: 'Aula 101',
+      isActive: true,
+    });
   });
 
   describe('getPeriods', () => {
@@ -200,6 +208,36 @@ describe('TimetablesService - Pruebas Unitarias', () => {
 
       await expect(service.createSlot(defaultDto)).rejects.toThrow(
         ConflictException,
+      );
+    });
+
+    it('debe lanzar BadRequestException si el espacio físico está inactivo', async () => {
+      mockPrisma.teacherAssignment.findUnique.mockResolvedValue({
+        id: 'assignment-id',
+        classroomId: 'classroom-id',
+        teacherId: 'teacher-id',
+        classroom: { shift: Shift.MANANA, baseRoomId: 'space-id' },
+        subject: { name: 'Matemáticas' },
+        teacher: { fullName: 'Juan Perez' },
+      });
+      mockPrisma.classPeriod.findUnique.mockResolvedValue({
+        id: 'period-id',
+        shift: Shift.MANANA,
+        isBreak: false,
+        isActive: true,
+      });
+      mockPrisma.institution.findFirst.mockResolvedValue({
+        id: 'inst-id',
+        schedulingMode: SchedulingMode.FIXED_BASE,
+      });
+      mockPrisma.physicalSpace.findUnique.mockResolvedValue({
+        id: 'space-id',
+        name: 'Aula 101',
+        isActive: false,
+      });
+
+      await expect(service.createSlot(defaultDto)).rejects.toThrow(
+        BadRequestException,
       );
     });
 

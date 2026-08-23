@@ -390,6 +390,8 @@ model ScheduleSlot {
 
   @@unique([classroomId, dayOfWeek, classPeriodId])
   @@unique([teacherId, dayOfWeek, classPeriodId])
+  @@unique([physicalSpaceId, dayOfWeek, classPeriodId])
+  @@index([physicalSpaceId])
   @@map("schedule_slots")
 }
 
@@ -630,10 +632,14 @@ enum SpaceType {
 // 🔥 NUEVA TABLA: ESPACIOS FÍSICOS
 // ==========================================
 model PhysicalSpace {
-  id       String    @id @default(uuid())
-  name     String
-  type     SpaceType @default(SALON)
-  isActive Boolean   @default(true)
+  id          String    @id @default(uuid())
+  name        String
+  type        SpaceType @default(SALON)
+  capacity    Int?
+  building    String?
+  floor       String?
+  description String?
+  isActive    Boolean   @default(true)
 
   baseClassrooms Classroom[]    @relation("ClassroomBaseRoom")
   scheduleSlots  ScheduleSlot[] @relation("SlotPhysicalSpace")
@@ -641,6 +647,8 @@ model PhysicalSpace {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@index([type, isActive])
+  @@index([name])
   @@map("physical_spaces")
 }
 

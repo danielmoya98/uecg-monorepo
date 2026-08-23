@@ -8,7 +8,7 @@ import { useRouteContext } from '@tanstack/react-router'
 
 import { useTimetablesData } from '../hooks/use-timetables-data'
 import { useTimetableExport } from '../hooks/use-timetable-export'
-import { PhysicalSpacesService } from '@/features/physical-spaces/api/physical-spaces.service'
+import { PhysicalSpacesService } from '@/features/physical-spaces'
 import { InstitutionsService } from '@/features/institutions/api/institutions.service'
 import type { Classroom } from '@/features/classrooms/types/classrooms.types'
 import type { TimetableSlot } from '../types/timetables.types'

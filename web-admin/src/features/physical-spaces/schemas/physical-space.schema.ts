@@ -8,6 +8,16 @@ export const physicalSpaceSchema = z.object({
   type: z.enum(['SALON', 'LABORATORIO', 'CANCHA', 'AUDITORIO', 'OTRO'], {
     message: 'Seleccione una categoría válida',
   }),
+  capacity: z
+    .number()
+    .int()
+    .positive('La capacidad debe ser un número positivo')
+    .max(1000, 'La capacidad máxima es 1000')
+    .optional()
+    .nullable(),
+  building: z.string().max(100).optional().nullable(),
+  floor: z.string().max(50).optional().nullable(),
+  description: z.string().max(255).optional().nullable(),
   isActive: z.boolean(),
 })
 

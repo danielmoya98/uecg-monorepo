@@ -86,6 +86,22 @@ export class PhysicalSpacesService {
       }
     }
 
+    // 🛡️ REGLA DE SEGURIDAD: Si se intenta desactivar el espacio, verificar que no tenga usos activos
+    if (updatePhysicalSpaceDto.isActive === false) {
+      const activeSchedules = await this.prisma.scheduleSlot.count({
+        where: { physicalSpaceId: id },
+      });
+      const activeBaseRooms = await this.prisma.classroom.count({
+        where: { baseRoomId: id },
+      });
+
+      if (activeSchedules > 0 || activeBaseRooms > 0) {
+        throw new ConflictException(
+          `No se puede desactivar este espacio físico porque actualmente está asignado a ${activeBaseRooms} curso(s) y ${activeSchedules} periodo(s) de horario. Reasigne esas materias/aulas antes de desactivarlo.`,
+        );
+      }
+    }
+
     return this.prisma.physicalSpace.update({
       where: { id },
       data: updatePhysicalSpaceDto,
