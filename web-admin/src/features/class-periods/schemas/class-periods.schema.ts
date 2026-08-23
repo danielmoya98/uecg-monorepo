@@ -20,10 +20,13 @@ export const classPeriodSchema = z
       message: 'El turno es requerido',
     }),
     isBreak: z.boolean(),
-    order: z.number({
-      message: 'La posición debe ser un número',
-    }).int('La posición debe ser un número entero')
+    order: z
+      .number({
+        message: 'La posición debe ser un número',
+      })
+      .int('La posición debe ser un número entero')
       .min(1, 'La posición debe ser igual o mayor a 1'),
+    isActive: z.boolean(),
   })
   .refine(
     (data) => {
@@ -37,3 +40,4 @@ export const classPeriodSchema = z
   )
 
 export type ClassPeriodFormValues = z.infer<typeof classPeriodSchema>
+

@@ -228,9 +228,9 @@ describe('ClassPeriodsService - Pruebas Unitarias', () => {
       );
     });
 
-    it('debe invalidar caché del nuevo turno si este cambia', async () => {
+    it('debe invalidar caché del nuevo turno si este cambia y revalidar solapamiento', async () => {
       mockPrisma.classPeriod.findUnique.mockResolvedValue(existingPeriod);
-      mockPrisma.classPeriod.findFirst.mockResolvedValueOnce(null); // validateOverlap -> no overlap
+      mockPrisma.classPeriod.findFirst.mockResolvedValueOnce(null); // validateOverlap -> no overlap in new shift
       mockPrisma.classPeriod.findFirst.mockResolvedValueOnce(null); // validateOrder -> no order conflict
       mockPrisma.classPeriod.update.mockResolvedValue({
         ...existingPeriod,
@@ -241,6 +241,19 @@ describe('ClassPeriodsService - Pruebas Unitarias', () => {
 
       expect(mockCache.del).toHaveBeenCalledWith('class_periods_MANANA');
       expect(mockCache.del).toHaveBeenCalledWith('class_periods_TARDE');
+    });
+
+    it('debe lanzar ConflictException si Prisma lanza error de unicidad P2002 en update', async () => {
+      mockPrisma.classPeriod.findUnique.mockResolvedValue(existingPeriod);
+      mockPrisma.classPeriod.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.classPeriod.findFirst.mockResolvedValueOnce(null);
+      const p2002Error = new Error('Unique constraint failed');
+      (p2002Error as any).code = 'P2002';
+      mockPrisma.classPeriod.update.mockRejectedValue(p2002Error);
+
+      await expect(
+        service.update('period-uuid', { order: 2 }),
+      ).rejects.toThrow(ConflictException);
     });
   });
 

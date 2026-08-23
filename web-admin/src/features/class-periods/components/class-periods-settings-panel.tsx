@@ -5,7 +5,8 @@ import { useClassPeriodsData } from '../hooks/use-class-periods-data'
 import ShiftTabs from './shift-tabs'
 import ClassPeriodForm from './class-period-form'
 import ClassPeriodsTable from './class-periods-table'
-import type { ClassPeriodPayload } from '../types/class-periods.types'
+import DeleteClassPeriodDrawer from './delete-class-period-drawer'
+import type { ClassPeriod, ClassPeriodPayload } from '../types/class-periods.types'
 
 export default function ClassPeriodsSettingsPanel() {
   const {
@@ -14,23 +15,54 @@ export default function ClassPeriodsSettingsPanel() {
     periods,
     isLoading,
     createMutation,
+    updateMutation,
     removeMutation,
   } = useClassPeriodsData()
 
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingPeriod, setEditingPeriod] = useState<ClassPeriod | null>(null)
+  const [periodToDelete, setPeriodToDelete] = useState<ClassPeriod | null>(null)
 
   const handleFormSubmit = (data: ClassPeriodPayload) => {
-    createMutation.mutate(data, {
-      onSuccess: () => {
-        setIsFormOpen(false)
-      },
-    })
+    if (editingPeriod) {
+      updateMutation.mutate(
+        { id: editingPeriod.id, data },
+        {
+          onSuccess: () => {
+            setIsFormOpen(false)
+            setEditingPeriod(null)
+          },
+        }
+      )
+    } else {
+      createMutation.mutate(data, {
+        onSuccess: () => {
+          setIsFormOpen(false)
+        },
+      })
+    }
   }
 
-  const handleDelete = (id: string) => {
-    if (window.confirm('¿Desea eliminar el periodo?')) {
-      removeMutation.mutate(id)
-    }
+  const handleEdit = (period: ClassPeriod) => {
+    setEditingPeriod(period)
+    setIsFormOpen(true)
+  }
+
+  const handleCancelForm = () => {
+    setIsFormOpen(false)
+    setEditingPeriod(null)
+  }
+
+  const handleDeletePrompt = (period: ClassPeriod) => {
+    setPeriodToDelete(period)
+  }
+
+  const handleConfirmDelete = (id: string) => {
+    removeMutation.mutate(id, {
+      onSuccess: () => {
+        setPeriodToDelete(null)
+      },
+    })
   }
 
   return (
@@ -59,6 +91,7 @@ export default function ClassPeriodsSettingsPanel() {
           onShiftChange={(shift) => {
             setSelectedShift(shift)
             setIsFormOpen(false)
+            setEditingPeriod(null)
           }}
         />
 
@@ -69,7 +102,14 @@ export default function ClassPeriodsSettingsPanel() {
           </h3>
           <button
             type="button"
-            onClick={() => setIsFormOpen(!isFormOpen)}
+            onClick={() => {
+              if (isFormOpen) {
+                handleCancelForm()
+              } else {
+                setEditingPeriod(null)
+                setIsFormOpen(true)
+              }
+            }}
             className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-widest transition-colors flex items-center gap-2 outline-none shadow-sm cursor-pointer ${
               isFormOpen
                 ? 'bg-uecg-gray text-white hover:bg-uecg-text'
@@ -90,8 +130,10 @@ export default function ClassPeriodsSettingsPanel() {
               transition={{ duration: 0.15, ease: 'easeOut' }}
             >
               <ClassPeriodForm
+                initialData={editingPeriod}
                 onSubmit={handleFormSubmit}
-                isPending={createMutation.isPending}
+                onCancel={handleCancelForm}
+                isPending={createMutation.isPending || updateMutation.isPending}
                 defaultOrder={(periods?.length || 0) + 1}
                 selectedShift={selectedShift}
               />
@@ -104,9 +146,20 @@ export default function ClassPeriodsSettingsPanel() {
           periods={periods}
           isLoading={isLoading}
           isDeleting={removeMutation.isPending}
-          onDelete={handleDelete}
+          onEdit={handleEdit}
+          onDelete={handleDeletePrompt}
+        />
+
+        {/* Modal Accesible de Confirmación de Eliminación */}
+        <DeleteClassPeriodDrawer
+          isOpen={!!periodToDelete}
+          onClose={() => setPeriodToDelete(null)}
+          period={periodToDelete}
+          onConfirm={handleConfirmDelete}
+          isDeleting={removeMutation.isPending}
         />
       </div>
     </section>
   )
 }
+

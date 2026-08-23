@@ -2,21 +2,27 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { classPeriodSchema, type ClassPeriodFormValues } from '../schemas/class-periods.schema'
-import type { ClassPeriodPayload, ShiftType } from '../types/class-periods.types'
+import type { ClassPeriod, ClassPeriodPayload, ShiftType } from '../types/class-periods.types'
 
 interface ClassPeriodFormProps {
+  initialData?: ClassPeriod | null
   onSubmit: (payload: ClassPeriodPayload) => void
+  onCancel?: () => void
   isPending: boolean
   defaultOrder: number
   selectedShift: ShiftType
 }
 
 export default function ClassPeriodForm({
+  initialData,
   onSubmit,
+  onCancel,
   isPending,
   defaultOrder,
   selectedShift,
 }: ClassPeriodFormProps) {
+  const isEditing = !!initialData
+
   const {
     register,
     handleSubmit,
@@ -25,26 +31,40 @@ export default function ClassPeriodForm({
   } = useForm<ClassPeriodFormValues>({
     resolver: zodResolver(classPeriodSchema),
     defaultValues: {
-      name: '',
-      startTime: '',
-      endTime: '',
-      shift: selectedShift,
-      isBreak: false,
-      order: defaultOrder,
+      name: initialData?.name ?? '',
+      startTime: initialData?.startTime ?? '',
+      endTime: initialData?.endTime ?? '',
+      shift: initialData?.shift ?? selectedShift,
+      isBreak: initialData?.isBreak ?? false,
+      order: initialData?.order ?? defaultOrder,
+      isActive: initialData?.isActive ?? true,
     },
   })
 
-  // Sincronizar los defaultValues del formulario cuando cambien las props del padre
+  // Sincronizar los defaultValues del formulario cuando cambien las props del padre o initialData
   useEffect(() => {
-    reset({
-      name: '',
-      startTime: '',
-      endTime: '',
-      shift: selectedShift,
-      isBreak: false,
-      order: defaultOrder,
-    })
-  }, [selectedShift, defaultOrder, reset])
+    if (initialData) {
+      reset({
+        name: initialData.name,
+        startTime: initialData.startTime,
+        endTime: initialData.endTime,
+        shift: initialData.shift,
+        isBreak: initialData.isBreak,
+        order: initialData.order,
+        isActive: initialData.isActive ?? true,
+      })
+    } else {
+      reset({
+        name: '',
+        startTime: '',
+        endTime: '',
+        shift: selectedShift,
+        isBreak: false,
+        order: defaultOrder,
+        isActive: true,
+      })
+    }
+  }, [initialData, selectedShift, defaultOrder, reset])
 
   const handleFormSubmit = (data: ClassPeriodFormValues) => {
     onSubmit(data)
@@ -173,26 +193,61 @@ export default function ClassPeriodForm({
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-5 pt-5 border-t border-gray-200 gap-4">
-        <label className="flex items-center gap-3 cursor-pointer group">
-          <input
-            id="period-isBreak"
-            type="checkbox"
+        <div className="flex items-center gap-6">
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <input
+              id="period-isBreak"
+              type="checkbox"
+              disabled={isPending}
+              {...register('isBreak')}
+              className="w-5 h-5 accent-yellow-500 cursor-pointer focus:ring-2 focus:ring-yellow-400 focus:outline-none rounded transition-all duration-150 disabled:cursor-not-allowed"
+            />
+            <span className="text-[10px] font-black uppercase tracking-widest text-uecg-dark group-hover:text-yellow-600 transition-colors">
+              Descanso / Recreo
+            </span>
+          </label>
+
+          {isEditing && (
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <input
+                id="period-isActive"
+                type="checkbox"
+                disabled={isPending}
+                {...register('isActive')}
+                className="w-5 h-5 accent-uecg-blue cursor-pointer focus:ring-2 focus:ring-uecg-blue/50 focus:outline-none rounded transition-all duration-150 disabled:cursor-not-allowed"
+              />
+              <span className="text-[10px] font-black uppercase tracking-widest text-uecg-dark group-hover:text-uecg-blue transition-colors">
+                Activo
+              </span>
+            </label>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          {onCancel && (
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={onCancel}
+              className="px-5 py-3 border border-gray-300 text-uecg-gray text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all duration-200 shadow-sm outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Cancelar
+            </button>
+          )}
+          <button
             disabled={isPending}
-            {...register('isBreak')}
-            className="w-5 h-5 accent-yellow-500 cursor-pointer focus:ring-2 focus:ring-yellow-400 focus:outline-none rounded transition-all duration-150 disabled:cursor-not-allowed"
-          />
-          <span className="text-[10px] font-black uppercase tracking-widest text-uecg-dark group-hover:text-yellow-600 transition-colors">
-            Descanso / Recreo
-          </span>
-        </label>
-        <button
-          disabled={isPending}
-          type="submit"
-          className="px-8 py-3 bg-uecg-dark text-white text-[10px] font-black uppercase tracking-widest hover:bg-black active:scale-[0.98] transition-all duration-200 shadow-sm outline-none w-full sm:w-auto text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-uecg-dark/50"
-        >
-          {isPending ? 'Guardando...' : 'Registrar Periodo'}
-        </button>
+            type="submit"
+            className="px-8 py-3 bg-uecg-dark text-white text-[10px] font-black uppercase tracking-widest hover:bg-black active:scale-[0.98] transition-all duration-200 shadow-sm outline-none w-full sm:w-auto text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-uecg-dark/50"
+          >
+            {isPending
+              ? 'Guardando...'
+              : isEditing
+                ? 'Guardar Cambios'
+                : 'Registrar Periodo'}
+          </button>
+        </div>
       </div>
     </form>
   )
 }
+

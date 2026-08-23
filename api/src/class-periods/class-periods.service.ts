@@ -112,9 +112,7 @@ export class ClassPeriodsService {
     const existingOrder = await this.prisma.classPeriod.findFirst({
       where: {
         shift,
-
         order,
-
         ...(excludeId
           ? {
               id: {
@@ -143,29 +141,37 @@ export class ClassPeriodsService {
 
     await this.validateOverlap(data.shift, data.startTime, data.endTime);
 
-    const newPeriod = await this.prisma.classPeriod.create({
-      data,
-    });
+    try {
+      const newPeriod = await this.prisma.classPeriod.create({
+        data,
+      });
 
-    // ======================================================
-    // CACHE INVALIDATION
-    // ======================================================
+      // ======================================================
+      // CACHE INVALIDATION
+      // ======================================================
 
-    await this.invalidateCaches(data.shift);
+      await this.invalidateCaches(data.shift);
 
-    // ======================================================
-    // EVENTS
-    // ======================================================
+      // ======================================================
+      // EVENTS
+      // ======================================================
 
-    this.eventEmitter.emit('class-period.created', {
-      classPeriodId: newPeriod.id,
+      this.eventEmitter.emit('class-period.created', {
+        classPeriodId: newPeriod.id,
+        shift: newPeriod.shift,
+      });
 
-      shift: newPeriod.shift,
-    });
+      this.logger.log(`🕒 Periodo creado: ${newPeriod.name}`);
 
-    this.logger.log(`🕒 Periodo creado: ${newPeriod.name}`);
-
-    return newPeriod;
+      return newPeriod;
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(
+          `El orden ${data.order} ya está en uso en el turno ${data.shift}.`,
+        );
+      }
+      throw error;
+    }
   }
 
   // ======================================================
@@ -190,13 +196,11 @@ export class ClassPeriodsService {
         where: {
           shift,
         },
-
         orderBy: {
           order: 'asc',
         },
       });
 
-      // 🔥 FIX TTL
       await this.cacheManager.set(cacheKey, periods, 60 * 60 * 24);
 
       return periods;
@@ -219,7 +223,6 @@ export class ClassPeriodsService {
         {
           shift: 'asc',
         },
-
         {
           order: 'asc',
         },
@@ -245,53 +248,63 @@ export class ClassPeriodsService {
     }
 
     const checkStartTime = data.startTime || period.startTime;
-
     const checkEndTime = data.endTime || period.endTime;
-
     const checkShift = data.shift || period.shift;
+    const checkOrder = data.order !== undefined ? data.order : period.order;
 
-    const checkOrder = data.order || period.order;
+    const isTimeOrShiftChanged =
+      data.startTime !== undefined ||
+      data.endTime !== undefined ||
+      (data.shift !== undefined && data.shift !== period.shift);
 
-    if (data.startTime || data.endTime) {
+    if (isTimeOrShiftChanged) {
       this.validateTimeLogic(checkStartTime, checkEndTime);
-
       await this.validateOverlap(checkShift, checkStartTime, checkEndTime, id);
     }
 
-    // 🔥 FIX IMPORTANTE
-    if (data.order || data.shift) {
+    if (
+      (data.order !== undefined && data.order !== period.order) ||
+      (data.shift !== undefined && data.shift !== period.shift)
+    ) {
       await this.validateOrder(checkShift, checkOrder, id);
     }
 
-    const updated = await this.prisma.classPeriod.update({
-      where: { id },
+    try {
+      const updated = await this.prisma.classPeriod.update({
+        where: { id },
+        data,
+      });
 
-      data,
-    });
+      // ======================================================
+      // CACHE INVALIDATION
+      // ======================================================
 
-    // ======================================================
-    // CACHE INVALIDATION
-    // ======================================================
+      await this.invalidateCaches(period.shift);
 
-    await this.invalidateCaches(period.shift);
+      if (data.shift && data.shift !== period.shift) {
+        await this.invalidateCaches(data.shift);
+      }
 
-    if (data.shift && data.shift !== period.shift) {
-      await this.invalidateCaches(data.shift);
+      // ======================================================
+      // EVENTS
+      // ======================================================
+
+      this.eventEmitter.emit('class-period.updated', {
+        classPeriodId: updated.id,
+        shift: updated.shift,
+      });
+
+      this.logger.log(`✏️ Periodo actualizado: ${updated.name}`);
+
+      return updated;
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(
+          `El orden ${checkOrder} ya está en uso en el turno ${checkShift}.`,
+        );
+      }
+      throw error;
     }
-
-    // ======================================================
-    // EVENTS
-    // ======================================================
-
-    this.eventEmitter.emit('class-period.updated', {
-      classPeriodId: updated.id,
-
-      shift: updated.shift,
-    });
-
-    this.logger.log(`✏️ Periodo actualizado: ${updated.name}`);
-
-    return updated;
   }
 
   // ======================================================
@@ -324,7 +337,6 @@ export class ClassPeriodsService {
 
       this.eventEmitter.emit('class-period.deleted', {
         classPeriodId: id,
-
         shift: period.shift,
       });
 
@@ -336,7 +348,7 @@ export class ClassPeriodsService {
     } catch (error: any) {
       if (error.code === 'P2003') {
         throw new ConflictException(
-          'No puedes eliminar este periodo porque está siendo utilizado.',
+          'No puedes eliminar este periodo porque está siendo utilizado en horarios o registros de asistencia. Puede desactivarlo en su lugar.',
         );
       }
 
@@ -344,3 +356,4 @@ export class ClassPeriodsService {
     }
   }
 }
+

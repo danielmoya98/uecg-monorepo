@@ -14,7 +14,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TimetablesService } from '../timetables.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { getQueueToken } from '@nestjs/bullmq';
-import { NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Shift, SchedulingMode } from '../../../prisma/generated/client';
 
 describe('TimetablesService - Pruebas Unitarias', () => {
@@ -112,11 +116,65 @@ describe('TimetablesService - Pruebas Unitarias', () => {
 
     it('debe lanzar NotFoundException si la asignación docente no existe', async () => {
       mockPrisma.teacherAssignment.findUnique.mockResolvedValue(null);
-      mockPrisma.classPeriod.findUnique.mockResolvedValue({ id: 'period-id' });
+      mockPrisma.classPeriod.findUnique.mockResolvedValue({
+        id: 'period-id',
+        isBreak: false,
+        isActive: true,
+      });
       mockPrisma.institution.findFirst.mockResolvedValue({ id: 'inst-id' });
 
       await expect(service.createSlot(defaultDto)).rejects.toThrow(
         NotFoundException,
+      );
+    });
+
+    it('debe lanzar BadRequestException si el periodo es un recreo / descanso', async () => {
+      mockPrisma.teacherAssignment.findUnique.mockResolvedValue({
+        id: 'assignment-id',
+        classroomId: 'classroom-id',
+        teacherId: 'teacher-id',
+        classroom: { shift: Shift.MANANA },
+        subject: { name: 'Matemáticas' },
+        teacher: { fullName: 'Juan Perez' },
+      });
+      mockPrisma.classPeriod.findUnique.mockResolvedValue({
+        id: 'period-id',
+        shift: Shift.MANANA,
+        isBreak: true,
+        isActive: true,
+      });
+      mockPrisma.institution.findFirst.mockResolvedValue({
+        id: 'inst-id',
+        schedulingMode: SchedulingMode.DYNAMIC,
+      });
+
+      await expect(service.createSlot(defaultDto)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('debe lanzar BadRequestException si el periodo está inactivo / descontinuado', async () => {
+      mockPrisma.teacherAssignment.findUnique.mockResolvedValue({
+        id: 'assignment-id',
+        classroomId: 'classroom-id',
+        teacherId: 'teacher-id',
+        classroom: { shift: Shift.MANANA },
+        subject: { name: 'Matemáticas' },
+        teacher: { fullName: 'Juan Perez' },
+      });
+      mockPrisma.classPeriod.findUnique.mockResolvedValue({
+        id: 'period-id',
+        shift: Shift.MANANA,
+        isBreak: false,
+        isActive: false,
+      });
+      mockPrisma.institution.findFirst.mockResolvedValue({
+        id: 'inst-id',
+        schedulingMode: SchedulingMode.DYNAMIC,
+      });
+
+      await expect(service.createSlot(defaultDto)).rejects.toThrow(
+        BadRequestException,
       );
     });
 
@@ -132,6 +190,8 @@ describe('TimetablesService - Pruebas Unitarias', () => {
       mockPrisma.classPeriod.findUnique.mockResolvedValue({
         id: 'period-id',
         shift: Shift.TARDE,
+        isBreak: false,
+        isActive: true,
       });
       mockPrisma.institution.findFirst.mockResolvedValue({
         id: 'inst-id',
@@ -155,6 +215,8 @@ describe('TimetablesService - Pruebas Unitarias', () => {
       mockPrisma.classPeriod.findUnique.mockResolvedValue({
         id: 'period-id',
         shift: Shift.MANANA,
+        isBreak: false,
+        isActive: true,
       });
       mockPrisma.institution.findFirst.mockResolvedValue({
         id: 'inst-id',
@@ -185,6 +247,8 @@ describe('TimetablesService - Pruebas Unitarias', () => {
       mockPrisma.classPeriod.findUnique.mockResolvedValue({
         id: 'period-id',
         shift: Shift.MANANA,
+        isBreak: false,
+        isActive: true,
       });
       mockPrisma.institution.findFirst.mockResolvedValue({
         id: 'inst-id',
@@ -226,6 +290,8 @@ describe('TimetablesService - Pruebas Unitarias', () => {
       mockPrisma.classPeriod.findUnique.mockResolvedValue({
         id: 'period-id',
         shift: Shift.MANANA,
+        isBreak: false,
+        isActive: true,
       });
       mockPrisma.institution.findFirst.mockResolvedValue({
         id: 'inst-id',

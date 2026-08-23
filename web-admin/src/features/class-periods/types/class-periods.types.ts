@@ -7,8 +7,10 @@ export interface ClassPeriodPayload {
   shift: ShiftType
   isBreak: boolean
   order: number
+  isActive?: boolean
 }
 
 export interface ClassPeriod extends ClassPeriodPayload {
   id: string
 }
+

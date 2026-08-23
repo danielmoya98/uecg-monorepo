@@ -2411,7 +2411,10 @@ export const ClassPeriodScalarFieldEnum = {
   endTime: 'endTime',
   shift: 'shift',
   isBreak: 'isBreak',
-  order: 'order'
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ClassPeriodScalarFieldEnum = (typeof ClassPeriodScalarFieldEnum)[keyof typeof ClassPeriodScalarFieldEnum]

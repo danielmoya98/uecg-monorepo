@@ -14,6 +14,7 @@ const mockPeriods: ClassPeriod[] = [
     shift: 'MANANA',
     isBreak: false,
     order: 1,
+    isActive: true,
   },
   {
     id: 'p2',
@@ -23,6 +24,7 @@ const mockPeriods: ClassPeriod[] = [
     shift: 'MANANA',
     isBreak: true,
     order: 2,
+    isActive: true,
   },
 ]
 
@@ -34,6 +36,7 @@ describe('Módulo Class Periods - Pruebas Unitarias', () => {
           periods={[]}
           isLoading={true}
           isDeleting={false}
+          onEdit={() => {}}
           onDelete={() => {}}
         />
       )
@@ -46,6 +49,7 @@ describe('Módulo Class Periods - Pruebas Unitarias', () => {
           periods={[]}
           isLoading={false}
           isDeleting={false}
+          onEdit={() => {}}
           onDelete={() => {}}
         />
       )
@@ -58,6 +62,7 @@ describe('Módulo Class Periods - Pruebas Unitarias', () => {
           periods={mockPeriods}
           isLoading={false}
           isDeleting={false}
+          onEdit={() => {}}
           onDelete={() => {}}
         />
       )
@@ -71,6 +76,24 @@ describe('Módulo Class Periods - Pruebas Unitarias', () => {
       expect(screen.getByText('Recreo')).toBeInTheDocument()
     })
 
+    it('debe llamar a onEdit cuando se hace click en el botón de editar', () => {
+      const onEditMock = vi.fn()
+      render(
+        <ClassPeriodsTable
+          periods={mockPeriods}
+          isLoading={false}
+          isDeleting={false}
+          onEdit={onEditMock}
+          onDelete={() => {}}
+        />
+      )
+
+      const editButtons = screen.getAllByRole('button', { name: /Editar período/i })
+      fireEvent.click(editButtons[0])
+
+      expect(onEditMock).toHaveBeenCalledWith(mockPeriods[0])
+    })
+
     it('debe llamar a onDelete cuando se hace click en el botón de borrar', () => {
       const onDeleteMock = vi.fn()
       render(
@@ -78,6 +101,7 @@ describe('Módulo Class Periods - Pruebas Unitarias', () => {
           periods={mockPeriods}
           isLoading={false}
           isDeleting={false}
+          onEdit={() => {}}
           onDelete={onDeleteMock}
         />
       )
@@ -85,7 +109,7 @@ describe('Módulo Class Periods - Pruebas Unitarias', () => {
       const deleteButtons = screen.getAllByRole('button', { name: /Eliminar período/i })
       fireEvent.click(deleteButtons[0])
 
-      expect(onDeleteMock).toHaveBeenCalledWith('p1')
+      expect(onDeleteMock).toHaveBeenCalledWith(mockPeriods[0])
     })
   })
 
@@ -111,6 +135,24 @@ describe('Módulo Class Periods - Pruebas Unitarias', () => {
       expect(screen.getByLabelText('Fin')).toBeInTheDocument()
       expect(screen.getByLabelText('Posición')).toHaveValue(3)
       expect(screen.getByLabelText('Descanso / Recreo')).not.toBeChecked()
+    })
+
+    it('debe renderizar en modo edición cuando se pasa initialData', () => {
+      render(
+        <ClassPeriodForm
+          initialData={mockPeriods[0]}
+          onSubmit={onSubmitMock}
+          isPending={false}
+          defaultOrder={1}
+          selectedShift="MANANA"
+        />
+      )
+
+      expect(screen.getByLabelText('Nombre Oficial')).toHaveValue('1RA HORA')
+      expect(screen.getByLabelText('Inicio')).toHaveValue('08:00')
+      expect(screen.getByLabelText('Fin')).toHaveValue('08:45')
+      expect(screen.getByLabelText('Activo')).toBeChecked()
+      expect(screen.getByRole('button', { name: /Guardar Cambios/i })).toBeInTheDocument()
     })
 
     it('debe mostrar errores de validación para campos vacíos', async () => {
@@ -185,8 +227,10 @@ describe('Módulo Class Periods - Pruebas Unitarias', () => {
           shift: 'MANANA',
           isBreak: true,
           order: 1,
+          isActive: true,
         })
       })
     })
   })
 })
+
