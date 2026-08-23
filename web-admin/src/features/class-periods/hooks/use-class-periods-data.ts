@@ -26,6 +26,20 @@ export const useClassPeriodsData = (initialShift: ShiftType = 'MANANA') => {
     },
   })
 
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<ClassPeriodPayload> }) =>
+      ClassPeriodsService.update(id, data),
+    onSuccess: () => {
+      toast.success('Periodo actualizado correctamente.')
+      queryClient.invalidateQueries({ queryKey: ['classPeriods'] })
+    },
+    onError: (error: unknown) => {
+      const err = error as { response?: { data?: { message?: string | string[] } } }
+      const msg = err.response?.data?.message || 'Error al actualizar el periodo.'
+      toast.error(typeof msg === 'string' ? msg : msg[0])
+    },
+  })
+
   const removeMutation = useMutation({
     mutationFn: (id: string) => ClassPeriodsService.remove(id),
     onSuccess: () => {
@@ -45,6 +59,8 @@ export const useClassPeriodsData = (initialShift: ShiftType = 'MANANA') => {
     periods,
     isLoading,
     createMutation,
+    updateMutation,
     removeMutation,
   }
 }
+

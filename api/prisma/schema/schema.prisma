@@ -348,10 +348,16 @@ model ClassPeriod {
   shift     Shift
   isBreak   Boolean @default(false)
   order     Int
+  isActive  Boolean @default(true) @map("is_active")
 
   attendanceRecords AttendanceRecord[]
   schedules         ScheduleSlot[]
 
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([shift, order])
+  @@index([shift, isActive, order])
   @@map("class_periods")
 }
 

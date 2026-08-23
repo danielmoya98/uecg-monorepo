@@ -42,6 +42,9 @@ export type ClassPeriodMinAggregateOutputType = {
   shift: $Enums.Shift | null
   isBreak: boolean | null
   order: number | null
+  isActive: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ClassPeriodMaxAggregateOutputType = {
@@ -52,6 +55,9 @@ export type ClassPeriodMaxAggregateOutputType = {
   shift: $Enums.Shift | null
   isBreak: boolean | null
   order: number | null
+  isActive: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ClassPeriodCountAggregateOutputType = {
@@ -62,6 +68,9 @@ export type ClassPeriodCountAggregateOutputType = {
   shift: number
   isBreak: number
   order: number
+  isActive: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -82,6 +91,9 @@ export type ClassPeriodMinAggregateInputType = {
   shift?: true
   isBreak?: true
   order?: true
+  isActive?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ClassPeriodMaxAggregateInputType = {
@@ -92,6 +104,9 @@ export type ClassPeriodMaxAggregateInputType = {
   shift?: true
   isBreak?: true
   order?: true
+  isActive?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ClassPeriodCountAggregateInputType = {
@@ -102,6 +117,9 @@ export type ClassPeriodCountAggregateInputType = {
   shift?: true
   isBreak?: true
   order?: true
+  isActive?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -199,6 +217,9 @@ export type ClassPeriodGroupByOutputType = {
   shift: $Enums.Shift
   isBreak: boolean
   order: number
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
   _count: ClassPeriodCountAggregateOutputType | null
   _avg: ClassPeriodAvgAggregateOutputType | null
   _sum: ClassPeriodSumAggregateOutputType | null
@@ -232,6 +253,9 @@ export type ClassPeriodWhereInput = {
   shift?: Prisma.EnumShiftFilter<"ClassPeriod"> | $Enums.Shift
   isBreak?: Prisma.BoolFilter<"ClassPeriod"> | boolean
   order?: Prisma.IntFilter<"ClassPeriod"> | number
+  isActive?: Prisma.BoolFilter<"ClassPeriod"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"ClassPeriod"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ClassPeriod"> | Date | string
   attendanceRecords?: Prisma.AttendanceRecordListRelationFilter
   schedules?: Prisma.ScheduleSlotListRelationFilter
 }
@@ -244,12 +268,16 @@ export type ClassPeriodOrderByWithRelationInput = {
   shift?: Prisma.SortOrder
   isBreak?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   attendanceRecords?: Prisma.AttendanceRecordOrderByRelationAggregateInput
   schedules?: Prisma.ScheduleSlotOrderByRelationAggregateInput
 }
 
 export type ClassPeriodWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  shift_order?: Prisma.ClassPeriodShiftOrderCompoundUniqueInput
   AND?: Prisma.ClassPeriodWhereInput | Prisma.ClassPeriodWhereInput[]
   OR?: Prisma.ClassPeriodWhereInput[]
   NOT?: Prisma.ClassPeriodWhereInput | Prisma.ClassPeriodWhereInput[]
@@ -259,9 +287,12 @@ export type ClassPeriodWhereUniqueInput = Prisma.AtLeast<{
   shift?: Prisma.EnumShiftFilter<"ClassPeriod"> | $Enums.Shift
   isBreak?: Prisma.BoolFilter<"ClassPeriod"> | boolean
   order?: Prisma.IntFilter<"ClassPeriod"> | number
+  isActive?: Prisma.BoolFilter<"ClassPeriod"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"ClassPeriod"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ClassPeriod"> | Date | string
   attendanceRecords?: Prisma.AttendanceRecordListRelationFilter
   schedules?: Prisma.ScheduleSlotListRelationFilter
-}, "id">
+}, "id" | "shift_order">
 
 export type ClassPeriodOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -271,6 +302,9 @@ export type ClassPeriodOrderByWithAggregationInput = {
   shift?: Prisma.SortOrder
   isBreak?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClassPeriodCountOrderByAggregateInput
   _avg?: Prisma.ClassPeriodAvgOrderByAggregateInput
   _max?: Prisma.ClassPeriodMaxOrderByAggregateInput
@@ -289,6 +323,9 @@ export type ClassPeriodScalarWhereWithAggregatesInput = {
   shift?: Prisma.EnumShiftWithAggregatesFilter<"ClassPeriod"> | $Enums.Shift
   isBreak?: Prisma.BoolWithAggregatesFilter<"ClassPeriod"> | boolean
   order?: Prisma.IntWithAggregatesFilter<"ClassPeriod"> | number
+  isActive?: Prisma.BoolWithAggregatesFilter<"ClassPeriod"> | boolean
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"ClassPeriod"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ClassPeriod"> | Date | string
 }
 
 export type ClassPeriodCreateInput = {
@@ -299,6 +336,9 @@ export type ClassPeriodCreateInput = {
   shift: $Enums.Shift
   isBreak?: boolean
   order: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutClassPeriodInput
   schedules?: Prisma.ScheduleSlotCreateNestedManyWithoutClassPeriodInput
 }
@@ -311,6 +351,9 @@ export type ClassPeriodUncheckedCreateInput = {
   shift: $Enums.Shift
   isBreak?: boolean
   order: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutClassPeriodInput
   schedules?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutClassPeriodInput
 }
@@ -323,6 +366,9 @@ export type ClassPeriodUpdateInput = {
   shift?: Prisma.EnumShiftFieldUpdateOperationsInput | $Enums.Shift
   isBreak?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutClassPeriodNestedInput
   schedules?: Prisma.ScheduleSlotUpdateManyWithoutClassPeriodNestedInput
 }
@@ -335,6 +381,9 @@ export type ClassPeriodUncheckedUpdateInput = {
   shift?: Prisma.EnumShiftFieldUpdateOperationsInput | $Enums.Shift
   isBreak?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutClassPeriodNestedInput
   schedules?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutClassPeriodNestedInput
 }
@@ -347,6 +396,9 @@ export type ClassPeriodCreateManyInput = {
   shift: $Enums.Shift
   isBreak?: boolean
   order: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ClassPeriodUpdateManyMutationInput = {
@@ -357,6 +409,9 @@ export type ClassPeriodUpdateManyMutationInput = {
   shift?: Prisma.EnumShiftFieldUpdateOperationsInput | $Enums.Shift
   isBreak?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassPeriodUncheckedUpdateManyInput = {
@@ -367,6 +422,14 @@ export type ClassPeriodUncheckedUpdateManyInput = {
   shift?: Prisma.EnumShiftFieldUpdateOperationsInput | $Enums.Shift
   isBreak?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ClassPeriodShiftOrderCompoundUniqueInput = {
+  shift: $Enums.Shift
+  order: number
 }
 
 export type ClassPeriodCountOrderByAggregateInput = {
@@ -377,6 +440,9 @@ export type ClassPeriodCountOrderByAggregateInput = {
   shift?: Prisma.SortOrder
   isBreak?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ClassPeriodAvgOrderByAggregateInput = {
@@ -391,6 +457,9 @@ export type ClassPeriodMaxOrderByAggregateInput = {
   shift?: Prisma.SortOrder
   isBreak?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ClassPeriodMinOrderByAggregateInput = {
@@ -401,6 +470,9 @@ export type ClassPeriodMinOrderByAggregateInput = {
   shift?: Prisma.SortOrder
   isBreak?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ClassPeriodSumOrderByAggregateInput = {
@@ -448,6 +520,9 @@ export type ClassPeriodCreateWithoutSchedulesInput = {
   shift: $Enums.Shift
   isBreak?: boolean
   order: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutClassPeriodInput
 }
 
@@ -459,6 +534,9 @@ export type ClassPeriodUncheckedCreateWithoutSchedulesInput = {
   shift: $Enums.Shift
   isBreak?: boolean
   order: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutClassPeriodInput
 }
 
@@ -486,6 +564,9 @@ export type ClassPeriodUpdateWithoutSchedulesInput = {
   shift?: Prisma.EnumShiftFieldUpdateOperationsInput | $Enums.Shift
   isBreak?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutClassPeriodNestedInput
 }
 
@@ -497,6 +578,9 @@ export type ClassPeriodUncheckedUpdateWithoutSchedulesInput = {
   shift?: Prisma.EnumShiftFieldUpdateOperationsInput | $Enums.Shift
   isBreak?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutClassPeriodNestedInput
 }
 
@@ -508,6 +592,9 @@ export type ClassPeriodCreateWithoutAttendanceRecordsInput = {
   shift: $Enums.Shift
   isBreak?: boolean
   order: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   schedules?: Prisma.ScheduleSlotCreateNestedManyWithoutClassPeriodInput
 }
 
@@ -519,6 +606,9 @@ export type ClassPeriodUncheckedCreateWithoutAttendanceRecordsInput = {
   shift: $Enums.Shift
   isBreak?: boolean
   order: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   schedules?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutClassPeriodInput
 }
 
@@ -546,6 +636,9 @@ export type ClassPeriodUpdateWithoutAttendanceRecordsInput = {
   shift?: Prisma.EnumShiftFieldUpdateOperationsInput | $Enums.Shift
   isBreak?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedules?: Prisma.ScheduleSlotUpdateManyWithoutClassPeriodNestedInput
 }
 
@@ -557,6 +650,9 @@ export type ClassPeriodUncheckedUpdateWithoutAttendanceRecordsInput = {
   shift?: Prisma.EnumShiftFieldUpdateOperationsInput | $Enums.Shift
   isBreak?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedules?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutClassPeriodNestedInput
 }
 
@@ -608,6 +704,9 @@ export type ClassPeriodSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   shift?: boolean
   isBreak?: boolean
   order?: boolean
+  isActive?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   attendanceRecords?: boolean | Prisma.ClassPeriod$attendanceRecordsArgs<ExtArgs>
   schedules?: boolean | Prisma.ClassPeriod$schedulesArgs<ExtArgs>
   _count?: boolean | Prisma.ClassPeriodCountOutputTypeDefaultArgs<ExtArgs>
@@ -621,6 +720,9 @@ export type ClassPeriodSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   shift?: boolean
   isBreak?: boolean
   order?: boolean
+  isActive?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["classPeriod"]>
 
 export type ClassPeriodSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -631,6 +733,9 @@ export type ClassPeriodSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   shift?: boolean
   isBreak?: boolean
   order?: boolean
+  isActive?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["classPeriod"]>
 
 export type ClassPeriodSelectScalar = {
@@ -641,9 +746,12 @@ export type ClassPeriodSelectScalar = {
   shift?: boolean
   isBreak?: boolean
   order?: boolean
+  isActive?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type ClassPeriodOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "startTime" | "endTime" | "shift" | "isBreak" | "order", ExtArgs["result"]["classPeriod"]>
+export type ClassPeriodOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "startTime" | "endTime" | "shift" | "isBreak" | "order" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["classPeriod"]>
 export type ClassPeriodInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   attendanceRecords?: boolean | Prisma.ClassPeriod$attendanceRecordsArgs<ExtArgs>
   schedules?: boolean | Prisma.ClassPeriod$schedulesArgs<ExtArgs>
@@ -666,6 +774,9 @@ export type $ClassPeriodPayload<ExtArgs extends runtime.Types.Extensions.Interna
     shift: $Enums.Shift
     isBreak: boolean
     order: number
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["classPeriod"]>
   composites: {}
 }
@@ -1098,6 +1209,9 @@ export interface ClassPeriodFieldRefs {
   readonly shift: Prisma.FieldRef<"ClassPeriod", 'Shift'>
   readonly isBreak: Prisma.FieldRef<"ClassPeriod", 'Boolean'>
   readonly order: Prisma.FieldRef<"ClassPeriod", 'Int'>
+  readonly isActive: Prisma.FieldRef<"ClassPeriod", 'Boolean'>
+  readonly createdAt: Prisma.FieldRef<"ClassPeriod", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"ClassPeriod", 'DateTime'>
 }
     
 

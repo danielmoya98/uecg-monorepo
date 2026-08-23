@@ -1,4 +1,4 @@
-import { Trash2, Loader2 } from 'lucide-react'
+import { Trash2, Loader2, Pencil } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { ClassPeriod } from '../types/class-periods.types'
 
@@ -6,13 +6,15 @@ interface ClassPeriodsTableProps {
   periods: ClassPeriod[]
   isLoading: boolean
   isDeleting: boolean
-  onDelete: (id: string) => void
+  onEdit: (period: ClassPeriod) => void
+  onDelete: (period: ClassPeriod) => void
 }
 
 export default function ClassPeriodsTable({
   periods,
   isLoading,
   isDeleting,
+  onEdit,
   onDelete,
 }: ClassPeriodsTableProps) {
   if (isLoading) {
@@ -50,8 +52,11 @@ export default function ClassPeriodsTable({
             <th className="p-3 text-[9px] font-black uppercase tracking-widest text-uecg-gray text-center border-r border-uecg-line">
               Naturaleza
             </th>
-            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-uecg-gray text-center w-16">
-              Baja
+            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-uecg-gray text-center border-r border-uecg-line">
+              Estado
+            </th>
+            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-uecg-gray text-center w-24">
+              Acciones
             </th>
           </tr>
         </thead>
@@ -63,7 +68,9 @@ export default function ClassPeriodsTable({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, x: -10 }}
               key={p.id}
-              className="border-b border-uecg-line hover:bg-gray-50 transition-colors"
+              className={`border-b border-uecg-line hover:bg-gray-50 transition-colors ${
+                p.isActive === false ? 'opacity-60 bg-gray-50/70' : ''
+              }`}
             >
               <td className="p-3 text-xs font-black text-center text-gray-400 border-r border-uecg-line bg-gray-50/50">
                 {p.order}
@@ -85,16 +92,37 @@ export default function ClassPeriodsTable({
                   </span>
                 )}
               </td>
+              <td className="p-3 text-center border-r border-uecg-line">
+                {p.isActive === false ? (
+                  <span className="text-[9px] font-black bg-gray-100 text-gray-600 px-2 py-1 border border-gray-200">
+                    Inactivo
+                  </span>
+                ) : (
+                  <span className="text-[9px] font-black bg-emerald-50 text-emerald-700 px-2 py-1 border border-emerald-200">
+                    Activo
+                  </span>
+                )}
+              </td>
               <td className="p-3 text-center">
-                <button
-                  type="button"
-                  disabled={isDeleting}
-                  onClick={() => onDelete(p.id)}
-                  aria-label={`Eliminar período ${p.name}`}
-                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 focus:text-red-600 focus:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-600/50 rounded transition-colors cursor-pointer disabled:opacity-50"
-                >
-                  <Trash2 className="w-4 h-4 mx-auto" />
-                </button>
+                <div className="flex items-center justify-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => onEdit(p)}
+                    aria-label={`Editar período ${p.name}`}
+                    className="p-2 text-gray-400 hover:text-uecg-blue hover:bg-blue-50 focus:text-uecg-blue focus:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-uecg-blue/50 rounded transition-colors cursor-pointer"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isDeleting}
+                    onClick={() => onDelete(p)}
+                    aria-label={`Eliminar período ${p.name}`}
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 focus:text-red-600 focus:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-600/50 rounded transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </td>
             </motion.tr>
           ))}
@@ -103,3 +131,4 @@ export default function ClassPeriodsTable({
     </div>
   )
 }
+

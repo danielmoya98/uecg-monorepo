@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateScheduleSlotDto } from './dto/create-schedule-slot.dto';
@@ -63,6 +64,18 @@ export class TimetablesService {
     if (!period) throw new NotFoundException('Periodo de clase no encontrado.');
     if (!institution)
       throw new NotFoundException('Configuración institucional no encontrada.');
+
+    if (period.isBreak) {
+      throw new BadRequestException(
+        'No es posible asignar materias en periodos marcados como recreo o descanso.',
+      );
+    }
+
+    if (!period.isActive) {
+      throw new BadRequestException(
+        'No es posible asignar materias en un periodo inactivo o descontinuado.',
+      );
+    }
 
     if (
       data.classroomId !== assignment.classroomId ||
