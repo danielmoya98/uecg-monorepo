@@ -95,11 +95,10 @@ class Auth extends _$Auth {
         } catch (_) {}
       }
 
-      final errorMsg = e.toString().replaceAll('Exception: ', '').toLowerCase();
-      if (errorMsg.contains('401') || errorMsg.contains('unauthorized')) {
-        logout();
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        state = state.copyWith(status: AuthStatus.unauthenticated, user: null);
       } else {
-        // En caso de fallo de conexión no deslogueamos
         state = state.copyWith(isOffline: true);
       }
     }

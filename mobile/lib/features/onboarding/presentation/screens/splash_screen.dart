@@ -28,32 +28,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _startAnimationSequence() async {
-    // 1. ESPERA DE CONTEMPLACIÓN (2 segundos en total)
-    // Dejamos que la entrada escalonada del logo (que dura 1.2s en la UI) termine
-    // y el usuario contemple el emblema un momento.
-    await Future.delayed(const Duration(milliseconds: 5000));
+    // 1. Entrada escalonada del logo
+    await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
 
     // 2. VIAJE DEL PUNTO AL CENTRO
-    // El punto viaja desde la base hasta el centro (Eje vertical, story telling geométrico)
     setState(() => _isDotCenter = true);
-
-    // 3. IMPACTO DEL PUNTO (500ms de viaje + 20ms de micro-retraso de choque)
-    await Future.delayed(const Duration(milliseconds: 520));
+    await Future.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
 
-    // 4. DETONACIÓN DE LA EXPLOSIÓN BLANCA
-    // Ocultamos el emblema y el texto justo antes de la explosión
+    // 3. DETONACIÓN DE LA EXPLOSIÓN BLANCA
     setState(() {
       _hideLogoAndText = true;
       _isScaleTheCircle = true;
     });
-
-    // 5. LLENADO DE LA PANTALLA (600ms que dura la explosión)
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
 
-    // 6. NAVEGACIÓN ENRUTADA POR RIVERPOD
+    // 4. NAVEGACIÓN ENRUTADA POR RIVERPOD
     _checkAuthAndNavigate();
   }
 
