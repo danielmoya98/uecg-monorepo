@@ -28,6 +28,8 @@ export const EnrollmentsHeader = ({ canManageEnrollments, isFetching, isPending 
             {canManageEnrollments && (
                 <Link
                     to="/enrollments/new"
+                    id="btn-new-enrollment"
+                    data-tour="btn-new-enrollment"
                     className="px-5 py-3 font-bold uppercase tracking-widest text-[11px] bg-uecg-blue text-white hover:bg-uecg-dark transition-colors flex items-center justify-center gap-2 shadow-sm"
                 >
                     <Plus className="w-4 h-4" /> Inscripción Manual / Ventanilla

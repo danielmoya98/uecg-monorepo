@@ -43,6 +43,8 @@ export const ClassroomsHeader = ({
         <div className="flex flex-wrap gap-3 items-center">
           <button
             type="button"
+            id="btn-bulk-classrooms"
+            data-tour="btn-bulk-classrooms"
             onClick={onOpenBulkCreate}
             className="px-5 py-3.5 font-bold uppercase tracking-widest text-[10px] border border-uecg-line text-uecg-text hover:bg-gray-50 hover:text-uecg-dark transition-all flex items-center gap-2 shadow-[4px_4px_0px_rgba(0,0,0,0.05)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.15)] cursor-pointer outline-none focus:ring-2 focus:ring-uecg-line"
           >
@@ -50,6 +52,8 @@ export const ClassroomsHeader = ({
           </button>
           <button
             type="button"
+            id="btn-new-classroom"
+            data-tour="btn-new-classroom"
             onClick={onOpenCreate}
             className="px-5 py-3.5 font-black uppercase tracking-widest text-[10px] bg-uecg-blue text-white hover:bg-uecg-dark transition-all flex items-center gap-2 shadow-[4px_4px_0px_rgba(0,0,0,0.15)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.35)] cursor-pointer outline-none focus:ring-2 focus:ring-uecg-blue"
           >

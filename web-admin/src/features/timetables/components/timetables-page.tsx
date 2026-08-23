@@ -85,6 +85,8 @@ export function TimetablesPage() {
         {canManageTimetables && (
           <button
             type="button"
+            id="btn-export-timetables"
+            data-tour="btn-export-timetables"
             onClick={handleStartExport}
             disabled={isExporting || classrooms.length === 0}
             className={`relative z-10 px-6 py-4 font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-sm transition-all cursor-pointer outline-none border-none

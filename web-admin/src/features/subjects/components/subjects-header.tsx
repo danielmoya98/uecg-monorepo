@@ -33,6 +33,8 @@ export const SubjectsHeader = ({
         {canManageSubjects && (
           <button
             type="button"
+            id="btn-new-subject"
+            data-tour="btn-new-subject"
             onClick={onOpenCreate}
             className="px-5 py-3.5 font-black uppercase tracking-widest text-[10px] bg-uecg-blue text-white hover:bg-uecg-dark transition-all flex items-center gap-2 shadow-[4px_4px_0px_rgba(0,0,0,0.15)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.35)] cursor-pointer outline-none focus:ring-2 focus:ring-uecg-blue"
           >
