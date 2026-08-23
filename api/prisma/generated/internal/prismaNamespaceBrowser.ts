@@ -220,6 +220,8 @@ export const SubjectScalarFieldEnum = {
   code: 'code',
   level: 'level',
   area: 'area',
+  requiresSpecialSpace: 'requiresSpecialSpace',
+  allowedSpaceType: 'allowedSpaceType',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

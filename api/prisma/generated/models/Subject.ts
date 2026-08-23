@@ -30,6 +30,8 @@ export type SubjectMinAggregateOutputType = {
   code: string | null
   level: $Enums.EducationLevel | null
   area: string | null
+  requiresSpecialSpace: boolean | null
+  allowedSpaceType: $Enums.SpaceType | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +43,8 @@ export type SubjectMaxAggregateOutputType = {
   code: string | null
   level: $Enums.EducationLevel | null
   area: string | null
+  requiresSpecialSpace: boolean | null
+  allowedSpaceType: $Enums.SpaceType | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,6 +56,8 @@ export type SubjectCountAggregateOutputType = {
   code: number
   level: number
   area: number
+  requiresSpecialSpace: number
+  allowedSpaceType: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -65,6 +71,8 @@ export type SubjectMinAggregateInputType = {
   code?: true
   level?: true
   area?: true
+  requiresSpecialSpace?: true
+  allowedSpaceType?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +84,8 @@ export type SubjectMaxAggregateInputType = {
   code?: true
   level?: true
   area?: true
+  requiresSpecialSpace?: true
+  allowedSpaceType?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +97,8 @@ export type SubjectCountAggregateInputType = {
   code?: true
   level?: true
   area?: true
+  requiresSpecialSpace?: true
+  allowedSpaceType?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -171,6 +183,8 @@ export type SubjectGroupByOutputType = {
   code: string | null
   level: $Enums.EducationLevel
   area: string | null
+  requiresSpecialSpace: boolean
+  allowedSpaceType: $Enums.SpaceType | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -203,6 +217,8 @@ export type SubjectWhereInput = {
   code?: Prisma.StringNullableFilter<"Subject"> | string | null
   level?: Prisma.EnumEducationLevelFilter<"Subject"> | $Enums.EducationLevel
   area?: Prisma.StringNullableFilter<"Subject"> | string | null
+  requiresSpecialSpace?: Prisma.BoolFilter<"Subject"> | boolean
+  allowedSpaceType?: Prisma.EnumSpaceTypeNullableFilter<"Subject"> | $Enums.SpaceType | null
   isActive?: Prisma.BoolFilter<"Subject"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subject"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subject"> | Date | string
@@ -215,6 +231,8 @@ export type SubjectOrderByWithRelationInput = {
   code?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrderInput | Prisma.SortOrder
+  requiresSpecialSpace?: Prisma.SortOrder
+  allowedSpaceType?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -231,6 +249,8 @@ export type SubjectWhereUniqueInput = Prisma.AtLeast<{
   code?: Prisma.StringNullableFilter<"Subject"> | string | null
   level?: Prisma.EnumEducationLevelFilter<"Subject"> | $Enums.EducationLevel
   area?: Prisma.StringNullableFilter<"Subject"> | string | null
+  requiresSpecialSpace?: Prisma.BoolFilter<"Subject"> | boolean
+  allowedSpaceType?: Prisma.EnumSpaceTypeNullableFilter<"Subject"> | $Enums.SpaceType | null
   isActive?: Prisma.BoolFilter<"Subject"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subject"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subject"> | Date | string
@@ -243,6 +263,8 @@ export type SubjectOrderByWithAggregationInput = {
   code?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrderInput | Prisma.SortOrder
+  requiresSpecialSpace?: Prisma.SortOrder
+  allowedSpaceType?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -260,6 +282,8 @@ export type SubjectScalarWhereWithAggregatesInput = {
   code?: Prisma.StringNullableWithAggregatesFilter<"Subject"> | string | null
   level?: Prisma.EnumEducationLevelWithAggregatesFilter<"Subject"> | $Enums.EducationLevel
   area?: Prisma.StringNullableWithAggregatesFilter<"Subject"> | string | null
+  requiresSpecialSpace?: Prisma.BoolWithAggregatesFilter<"Subject"> | boolean
+  allowedSpaceType?: Prisma.EnumSpaceTypeNullableWithAggregatesFilter<"Subject"> | $Enums.SpaceType | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Subject"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Subject"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Subject"> | Date | string
@@ -271,6 +295,8 @@ export type SubjectCreateInput = {
   code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: $Enums.SpaceType | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -283,6 +309,8 @@ export type SubjectUncheckedCreateInput = {
   code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: $Enums.SpaceType | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -295,6 +323,8 @@ export type SubjectUpdateInput = {
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresSpecialSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowedSpaceType?: Prisma.NullableEnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -307,6 +337,8 @@ export type SubjectUncheckedUpdateInput = {
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresSpecialSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowedSpaceType?: Prisma.NullableEnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -319,6 +351,8 @@ export type SubjectCreateManyInput = {
   code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: $Enums.SpaceType | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -330,6 +364,8 @@ export type SubjectUpdateManyMutationInput = {
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresSpecialSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowedSpaceType?: Prisma.NullableEnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -341,6 +377,8 @@ export type SubjectUncheckedUpdateManyInput = {
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresSpecialSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowedSpaceType?: Prisma.NullableEnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -357,6 +395,8 @@ export type SubjectCountOrderByAggregateInput = {
   code?: Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrder
+  requiresSpecialSpace?: Prisma.SortOrder
+  allowedSpaceType?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -368,6 +408,8 @@ export type SubjectMaxOrderByAggregateInput = {
   code?: Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrder
+  requiresSpecialSpace?: Prisma.SortOrder
+  allowedSpaceType?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -379,6 +421,8 @@ export type SubjectMinOrderByAggregateInput = {
   code?: Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrder
+  requiresSpecialSpace?: Prisma.SortOrder
+  allowedSpaceType?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -391,6 +435,10 @@ export type SubjectScalarRelationFilter = {
 
 export type EnumEducationLevelFieldUpdateOperationsInput = {
   set?: $Enums.EducationLevel
+}
+
+export type NullableEnumSpaceTypeFieldUpdateOperationsInput = {
+  set?: $Enums.SpaceType | null
 }
 
 export type SubjectCreateNestedOneWithoutAssignmentsInput = {
@@ -413,6 +461,8 @@ export type SubjectCreateWithoutAssignmentsInput = {
   code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: $Enums.SpaceType | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -424,6 +474,8 @@ export type SubjectUncheckedCreateWithoutAssignmentsInput = {
   code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: $Enums.SpaceType | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -451,6 +503,8 @@ export type SubjectUpdateWithoutAssignmentsInput = {
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresSpecialSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowedSpaceType?: Prisma.NullableEnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -462,6 +516,8 @@ export type SubjectUncheckedUpdateWithoutAssignmentsInput = {
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresSpecialSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowedSpaceType?: Prisma.NullableEnumSpaceTypeFieldUpdateOperationsInput | $Enums.SpaceType | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -504,6 +560,8 @@ export type SubjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   code?: boolean
   level?: boolean
   area?: boolean
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -517,6 +575,8 @@ export type SubjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   code?: boolean
   level?: boolean
   area?: boolean
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -528,6 +588,8 @@ export type SubjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   code?: boolean
   level?: boolean
   area?: boolean
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -539,12 +601,14 @@ export type SubjectSelectScalar = {
   code?: boolean
   level?: boolean
   area?: boolean
+  requiresSpecialSpace?: boolean
+  allowedSpaceType?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "level" | "area" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subject"]>
+export type SubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "level" | "area" | "requiresSpecialSpace" | "allowedSpaceType" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subject"]>
 export type SubjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | Prisma.Subject$assignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.SubjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -563,6 +627,8 @@ export type $SubjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     code: string | null
     level: $Enums.EducationLevel
     area: string | null
+    requiresSpecialSpace: boolean
+    allowedSpaceType: $Enums.SpaceType | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -995,6 +1061,8 @@ export interface SubjectFieldRefs {
   readonly code: Prisma.FieldRef<"Subject", 'String'>
   readonly level: Prisma.FieldRef<"Subject", 'EducationLevel'>
   readonly area: Prisma.FieldRef<"Subject", 'String'>
+  readonly requiresSpecialSpace: Prisma.FieldRef<"Subject", 'Boolean'>
+  readonly allowedSpaceType: Prisma.FieldRef<"Subject", 'SpaceType'>
   readonly isActive: Prisma.FieldRef<"Subject", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Subject", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Subject", 'DateTime'>

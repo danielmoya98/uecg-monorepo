@@ -43,6 +43,24 @@ export class TimetablesController {
     return this.timetablesService.getPeriods(shift || Shift.MANANA);
   }
 
+  @Get('my-schedule')
+  // 🔓 Lectura contextual: Docentes, alumnos y tutores ven sus horarios propios
+  @ApiOperation({
+    summary: 'Obtiene el horario semanal contextual del usuario autenticado',
+  })
+  getMySchedule(@Req() req: any) {
+    return this.timetablesService.getMySchedule(req.user.userId);
+  }
+
+  @Get('today')
+  // 🔓 Lectura contextual: Horario de hoy para widgets y vista rápida
+  @ApiOperation({
+    summary: 'Obtiene las clases del día actual para el usuario autenticado',
+  })
+  getTodaySchedule(@Req() req: any) {
+    return this.timetablesService.getTodaySchedule(req.user.userId);
+  }
+
   @Get('classroom/:id')
   // 🔓 Lectura abierta: Docentes y alumnos necesitan ver el horario
   @ApiOperation({

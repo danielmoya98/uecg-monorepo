@@ -1,14 +1,17 @@
+import { useMemo } from 'react'
 import { Droppable } from '@hello-pangea/dnd'
 import { Trash2, Pencil } from 'lucide-react'
 import type { ClassPeriod, TimetableSlot } from '../types/timetables.types'
 
-const DAYS = [
+const BASE_DAYS = [
   { id: 1, name: 'LUNES' },
   { id: 2, name: 'MARTES' },
   { id: 3, name: 'MIÉRCOLES' },
   { id: 4, name: 'JUEVES' },
   { id: 5, name: 'VIERNES' },
 ]
+
+const SATURDAY = { id: 6, name: 'SÁBADO' }
 
 interface GridTableProps {
   periods: ClassPeriod[]
@@ -31,6 +34,20 @@ export function GridTable({
   canManage,
   currentUserId,
 }: GridTableProps) {
+  // Construimos mapa indexado O(1) de slots para evitar find lineal en cada celda
+  const slotMap = useMemo(() => {
+    const map = new Map<string, TimetableSlot>()
+    for (const slot of scheduleSlots) {
+      map.set(`${slot.dayOfWeek}_${slot.classPeriodId}`, slot)
+    }
+    return map
+  }, [scheduleSlots])
+
+  // Verificamos si existen clases registradas en sábado
+  const days = useMemo(() => {
+    const hasSaturday = scheduleSlots.some((s) => s.dayOfWeek === 6)
+    return hasSaturday ? [...BASE_DAYS, SATURDAY] : BASE_DAYS
+  }, [scheduleSlots])
   return (
     <div className="w-full overflow-x-auto border border-uecg-line bg-white shadow-md custom-scrollbar">
       <table className="w-full text-left border-collapse min-w-[700px] table-fixed">
@@ -42,7 +59,7 @@ export function GridTable({
             >
               Bloque
             </th>
-            {DAYS.map((day) => (
+            {days.map((day) => (
               <th
                 key={day.id}
                 scope="col"
@@ -71,7 +88,7 @@ export function GridTable({
               </td>
 
               {/* COLUMNAS DE DÍAS */}
-              {DAYS.map((day) => {
+              {days.map((day) => {
                 if (period.isBreak) {
                   return (
                     <td
@@ -97,15 +114,16 @@ export function GridTable({
                   )
                 }
 
-                const existingSlot = scheduleSlots.find(
-                  (s) => s.dayOfWeek === day.id && s.classPeriodId === period.id
-                )
+                const existingSlot = slotMap.get(`${day.id}_${period.id}`)
                 const droppableId = `slot_${day.id}_${period.id}`
 
                 let canEditSpace = false
                 if (existingSlot && canManage) {
-                  const subjectName = existingSlot.teacherAssignment.subject.name.toLowerCase()
+                  const subject = existingSlot.teacherAssignment.subject
+                  const subjectName = subject.name.toLowerCase()
                   const isSpecialSubject =
+                    (subject as any).requiresSpecialSpace ||
+                    (subject as any).allowedSpaceType ||
                     subjectName.includes('educación física') ||
                     subjectName.includes('educacion fisica')
                   canEditSpace = institutionMode === 'DYNAMIC' || isSpecialSubject
