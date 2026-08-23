@@ -44,7 +44,15 @@ export default function AcademicYearsPage() {
         <AcademicYearsHeader onOpenCreate={() => openForm('create')} />
 
         {/* SETUP WIZARD / CHECKLIST DE PREPARACIÓN */}
-        <SetupWizardWidget />
+        <SetupWizardWidget
+          onAction={(stepId) => {
+            if (stepId === 'academic_year') {
+              openForm('create')
+            } else if (stepId === 'first_trimester' && years.length > 0) {
+              openTrimesters(years[0])
+            }
+          }}
+        />
 
         <AcademicYearsToolbar
           searchTerm={searchTerm}
