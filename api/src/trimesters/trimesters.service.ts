@@ -2,46 +2,63 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  Inject,
 } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateTrimesterDto } from './dto/update-trimester.dto';
-import { Prisma, TrimesterName } from '../../prisma/generated/client'; //
-import { EventEmitter2 } from '@nestjs/event-emitter'; // 🔥 Para Domain Events
+import { Prisma, TrimesterName } from '../../prisma/generated/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TrimestersService {
+  private readonly CURRENT_ACTIVE_CACHE_KEY = 'academic-year:current-active';
+
   constructor(
-    private prisma: PrismaService,
-    private eventEmitter: EventEmitter2, // 🔥 Inyectamos el emisor de eventos
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async createDefaultTrimesters(
     academicYearId: string,
     startDate: Date,
     endDate: Date,
-    tx: Prisma.TransactionClient, // 🔥 Recibe la transacción para no romper la atomicidad
+    tx: Prisma.TransactionClient,
   ) {
+    const startMs = new Date(startDate).getTime();
+    const endMs = new Date(endDate).getTime();
+    const totalDuration = endMs - startMs;
+    const oneThird = Math.floor(totalDuration / 3);
+
+    const t1End = new Date(startMs + oneThird);
+    const t2Start = new Date(startMs + oneThird + 86400000);
+    const t2End = new Date(startMs + 2 * oneThird);
+    const t3Start = new Date(startMs + 2 * oneThird + 86400000);
+
     return tx.trimester.createMany({
       data: [
         {
           academicYearId,
           name: TrimesterName.PRIMER_TRIMESTRE,
-          startDate,
-          endDate,
+          startDate: new Date(startDate),
+          endDate: t1End,
           isOpen: false,
         },
         {
           academicYearId,
           name: TrimesterName.SEGUNDO_TRIMESTRE,
-          startDate,
-          endDate,
+          startDate: t2Start,
+          endDate: t2End,
           isOpen: false,
         },
         {
           academicYearId,
           name: TrimesterName.TERCER_TRIMESTRE,
-          startDate,
-          endDate,
+          startDate: t3Start,
+          endDate: new Date(endDate),
           isOpen: false,
         },
       ],
@@ -105,7 +122,9 @@ export class TrimestersService {
       },
     });
 
-    // 5. Side-effects (Desacoplados)
+    // 5. Side-effects (Desacoplados) e invalidación de caché
+    await this.cacheManager.del(this.CURRENT_ACTIVE_CACHE_KEY);
+
     if (isClosing) {
       // Notifica al sistema. Luego puedes tener un listener que encole un Job en BullMQ
       // para calcular promedios finales o bloquear la subida de notas.

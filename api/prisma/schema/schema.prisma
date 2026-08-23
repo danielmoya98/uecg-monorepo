@@ -254,8 +254,8 @@ model AcademicYear {
   id        String         @id @default(uuid())
   year      Int            @unique // Ej. 2026
   name      String // Ej. "Gestión Académica 2026"
-  startDate DateTime       @map("start_date")
-  endDate   DateTime       @map("end_date")
+  startDate DateTime       @map("start_date") @db.Date
+  endDate   DateTime       @map("end_date") @db.Date
   status    AcademicStatus @default(PLANNING)
 
   classrooms Classroom[]
@@ -744,11 +744,11 @@ model Trimester {
   id             String        @id @default(uuid())
   academicYearId String        @map("academic_year_id")
   name           TrimesterName
-  startDate      DateTime      @map("start_date")
-  endDate        DateTime      @map("end_date")
+  startDate      DateTime      @map("start_date") @db.Date
+  endDate        DateTime      @map("end_date") @db.Date
   isOpen         Boolean       @default(false) @map("is_open")
 
-  academicYear AcademicYear @relation(fields: [academicYearId], references: [id])
+  academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
   grades       Grade[]
 
   @@unique([academicYearId, name])

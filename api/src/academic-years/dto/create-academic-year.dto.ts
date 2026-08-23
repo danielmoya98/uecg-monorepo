@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsEnum,
   Min,
+  Max,
   IsDate,
   IsOptional,
   MaxLength,
@@ -24,6 +25,9 @@ export class CreateAcademicYearDto {
   @IsInt()
   @Min(2020, {
     message: 'El año no puede ser menor a 2020',
+  })
+  @Max(2100, {
+    message: 'El año no puede ser mayor a 2100',
   })
   year: number;
 
