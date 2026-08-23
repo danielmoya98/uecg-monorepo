@@ -55,6 +55,7 @@ export const ModelName = {
   Permission: 'Permission',
   RolePermission: 'RolePermission',
   User: 'User',
+  UserSession: 'UserSession',
   Institution: 'Institution',
   AcademicYear: 'AcademicYear',
   Subject: 'Subject',
@@ -147,11 +148,25 @@ export const UserScalarFieldEnum = {
   resetCodeExpiresAt: 'resetCodeExpiresAt',
   fcmTokens: 'fcmTokens',
   failedLoginAttempts: 'failedLoginAttempts',
-  lockoutUntil: 'lockoutUntil',
-  hashedRefreshToken: 'hashedRefreshToken'
+  lockoutUntil: 'lockoutUntil'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const UserSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  deviceType: 'deviceType',
+  deviceName: 'deviceName',
+  hashedRefreshToken: 'hashedRefreshToken',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  lastActiveAt: 'lastActiveAt',
+  createdAt: 'createdAt'
+} as const
+
+export type UserSessionScalarFieldEnum = (typeof UserSessionScalarFieldEnum)[keyof typeof UserSessionScalarFieldEnum]
 
 
 export const InstitutionScalarFieldEnum = {

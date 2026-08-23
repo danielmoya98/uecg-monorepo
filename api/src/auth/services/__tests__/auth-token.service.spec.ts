@@ -15,8 +15,12 @@ describe('AuthTokenService', () => {
   };
 
   const mockPrismaService = {
-    user: {
+    userSession: {
+      findMany: jest.fn(),
+      create: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
+      deleteMany: jest.fn(),
     },
   };
 
@@ -57,27 +61,35 @@ describe('AuthTokenService', () => {
   });
 
   describe('generateTokens', () => {
-    it('debe generar access y refresh tokens y guardar el hash en la BD', async () => {
+    it('debe generar tokens y crear un registro en userSession', async () => {
       mockJwtService.signAsync
         .mockResolvedValueOnce('signed-access-token')
         .mockResolvedValueOnce('signed-refresh-token');
 
-      mockPrismaService.user.update.mockResolvedValue({});
+      mockPrismaService.userSession.findMany.mockResolvedValue([]);
+      mockPrismaService.userSession.create.mockResolvedValue({ id: 'sess-1' });
 
       const tokens = await service.generateTokens(
         'user-uuid',
         'test@uecg.edu.bo',
         'DOCENTE',
         ['read:all:Student'],
+        {
+          deviceType: 'WEB',
+          deviceName: 'Chrome en Windows',
+          ipAddress: '192.168.1.1',
+        },
       );
 
       expect(tokens.accessToken).toBe('signed-access-token');
       expect(tokens.refreshToken).toBe('signed-refresh-token');
-      expect(mockPrismaService.user.update).toHaveBeenCalledWith({
-        where: { id: 'user-uuid' },
-        data: {
-          hashedRefreshToken: expect.any(String),
-        },
+      expect(mockPrismaService.userSession.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          userId: 'user-uuid',
+          deviceType: 'WEB',
+          deviceName: 'Chrome en Windows',
+          ipAddress: '192.168.1.1',
+        }),
       });
     });
   });
@@ -105,6 +117,42 @@ describe('AuthTokenService', () => {
       await expect(
         service.validateRefreshToken('corrupted-token'),
       ).rejects.toThrow(UnauthorizedException);
+    });
+  });
+
+  describe('multi-device sessions', () => {
+    it('debe listar las sesiones activas del usuario identificando la sesión actual', async () => {
+      const sampleHash = await service.hashPassword('curr-refresh');
+      mockPrismaService.userSession.findMany.mockResolvedValue([
+        {
+          id: 'sess-1',
+          userId: 'user-1',
+          deviceType: 'WEB',
+          deviceName: 'Chrome',
+          ipAddress: '127.0.0.1',
+          userAgent: 'Chrome/120',
+          lastActiveAt: new Date(),
+          createdAt: new Date(),
+          hashedRefreshToken: sampleHash,
+        },
+        {
+          id: 'sess-2',
+          userId: 'user-1',
+          deviceType: 'MOBILE_ANDROID',
+          deviceName: 'Samsung S23',
+          ipAddress: '192.168.1.5',
+          userAgent: 'Dart/3.0',
+          lastActiveAt: new Date(),
+          createdAt: new Date(),
+          hashedRefreshToken: 'other-hash',
+        },
+      ]);
+
+      const sessions = await service.getUserSessions('user-1', 'curr-refresh');
+
+      expect(sessions).toHaveLength(2);
+      expect(sessions[0].isCurrent).toBe(true);
+      expect(sessions[1].isCurrent).toBe(false);
     });
   });
 });

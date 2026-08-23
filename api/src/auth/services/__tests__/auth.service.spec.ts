@@ -21,6 +21,9 @@ describe('AuthService', () => {
       findUnique: jest.fn(),
       update: jest.fn(),
     },
+    userSession: {
+      deleteMany: jest.fn(),
+    },
   };
 
   const mockJwtService = {
@@ -36,6 +39,11 @@ describe('AuthService', () => {
     verifyPassword: jest.fn(),
     generateTokens: jest.fn(),
     validateRefreshToken: jest.fn(),
+    findMatchingSession: jest.fn(),
+    getUserSessions: jest.fn(),
+    revokeSession: jest.fn(),
+    revokeSessionByToken: jest.fn(),
+    revokeAllOtherSessions: jest.fn(),
   };
 
   const mockAuthPasswordService = {
@@ -111,7 +119,9 @@ describe('AuthService', () => {
         refreshToken: 'refresh-token-123',
       });
 
-      const result = await service.login('ADMIN@UECG.EDU.BO', 'password123');
+      const result = await service.login('ADMIN@UECG.EDU.BO', 'password123', {
+        deviceType: 'WEB',
+      });
 
       expect(result.status).toBe('SUCCESS');
       expect(result.user.email).toBe('admin@uecg.edu.bo');
@@ -231,15 +241,17 @@ describe('AuthService', () => {
   });
 
   describe('refreshTokens', () => {
-    it('debe rotar tokens exitosamente', async () => {
+    it('debe rotar tokens exitosamente en la sesión coincidente', async () => {
       mockAuthTokenService.validateRefreshToken.mockResolvedValue({ sub: 'user-1' });
       mockPrismaService.user.findUnique.mockResolvedValue({
         id: 'user-1',
         email: 'admin@uecg.edu.bo',
-        hashedRefreshToken: 'valid-hashed-refresh',
         role: { name: 'SUPER_ADMIN', permissions: [] },
       });
-      mockAuthTokenService.verifyPassword.mockResolvedValue(true);
+      mockAuthTokenService.findMatchingSession.mockResolvedValue({
+        id: 'session-123',
+        userId: 'user-1',
+      });
       mockAuthTokenService.generateTokens.mockResolvedValue({
         accessToken: 'new-access',
         refreshToken: 'new-refresh',
@@ -252,18 +264,18 @@ describe('AuthService', () => {
       expect(mockEventEmitter.emit).toHaveBeenCalledWith('auth.refresh.success', {
         userId: 'user-1',
         email: 'admin@uecg.edu.bo',
+        sessionId: 'session-123',
       });
     });
 
-    it('debe lanzar ForbiddenException si el refresh token hash no coincide', async () => {
+    it('debe lanzar ForbiddenException si no se encuentra sesión activa', async () => {
       mockAuthTokenService.validateRefreshToken.mockResolvedValue({ sub: 'user-1' });
       mockPrismaService.user.findUnique.mockResolvedValue({
         id: 'user-1',
         email: 'admin@uecg.edu.bo',
-        hashedRefreshToken: 'different-hash',
         role: { name: 'SUPER_ADMIN', permissions: [] },
       });
-      mockAuthTokenService.verifyPassword.mockResolvedValue(false);
+      mockAuthTokenService.findMatchingSession.mockResolvedValue(null);
 
       await expect(service.refreshTokens('invalid-refresh')).rejects.toThrow(
         ForbiddenException,
@@ -272,16 +284,13 @@ describe('AuthService', () => {
   });
 
   describe('logout', () => {
-    it('debe limpiar hashedRefreshToken y emitir evento auth.logout', async () => {
-      mockPrismaService.user.update.mockResolvedValue({});
+    it('debe invocar revokeSessionByToken si se pasa token y emitir evento auth.logout', async () => {
+      mockAuthTokenService.revokeSessionByToken.mockResolvedValue(undefined);
 
-      const result = await service.logout('user-1');
+      const result = await service.logout('user-1', 'active-token');
 
       expect(result.status).toBe('SUCCESS');
-      expect(mockPrismaService.user.update).toHaveBeenCalledWith({
-        where: { id: 'user-1' },
-        data: { hashedRefreshToken: null },
-      });
+      expect(mockAuthTokenService.revokeSessionByToken).toHaveBeenCalledWith('user-1', 'active-token');
       expect(mockEventEmitter.emit).toHaveBeenCalledWith('auth.logout', {
         userId: 'user-1',
       });

@@ -38,6 +38,11 @@ export type RolePermission = Prisma.RolePermissionModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model UserSession
+ * 
+ */
+export type UserSession = Prisma.UserSessionModel
+/**
  * Model Institution
  * 
  */

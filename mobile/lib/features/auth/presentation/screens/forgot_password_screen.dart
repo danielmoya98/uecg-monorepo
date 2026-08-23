@@ -7,7 +7,13 @@ import '../../../../core/theme/swiss_background.dart';
 import '../providers/auth_provider.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
-  const ForgotPasswordScreen({super.key});
+  final String? initialCode;
+  final String? initialIdentifier;
+  const ForgotPasswordScreen({
+    super.key,
+    this.initialCode,
+    this.initialIdentifier,
+  });
 
   @override
   ConsumerState<ForgotPasswordScreen> createState() =>
@@ -20,6 +26,19 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final _codeCtrl = TextEditingController();
   final _newPasswordCtrl = TextEditingController();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialIdentifier != null &&
+        widget.initialIdentifier!.isNotEmpty) {
+      _identifierCtrl.text = widget.initialIdentifier!;
+    }
+    if (widget.initialCode != null && widget.initialCode!.isNotEmpty) {
+      _codeCtrl.text = widget.initialCode!;
+      _step = 1;
+    }
+  }
 
   @override
   void dispose() {

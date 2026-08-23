@@ -1,36 +1,119 @@
 import {
   Injectable,
+  Inject,
   NotFoundException,
   ConflictException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class RolesService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(RolesService.name);
+  private readonly CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutos
+
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async findAll() {
-    return this.prisma.role.findMany({
+    const cacheKey = 'roles:catalog:all';
+    try {
+      const cached = await this.cacheManager.get(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    } catch (err) {
+      this.logger.warn(`Error al leer caché de roles: ${err}`);
+    }
+
+    const roles = await this.prisma.role.findMany({
       include: {
         _count: { select: { users: true } },
         permissions: { include: { permission: true } },
       },
       orderBy: { createdAt: 'asc' },
     });
+
+    try {
+      await this.cacheManager.set(cacheKey, roles, this.CACHE_TTL_MS);
+    } catch (err) {
+      this.logger.warn(`Error al guardar en caché de roles: ${err}`);
+    }
+
+    return roles;
+  }
+
+  async getRolePermissionsCached(roleId: string): Promise<string[]> {
+    const cacheKey = `role:permissions:${roleId}`;
+    try {
+      const cached = await this.cacheManager.get<string[]>(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    } catch (err) {
+      this.logger.warn(`Error al consultar caché de permisos del rol ${roleId}: ${err}`);
+    }
+
+    const role = await this.prisma.role.findUnique({
+      where: { id: roleId },
+      include: {
+        permissions: {
+          include: { permission: true },
+        },
+      },
+    });
+
+    if (!role) {
+      return [];
+    }
+
+    const permissions = role.permissions.map(
+      (rp) => `${rp.permission.action}:${rp.permission.subject}`,
+    );
+
+    try {
+      await this.cacheManager.set(cacheKey, permissions, this.CACHE_TTL_MS);
+    } catch (err) {
+      this.logger.warn(`Error al guardar en caché permisos del rol ${roleId}: ${err}`);
+    }
+
+    return permissions;
   }
 
   async getPermissionsCatalog() {
-    return this.prisma.permission.findMany({
+    const cacheKey = 'permissions:catalog:all';
+    try {
+      const cached = await this.cacheManager.get(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    } catch (err) {
+      this.logger.warn(`Error al leer catálogo de permisos en caché: ${err}`);
+    }
+
+    const permissions = await this.prisma.permission.findMany({
       orderBy: [{ subject: 'asc' }, { action: 'asc' }],
     });
+
+    try {
+      await this.cacheManager.set(cacheKey, permissions, this.CACHE_TTL_MS);
+    } catch (err) {
+      this.logger.warn(`Error al guardar catálogo de permisos en caché: ${err}`);
+    }
+
+    return permissions;
   }
 
   async updateRolePermissions(roleId: string, permissionIds: string[]) {
     const role = await this.prisma.role.findUnique({ where: { id: roleId } });
     if (!role) throw new NotFoundException('Rol no encontrado');
 
-    return this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx) => {
       await tx.rolePermission.deleteMany({ where: { roleId } });
 
       const newPermissions = permissionIds.map((pId) => ({
@@ -42,6 +125,11 @@ export class RolesService {
 
       return { message: 'Permisos del rol actualizados correctamente' };
     });
+
+    // Invalidar cachés
+    await this.invalidateRoleCaches(roleId);
+
+    return result;
   }
 
   async createRole(data: { name: string; description?: string }) {
@@ -55,12 +143,16 @@ export class RolesService {
       throw new ConflictException('Ya existe una política con este nombre');
     }
 
-    return this.prisma.role.create({
+    const role = await this.prisma.role.create({
       data: {
         name: safeName,
         description: data.description,
       },
     });
+
+    await this.invalidateRoleCaches();
+
+    return role;
   }
 
   async deleteRole(id: string) {
@@ -91,7 +183,22 @@ export class RolesService {
     }
 
     await this.prisma.role.delete({ where: { id } });
+
+    await this.invalidateRoleCaches(id);
+
     return { message: 'Política de acceso eliminada del sistema' };
+  }
+
+  private async invalidateRoleCaches(roleId?: string) {
+    try {
+      await this.cacheManager.del('roles:catalog:all');
+      await this.cacheManager.del('permissions:catalog:all');
+      if (roleId) {
+        await this.cacheManager.del(`role:permissions:${roleId}`);
+      }
+    } catch (err) {
+      this.logger.warn(`Error al invalidar caché de roles: ${err}`);
+    }
   }
 
   async seedMasterPermissions() {
@@ -134,7 +241,6 @@ export class RolesService {
         description: 'Ver el historial de inscripciones global',
       },
       {
-        // 🔥 NUEVO: Agregado al catálogo de Prisma
         action: 'read:own',
         subject: 'Enrollment',
         description: 'Ver únicamente las inscripciones de sus cursos asignados',
@@ -285,6 +391,8 @@ export class RolesService {
         skipDuplicates: true,
       });
     }
+
+    await this.invalidateRoleCaches();
 
     return { message: 'Estándar Oficial ABAC implementado exitosamente.' };
   }
