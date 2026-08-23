@@ -21,9 +21,15 @@ class AppRouter {
       GoRoute(path: '/onboarding', builder: (context, state) => const OnboardingScreen()),
       GoRoute(path: '/welcome', builder: (context, state) => const WelcomeScreen()),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-      // 2. Registramos las nuevas rutas (reemplazando al viejo request-access)
       GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
-      GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordScreen()),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => ForgotPasswordScreen(
+          initialCode: state.uri.queryParameters['code'],
+          initialIdentifier: state.uri.queryParameters['email'] ??
+              state.uri.queryParameters['identifier'],
+        ),
+      ),
 
       GoRoute(path: '/dashboard/student', builder: (context, state) => const StudentDashboard()),
       GoRoute(path: '/dashboard/parent', builder: (context, state) => const ParentDashboard()),

@@ -22,6 +22,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    _passwordCtrl.addListener(() {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
   void dispose() {
     _ciCtrl.dispose();
     _birthDateCtrl.dispose();
@@ -156,6 +164,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   .animate()
                   .fade(delay: 450.ms)
                   .slideX(begin: 0.05),
+              if (_passwordCtrl.text.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                _buildPasswordStrengthBar(),
+              ],
               const SizedBox(height: 48),
 
               SizedBox(
@@ -224,6 +236,73 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 borderRadius: BorderRadius.zero,
                 borderSide: BorderSide(color: AppTheme.swissBlue, width: 2)),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordStrengthBar() {
+    final password = _passwordCtrl.text;
+    int score = 0;
+    if (password.length >= 8) score++;
+    if (RegExp(r'[A-Z]').hasMatch(password)) score++;
+    if (RegExp(r'[0-9]').hasMatch(password)) score++;
+    if (RegExp(r'[^A-Za-z0-9]').hasMatch(password)) score++;
+
+    Color color;
+    String label;
+    switch (score) {
+      case 1:
+        color = Colors.red.shade600;
+        label = 'DÉBIL';
+        break;
+      case 2:
+        color = Colors.amber.shade700;
+        label = 'ACEPTABLE';
+        break;
+      case 3:
+        color = Colors.blue.shade600;
+        label = 'BUENA';
+        break;
+      case 4:
+        color = Colors.green.shade600;
+        label = 'EXCELENTE';
+        break;
+      default:
+        color = Colors.grey.shade400;
+        label = 'INSEGURA';
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('SEGURIDAD: $label',
+                style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: color)),
+            Text('$score/4',
+                style: const TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.slateGray)),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: List.generate(4, (index) {
+            return Expanded(
+              child: Container(
+                height: 3,
+                margin: EdgeInsets.only(right: index < 3 ? 4 : 0),
+                color: index < score ? color : AppTheme.lineGray,
+              ),
+            );
+          }),
         ),
       ],
     );

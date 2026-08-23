@@ -1,39 +1,71 @@
 import {
-  Body,
   Controller,
+  Post,
   Get,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
   HttpCode,
   HttpStatus,
-  Patch,
-  Post,
-  Req,
   Res,
+  Req,
   UnauthorizedException,
-  UseGuards,
+  Logger,
 } from '@nestjs/common';
-import type { Request, Response } from 'express';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import type { Response, Request } from 'express';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { AuthService } from './auth.service';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import type { AuthenticatedUser } from './interfaces/authenticated-user.interface';
 import { LoginDto } from './dto/login.dto';
-import { SetupPasswordDto } from './dto/setup-password.dto';
 import { RegisterGuardianDto } from './dto/register-guardian.dto';
 import { RegisterStudentDto } from './dto/register-student.dto';
-import { RegisterFcmTokenDto } from './dto/register-fcm-token.dto';
-import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { SetupPasswordDto } from './dto/setup-password.dto';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
+import { RegisterFcmTokenDto } from './dto/register-fcm-token.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import type { AuthenticatedUser } from './interfaces/authenticated-user.interface';
+import { SessionMetadata } from './services/auth-token.service';
 
 @ApiTags('Autenticación')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  private readonly logger = new Logger(AuthController.name);
+
+  constructor(private authService: AuthService) {}
+
+  private extractSessionMetadata(req: Request): SessionMetadata {
+    const userAgent = req.headers['user-agent'] || 'Desconocido';
+    const ipHeader =
+      (req.headers['x-forwarded-for'] as string) ||
+      req.socket.remoteAddress ||
+      '127.0.0.1';
+    const ipAddress = Array.isArray(ipHeader)
+      ? ipHeader[0]
+      : ipHeader.split(',')[0].trim();
+
+    let deviceType = 'WEB';
+    if (/android/i.test(userAgent)) {
+      deviceType = 'MOBILE_ANDROID';
+    } else if (/iphone|ipad|ipod/i.test(userAgent)) {
+      deviceType = 'MOBILE_IOS';
+    } else if (/dart|flutter/i.test(userAgent)) {
+      deviceType = 'MOBILE_FLUTTER';
+    }
+
+    return {
+      deviceType,
+      deviceName: userAgent.substring(0, 100),
+      ipAddress,
+      userAgent: userAgent.substring(0, 255),
+    };
+  }
 
   // ======================================================
-  // COOKIE HELPER
+  // HELPERS
   // ======================================================
 
   private setTokenCookies(
@@ -60,7 +92,7 @@ export class AuthController {
   }
 
   // ======================================================
-  // LOGIN (Web y Mobile)
+  // LOGIN
   // ======================================================
 
   @UseGuards(ThrottlerGuard)
@@ -72,14 +104,27 @@ export class AuthController {
   })
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Inicia sesión (Soporte Híbrido Web Cookies y Mobile JSON)' })
+  @ApiOperation({
+    summary: 'Autentica a un usuario y entrega tokens/cookies de sesión',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Sesión iniciada exitosamente',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Credenciales inválidas',
+  })
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
   ) {
+    const sessionMetadata = this.extractSessionMetadata(req);
     const result = await this.authService.login(
       loginDto.email,
       loginDto.password,
+      sessionMetadata,
     );
 
     if (result.status === 'SUCCESS' && result.tokens) {
@@ -102,36 +147,40 @@ export class AuthController {
   }
 
   // ======================================================
-  // REFRESH TOKEN
+  // REFRESH TOKEN (COOKIE + BEARER)
   // ======================================================
 
-  @UseGuards(ThrottlerGuard)
-  @Throttle({
-    default: {
-      limit: 10,
-      ttl: 60000,
-    },
-  })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Rota refresh token y extiende sesión (Web Cookies y Mobile JSON)',
+    summary: 'Renueva el Access Token usando el Refresh Token',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Tokens renovados exitosamente',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Refresh token no proporcionado o inválido',
   })
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @Body('refreshToken') bodyRefreshToken?: string,
   ) {
     const refreshToken =
       req.cookies?.['uecg_refresh_token'] ||
-      bodyRefreshToken ||
+      (req.body?.refreshToken as string) ||
       (req.headers['x-refresh-token'] as string);
 
     if (!refreshToken) {
-      throw new UnauthorizedException('Refresh token inválido o no proporcionado');
+      throw new UnauthorizedException('Refresh token no proporcionado');
     }
 
-    const result = await this.authService.refreshTokens(refreshToken);
+    const sessionMetadata = this.extractSessionMetadata(req);
+    const result = await this.authService.refreshTokens(
+      refreshToken,
+      sessionMetadata,
+    );
 
     if (result.status === 'SUCCESS' && result.tokens) {
       this.setTokenCookies(
@@ -202,10 +251,15 @@ export class AuthController {
   })
   async logout(
     @CurrentUser() user: AuthenticatedUser,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
+    const currentRefreshToken =
+      req.cookies?.['uecg_refresh_token'] ||
+      (req.headers['x-refresh-token'] as string);
+
     if (user?.userId) {
-      await this.authService.logout(user.userId);
+      await this.authService.logout(user.userId, currentRefreshToken);
     }
 
     const isProduction = process.env.NODE_ENV === 'production';
@@ -224,6 +278,72 @@ export class AuthController {
       status: 'SUCCESS',
       message: 'Sesión cerrada exitosamente',
     };
+  }
+
+  // ======================================================
+  // MULTI-DEVICE SESSIONS
+  // ======================================================
+
+  @Get('sessions')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Lista los dispositivos y sesiones activas del usuario',
+  })
+  async getSessions(
+    @CurrentUser() user: AuthenticatedUser,
+    @Req() req: Request,
+  ) {
+    const currentRefreshToken =
+      req.cookies?.['uecg_refresh_token'] ||
+      (req.headers['x-refresh-token'] as string);
+
+    const sessions = await this.authService.getUserSessions(
+      user.userId,
+      currentRefreshToken,
+    );
+
+    return {
+      status: 'SUCCESS',
+      sessions,
+    };
+  }
+
+  @Delete('sessions/other')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Cierra todas las sesiones en otros dispositivos excepto el actual',
+  })
+  async revokeOtherSessions(
+    @CurrentUser() user: AuthenticatedUser,
+    @Req() req: Request,
+  ) {
+    const currentRefreshToken =
+      req.cookies?.['uecg_refresh_token'] ||
+      (req.headers['x-refresh-token'] as string);
+
+    if (!currentRefreshToken) {
+      throw new UnauthorizedException('Token de sesión no disponible');
+    }
+
+    return this.authService.revokeAllOtherSessions(
+      user.userId,
+      currentRefreshToken,
+    );
+  }
+
+  @Delete('sessions/:id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Cierra una sesión remota específica por ID',
+  })
+  async revokeSession(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') sessionId: string,
+  ) {
+    return this.authService.revokeSession(user.userId, sessionId);
   }
 
   // ======================================================
@@ -257,6 +377,7 @@ export class AuthController {
 
       return {
         status: result.status,
+        message: 'Registro exitoso',
         user: result.user,
         accessToken: result.tokens.accessToken,
         refreshToken: result.tokens.refreshToken,
@@ -298,6 +419,7 @@ export class AuthController {
 
       return {
         status: result.status,
+        message: 'Registro exitoso',
         user: result.user,
         accessToken: result.tokens.accessToken,
         refreshToken: result.tokens.refreshToken,
@@ -322,12 +444,10 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Envía OTP al correo de recuperación o institucional',
+    summary: 'Solicitud de recuperación de contraseña',
   })
-  async forgotPassword(
-    @Body() dto: RequestPasswordResetDto,
-  ) {
-    return this.authService.requestPasswordReset(dto.identifier);
+  async forgotPassword(@Body() forgotDto: RequestPasswordResetDto) {
+    return this.authService.requestPasswordReset(forgotDto.identifier);
   }
 
   // ======================================================
@@ -344,54 +464,27 @@ export class AuthController {
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Verifica OTP y actualiza la contraseña',
+    summary: 'Restablece la contraseña con el código recibido',
   })
-  async resetPassword(
-    @Body() dto: ResetPasswordDto,
-  ) {
+  async resetPassword(@Body() resetDto: ResetPasswordDto) {
     return this.authService.resetPasswordWithCode(
-      dto.identifier,
-      dto.code,
-      dto.newPassword,
+      resetDto.identifier,
+      resetDto.code,
+      resetDto.newPassword,
     );
   }
 
   // ======================================================
-  // REGISTER FCM TOKEN
-  // ======================================================
-
-  @Patch('fcm-token')
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Registra dispositivo para Push Notifications',
-  })
-  async registerFcmToken(
-    @CurrentUser() user: AuthenticatedUser,
-    @Body() dto: RegisterFcmTokenDto,
-  ) {
-    if (!user?.userId) {
-      throw new UnauthorizedException('Usuario inválido');
-    }
-
-    return this.authService.registerFcmToken(user.userId, dto.fcmToken);
-  }
-
-  // ======================================================
-  // GET ME (Comprobar sesión activa)
+  // CURRENT USER
   // ======================================================
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Retorna el perfil del usuario actualmente autenticado',
+    summary: 'Retorna el perfil del usuario autenticado',
   })
   async getMe(@CurrentUser() user: AuthenticatedUser) {
-    if (!user?.userId) {
-      throw new UnauthorizedException('Usuario no autenticado');
-    }
-
     return {
       status: 'SUCCESS',
       user: {
@@ -402,5 +495,21 @@ export class AuthController {
       },
     };
   }
-}
 
+  // ======================================================
+  // REGISTER FCM TOKEN
+  // ======================================================
+
+  @Post('fcm-token')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Registra un FCM Token para notificaciones push',
+  })
+  async registerFcmToken(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: RegisterFcmTokenDto,
+  ) {
+    return this.authService.registerFcmToken(user.userId, dto.fcmToken);
+  }
+}

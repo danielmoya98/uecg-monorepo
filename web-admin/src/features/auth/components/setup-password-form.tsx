@@ -12,6 +12,7 @@ import {
 import { toast } from 'sonner'
 
 import { SwissInput } from '@/shared/ui/swiss-input'
+import { PasswordStrengthMeter } from './password-strength-meter'
 import {
   setupPasswordSchema,
   type SetupPasswordValues,
@@ -29,6 +30,7 @@ export function SetupPasswordForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SetupPasswordValues>({
     resolver: zodResolver(setupPasswordSchema),
@@ -38,6 +40,8 @@ export function SetupPasswordForm() {
       confirmPassword: '',
     },
   })
+
+  const newPasswordValue = watch('newPassword')
 
   useEffect(() => {
     const token = localStorage.getItem('uecg_setup_token')
@@ -122,6 +126,8 @@ export function SetupPasswordForm() {
           required
           {...register('newPassword')}
         />
+
+        <PasswordStrengthMeter password={newPasswordValue || ''} />
 
         <SwissInput
           id="confirmPassword"

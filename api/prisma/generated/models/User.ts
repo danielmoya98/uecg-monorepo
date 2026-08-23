@@ -58,7 +58,6 @@ export type UserMinAggregateOutputType = {
   resetCodeExpiresAt: Date | null
   failedLoginAttempts: number | null
   lockoutUntil: Date | null
-  hashedRefreshToken: string | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -85,7 +84,6 @@ export type UserMaxAggregateOutputType = {
   resetCodeExpiresAt: Date | null
   failedLoginAttempts: number | null
   lockoutUntil: Date | null
-  hashedRefreshToken: string | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -113,7 +111,6 @@ export type UserCountAggregateOutputType = {
   fcmTokens: number
   failedLoginAttempts: number
   lockoutUntil: number
-  hashedRefreshToken: number
   _all: number
 }
 
@@ -150,7 +147,6 @@ export type UserMinAggregateInputType = {
   resetCodeExpiresAt?: true
   failedLoginAttempts?: true
   lockoutUntil?: true
-  hashedRefreshToken?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -177,7 +173,6 @@ export type UserMaxAggregateInputType = {
   resetCodeExpiresAt?: true
   failedLoginAttempts?: true
   lockoutUntil?: true
-  hashedRefreshToken?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -205,7 +200,6 @@ export type UserCountAggregateInputType = {
   fcmTokens?: true
   failedLoginAttempts?: true
   lockoutUntil?: true
-  hashedRefreshToken?: true
   _all?: true
 }
 
@@ -320,7 +314,6 @@ export type UserGroupByOutputType = {
   fcmTokens: string[]
   failedLoginAttempts: number
   lockoutUntil: Date | null
-  hashedRefreshToken: string | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -371,7 +364,6 @@ export type UserWhereInput = {
   fcmTokens?: Prisma.StringNullableListFilter<"User">
   failedLoginAttempts?: Prisma.IntFilter<"User"> | number
   lockoutUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  hashedRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
   institution?: Prisma.XOR<Prisma.InstitutionNullableScalarRelationFilter, Prisma.InstitutionWhereInput> | null
   directedInstitution?: Prisma.XOR<Prisma.InstitutionNullableScalarRelationFilter, Prisma.InstitutionWhereInput> | null
@@ -383,6 +375,7 @@ export type UserWhereInput = {
   attendancesMarked?: Prisma.AttendanceRecordListRelationFilter
   grades?: Prisma.GradeListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  sessions?: Prisma.UserSessionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -410,7 +403,6 @@ export type UserOrderByWithRelationInput = {
   fcmTokens?: Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockoutUntil?: Prisma.SortOrderInput | Prisma.SortOrder
-  hashedRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.RoleOrderByWithRelationInput
   institution?: Prisma.InstitutionOrderByWithRelationInput
   directedInstitution?: Prisma.InstitutionOrderByWithRelationInput
@@ -422,6 +414,7 @@ export type UserOrderByWithRelationInput = {
   attendancesMarked?: Prisma.AttendanceRecordOrderByRelationAggregateInput
   grades?: Prisma.GradeOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  sessions?: Prisma.UserSessionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -452,7 +445,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   fcmTokens?: Prisma.StringNullableListFilter<"User">
   failedLoginAttempts?: Prisma.IntFilter<"User"> | number
   lockoutUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  hashedRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
   institution?: Prisma.XOR<Prisma.InstitutionNullableScalarRelationFilter, Prisma.InstitutionWhereInput> | null
   directedInstitution?: Prisma.XOR<Prisma.InstitutionNullableScalarRelationFilter, Prisma.InstitutionWhereInput> | null
@@ -464,6 +456,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   attendancesMarked?: Prisma.AttendanceRecordListRelationFilter
   grades?: Prisma.GradeListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  sessions?: Prisma.UserSessionListRelationFilter
 }, "id" | "email" | "ciHash" | "guardianId" | "studentId">
 
 export type UserOrderByWithAggregationInput = {
@@ -491,7 +484,6 @@ export type UserOrderByWithAggregationInput = {
   fcmTokens?: Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockoutUntil?: Prisma.SortOrderInput | Prisma.SortOrder
-  hashedRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -527,7 +519,6 @@ export type UserScalarWhereWithAggregatesInput = {
   fcmTokens?: Prisma.StringNullableListFilter<"User">
   failedLoginAttempts?: Prisma.IntWithAggregatesFilter<"User"> | number
   lockoutUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-  hashedRefreshToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
@@ -551,7 +542,6 @@ export type UserCreateInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -563,6 +553,7 @@ export type UserCreateInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -590,7 +581,6 @@ export type UserUncheckedCreateInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
@@ -598,6 +588,7 @@ export type UserUncheckedCreateInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -621,7 +612,6 @@ export type UserUpdateInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -633,6 +623,7 @@ export type UserUpdateInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -660,7 +651,6 @@ export type UserUncheckedUpdateInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
@@ -668,6 +658,7 @@ export type UserUncheckedUpdateInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -695,7 +686,6 @@ export type UserCreateManyInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -719,7 +709,6 @@ export type UserUpdateManyMutationInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -747,7 +736,6 @@ export type UserUncheckedUpdateManyInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserListRelationFilter = {
@@ -793,7 +781,6 @@ export type UserCountOrderByAggregateInput = {
   fcmTokens?: Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockoutUntil?: Prisma.SortOrder
-  hashedRefreshToken?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -824,7 +811,6 @@ export type UserMaxOrderByAggregateInput = {
   resetCodeExpiresAt?: Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockoutUntil?: Prisma.SortOrder
-  hashedRefreshToken?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -851,21 +837,20 @@ export type UserMinOrderByAggregateInput = {
   resetCodeExpiresAt?: Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockoutUntil?: Prisma.SortOrder
-  hashedRefreshToken?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
   failedLoginAttempts?: Prisma.SortOrder
 }
 
-export type UserNullableScalarRelationFilter = {
-  is?: Prisma.UserWhereInput | null
-  isNot?: Prisma.UserWhereInput | null
-}
-
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type UserCreateNestedManyWithoutRoleInput = {
@@ -937,6 +922,20 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type UserCreateNestedOneWithoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
+  upsert?: Prisma.UserUpsertWithoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
 }
 
 export type UserCreateNestedOneWithoutDirectedInstitutionInput = {
@@ -1174,7 +1173,6 @@ export type UserCreateWithoutRoleInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutAdvisorInput
@@ -1185,6 +1183,7 @@ export type UserCreateWithoutRoleInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRoleInput = {
@@ -1211,7 +1210,6 @@ export type UserUncheckedCreateWithoutRoleInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
@@ -1219,6 +1217,7 @@ export type UserUncheckedCreateWithoutRoleInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRoleInput = {
@@ -1275,7 +1274,158 @@ export type UserScalarWhereInput = {
   fcmTokens?: Prisma.StringNullableListFilter<"User">
   failedLoginAttempts?: Prisma.IntFilter<"User"> | number
   lockoutUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  hashedRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
+}
+
+export type UserCreateWithoutSessionsInput = {
+  id?: string
+  email: string
+  password: string
+  fullName: string
+  status?: $Enums.UserStatus
+  requiresPasswordChange?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ci?: string | null
+  ciHash?: string | null
+  phone?: string | null
+  address?: string | null
+  specialty?: string | null
+  recoveryEmail?: string | null
+  resetCode?: string | null
+  resetCodeExpiresAt?: Date | string | null
+  fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
+  failedLoginAttempts?: number
+  lockoutUntil?: Date | string | null
+  role: Prisma.RoleCreateNestedOneWithoutUsersInput
+  institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
+  directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutAdvisorInput
+  teacherAssignments?: Prisma.TeacherAssignmentCreateNestedManyWithoutTeacherInput
+  scheduleSlots?: Prisma.ScheduleSlotCreateNestedManyWithoutTeacherInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
+  grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSessionsInput = {
+  id?: string
+  email: string
+  password: string
+  fullName: string
+  roleId: string
+  status?: $Enums.UserStatus
+  requiresPasswordChange?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ci?: string | null
+  ciHash?: string | null
+  phone?: string | null
+  address?: string | null
+  specialty?: string | null
+  institutionId?: string | null
+  guardianId?: string | null
+  studentId?: string | null
+  recoveryEmail?: string | null
+  resetCode?: string | null
+  resetCodeExpiresAt?: Date | string | null
+  fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
+  failedLoginAttempts?: number
+  lockoutUntil?: Date | string | null
+  directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
+  teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
+  scheduleSlots?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutTeacherInput
+  attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+}
+
+export type UserUpsertWithoutSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+}
+
+export type UserUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  requiresPasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ci?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ciHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recoveryEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetCodeExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
+  institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
+  directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutAdvisorNestedInput
+  teacherAssignments?: Prisma.TeacherAssignmentUpdateManyWithoutTeacherNestedInput
+  scheduleSlots?: Prisma.ScheduleSlotUpdateManyWithoutTeacherNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  requiresPasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ci?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ciHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  institutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recoveryEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetCodeExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
+  teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
+  scheduleSlots?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutTeacherNestedInput
+  attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDirectedInstitutionInput = {
@@ -1299,7 +1449,6 @@ export type UserCreateWithoutDirectedInstitutionInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutAdvisorInput
@@ -1310,6 +1459,7 @@ export type UserCreateWithoutDirectedInstitutionInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDirectedInstitutionInput = {
@@ -1337,13 +1487,13 @@ export type UserUncheckedCreateWithoutDirectedInstitutionInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutTeacherInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDirectedInstitutionInput = {
@@ -1372,7 +1522,6 @@ export type UserCreateWithoutInstitutionInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutAdvisorInput
@@ -1383,6 +1532,7 @@ export type UserCreateWithoutInstitutionInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInstitutionInput = {
@@ -1409,7 +1559,6 @@ export type UserUncheckedCreateWithoutInstitutionInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
@@ -1417,6 +1566,7 @@ export type UserUncheckedCreateWithoutInstitutionInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInstitutionInput = {
@@ -1461,7 +1611,6 @@ export type UserUpdateWithoutDirectedInstitutionInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutAdvisorNestedInput
@@ -1472,6 +1621,7 @@ export type UserUpdateWithoutDirectedInstitutionInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDirectedInstitutionInput = {
@@ -1499,13 +1649,13 @@ export type UserUncheckedUpdateWithoutDirectedInstitutionInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutTeacherNestedInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutInstitutionInput = {
@@ -1545,7 +1695,6 @@ export type UserCreateWithoutClassroomsInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -1556,6 +1705,7 @@ export type UserCreateWithoutClassroomsInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutClassroomsInput = {
@@ -1583,13 +1733,13 @@ export type UserUncheckedCreateWithoutClassroomsInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutTeacherInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutClassroomsInput = {
@@ -1629,7 +1779,6 @@ export type UserUpdateWithoutClassroomsInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -1640,6 +1789,7 @@ export type UserUpdateWithoutClassroomsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClassroomsInput = {
@@ -1667,13 +1817,13 @@ export type UserUncheckedUpdateWithoutClassroomsInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutTeacherNestedInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeacherAssignmentsInput = {
@@ -1697,7 +1847,6 @@ export type UserCreateWithoutTeacherAssignmentsInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -1708,6 +1857,7 @@ export type UserCreateWithoutTeacherAssignmentsInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeacherAssignmentsInput = {
@@ -1735,13 +1885,13 @@ export type UserUncheckedCreateWithoutTeacherAssignmentsInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutTeacherInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeacherAssignmentsInput = {
@@ -1781,7 +1931,6 @@ export type UserUpdateWithoutTeacherAssignmentsInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -1792,6 +1941,7 @@ export type UserUpdateWithoutTeacherAssignmentsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherAssignmentsInput = {
@@ -1819,13 +1969,13 @@ export type UserUncheckedUpdateWithoutTeacherAssignmentsInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutTeacherNestedInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutScheduleSlotsInput = {
@@ -1849,7 +1999,6 @@ export type UserCreateWithoutScheduleSlotsInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -1860,6 +2009,7 @@ export type UserCreateWithoutScheduleSlotsInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutScheduleSlotsInput = {
@@ -1887,13 +2037,13 @@ export type UserUncheckedCreateWithoutScheduleSlotsInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutScheduleSlotsInput = {
@@ -1933,7 +2083,6 @@ export type UserUpdateWithoutScheduleSlotsInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -1944,6 +2093,7 @@ export type UserUpdateWithoutScheduleSlotsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutScheduleSlotsInput = {
@@ -1971,13 +2121,13 @@ export type UserUncheckedUpdateWithoutScheduleSlotsInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStudentInput = {
@@ -2001,7 +2151,6 @@ export type UserCreateWithoutStudentInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -2012,6 +2161,7 @@ export type UserCreateWithoutStudentInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStudentInput = {
@@ -2038,7 +2188,6 @@ export type UserUncheckedCreateWithoutStudentInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
@@ -2046,6 +2195,7 @@ export type UserUncheckedCreateWithoutStudentInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStudentInput = {
@@ -2085,7 +2235,6 @@ export type UserUpdateWithoutStudentInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -2096,6 +2245,7 @@ export type UserUpdateWithoutStudentInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentInput = {
@@ -2122,7 +2272,6 @@ export type UserUncheckedUpdateWithoutStudentInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
@@ -2130,6 +2279,7 @@ export type UserUncheckedUpdateWithoutStudentInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGuardianInput = {
@@ -2153,7 +2303,6 @@ export type UserCreateWithoutGuardianInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -2164,6 +2313,7 @@ export type UserCreateWithoutGuardianInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGuardianInput = {
@@ -2190,7 +2340,6 @@ export type UserUncheckedCreateWithoutGuardianInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
@@ -2198,6 +2347,7 @@ export type UserUncheckedCreateWithoutGuardianInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGuardianInput = {
@@ -2237,7 +2387,6 @@ export type UserUpdateWithoutGuardianInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -2248,6 +2397,7 @@ export type UserUpdateWithoutGuardianInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGuardianInput = {
@@ -2274,7 +2424,6 @@ export type UserUncheckedUpdateWithoutGuardianInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
@@ -2282,6 +2431,7 @@ export type UserUncheckedUpdateWithoutGuardianInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAttendancesMarkedInput = {
@@ -2305,7 +2455,6 @@ export type UserCreateWithoutAttendancesMarkedInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -2316,6 +2465,7 @@ export type UserCreateWithoutAttendancesMarkedInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAttendancesMarkedInput = {
@@ -2343,13 +2493,13 @@ export type UserUncheckedCreateWithoutAttendancesMarkedInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutTeacherInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAttendancesMarkedInput = {
@@ -2389,7 +2539,6 @@ export type UserUpdateWithoutAttendancesMarkedInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -2400,6 +2549,7 @@ export type UserUpdateWithoutAttendancesMarkedInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendancesMarkedInput = {
@@ -2427,13 +2577,13 @@ export type UserUncheckedUpdateWithoutAttendancesMarkedInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutTeacherNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGradesInput = {
@@ -2457,7 +2607,6 @@ export type UserCreateWithoutGradesInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -2468,6 +2617,7 @@ export type UserCreateWithoutGradesInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGradesInput = {
@@ -2495,13 +2645,13 @@ export type UserUncheckedCreateWithoutGradesInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutTeacherInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGradesInput = {
@@ -2541,7 +2691,6 @@ export type UserUpdateWithoutGradesInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -2552,6 +2701,7 @@ export type UserUpdateWithoutGradesInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGradesInput = {
@@ -2579,13 +2729,13 @@ export type UserUncheckedUpdateWithoutGradesInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutTeacherNestedInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -2609,7 +2759,6 @@ export type UserCreateWithoutAuditLogsInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   role: Prisma.RoleCreateNestedOneWithoutUsersInput
   institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
   directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
@@ -2620,6 +2769,7 @@ export type UserCreateWithoutAuditLogsInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -2647,13 +2797,13 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
   directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutTeacherInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -2693,7 +2843,6 @@ export type UserUpdateWithoutAuditLogsInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
@@ -2704,6 +2853,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -2731,13 +2881,13 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
   scheduleSlots?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutTeacherNestedInput
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyRoleInput = {
@@ -2764,7 +2914,6 @@ export type UserCreateManyRoleInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
 }
 
 export type UserUpdateWithoutRoleInput = {
@@ -2788,7 +2937,6 @@ export type UserUpdateWithoutRoleInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutAdvisorNestedInput
@@ -2799,6 +2947,7 @@ export type UserUpdateWithoutRoleInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleInput = {
@@ -2825,7 +2974,6 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
@@ -2833,6 +2981,7 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -2859,7 +3008,6 @@ export type UserUncheckedUpdateManyWithoutRoleInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserCreateManyInstitutionInput = {
@@ -2886,7 +3034,6 @@ export type UserCreateManyInstitutionInput = {
   fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
   failedLoginAttempts?: number
   lockoutUntil?: Date | string | null
-  hashedRefreshToken?: string | null
 }
 
 export type UserUpdateWithoutInstitutionInput = {
@@ -2910,7 +3057,6 @@ export type UserUpdateWithoutInstitutionInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
   directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutAdvisorNestedInput
@@ -2921,6 +3067,7 @@ export type UserUpdateWithoutInstitutionInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInstitutionInput = {
@@ -2947,7 +3094,6 @@ export type UserUncheckedUpdateWithoutInstitutionInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
   teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
@@ -2955,6 +3101,7 @@ export type UserUncheckedUpdateWithoutInstitutionInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutInstitutionInput = {
@@ -2981,7 +3128,6 @@ export type UserUncheckedUpdateManyWithoutInstitutionInput = {
   fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -2996,6 +3142,7 @@ export type UserCountOutputType = {
   attendancesMarked: number
   grades: number
   auditLogs: number
+  sessions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3005,6 +3152,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   attendancesMarked?: boolean | UserCountOutputTypeCountAttendancesMarkedArgs
   grades?: boolean | UserCountOutputTypeCountGradesArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+  sessions?: boolean | UserCountOutputTypeCountSessionsArgs
 }
 
 /**
@@ -3059,6 +3207,13 @@ export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.AuditLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserSessionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3085,7 +3240,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   fcmTokens?: boolean
   failedLoginAttempts?: boolean
   lockoutUntil?: boolean
-  hashedRefreshToken?: boolean
   role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
   institution?: boolean | Prisma.User$institutionArgs<ExtArgs>
   directedInstitution?: boolean | Prisma.User$directedInstitutionArgs<ExtArgs>
@@ -3097,6 +3251,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   attendancesMarked?: boolean | Prisma.User$attendancesMarkedArgs<ExtArgs>
   grades?: boolean | Prisma.User$gradesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3125,7 +3280,6 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   fcmTokens?: boolean
   failedLoginAttempts?: boolean
   lockoutUntil?: boolean
-  hashedRefreshToken?: boolean
   role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
   institution?: boolean | Prisma.User$institutionArgs<ExtArgs>
   guardian?: boolean | Prisma.User$guardianArgs<ExtArgs>
@@ -3157,7 +3311,6 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   fcmTokens?: boolean
   failedLoginAttempts?: boolean
   lockoutUntil?: boolean
-  hashedRefreshToken?: boolean
   role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
   institution?: boolean | Prisma.User$institutionArgs<ExtArgs>
   guardian?: boolean | Prisma.User$guardianArgs<ExtArgs>
@@ -3189,10 +3342,9 @@ export type UserSelectScalar = {
   fcmTokens?: boolean
   failedLoginAttempts?: boolean
   lockoutUntil?: boolean
-  hashedRefreshToken?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "fullName" | "roleId" | "status" | "requiresPasswordChange" | "lastLoginAt" | "createdAt" | "updatedAt" | "ci" | "ciHash" | "phone" | "address" | "specialty" | "institutionId" | "guardianId" | "studentId" | "recoveryEmail" | "resetCode" | "resetCodeExpiresAt" | "fcmTokens" | "failedLoginAttempts" | "lockoutUntil" | "hashedRefreshToken", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "fullName" | "roleId" | "status" | "requiresPasswordChange" | "lastLoginAt" | "createdAt" | "updatedAt" | "ci" | "ciHash" | "phone" | "address" | "specialty" | "institutionId" | "guardianId" | "studentId" | "recoveryEmail" | "resetCode" | "resetCodeExpiresAt" | "fcmTokens" | "failedLoginAttempts" | "lockoutUntil", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
   institution?: boolean | Prisma.User$institutionArgs<ExtArgs>
@@ -3205,6 +3357,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   attendancesMarked?: boolean | Prisma.User$attendancesMarkedArgs<ExtArgs>
   grades?: boolean | Prisma.User$gradesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3234,6 +3387,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     attendancesMarked: Prisma.$AttendanceRecordPayload<ExtArgs>[]
     grades: Prisma.$GradePayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    sessions: Prisma.$UserSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3260,7 +3414,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     fcmTokens: string[]
     failedLoginAttempts: number
     lockoutUntil: Date | null
-    hashedRefreshToken: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -3666,6 +3819,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   attendancesMarked<T extends Prisma.User$attendancesMarkedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$attendancesMarkedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   grades<T extends Prisma.User$gradesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$gradesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GradePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3719,7 +3873,6 @@ export interface UserFieldRefs {
   readonly fcmTokens: Prisma.FieldRef<"User", 'String[]'>
   readonly failedLoginAttempts: Prisma.FieldRef<"User", 'Int'>
   readonly lockoutUntil: Prisma.FieldRef<"User", 'DateTime'>
-  readonly hashedRefreshToken: Prisma.FieldRef<"User", 'String'>
 }
     
 
@@ -4338,6 +4491,30 @@ export type User$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * User.sessions
+ */
+export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserSession
+   */
+  select?: Prisma.UserSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserSession
+   */
+  omit?: Prisma.UserSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserSessionInclude<ExtArgs> | null
+  where?: Prisma.UserSessionWhereInput
+  orderBy?: Prisma.UserSessionOrderByWithRelationInput | Prisma.UserSessionOrderByWithRelationInput[]
+  cursor?: Prisma.UserSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserSessionScalarFieldEnum | Prisma.UserSessionScalarFieldEnum[]
 }
 
 /**

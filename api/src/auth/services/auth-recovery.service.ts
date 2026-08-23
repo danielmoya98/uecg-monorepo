@@ -85,6 +85,13 @@ export class AuthRecoveryService {
     });
 
     // ======================================================
+    // DEEP LINK & MAGIC LINK GENERATION
+    // ======================================================
+
+    const webMagicLink = `https://uecg.edu.bo/reset-password?code=${resetCode}&email=${encodeURIComponent(user.email)}`;
+    const mobileDeepLink = `uecg://reset-password?code=${resetCode}&email=${encodeURIComponent(user.email)}`;
+
+    // ======================================================
     // EVENT DRIVEN
     // ======================================================
 
@@ -92,6 +99,8 @@ export class AuthRecoveryService {
       email: targetEmail,
       fullName: user.fullName,
       code: resetCode,
+      magicLink: webMagicLink,
+      deepLink: mobileDeepLink,
     });
 
     return {
@@ -184,4 +193,3 @@ export class AuthRecoveryService {
     };
   }
 }
-
