@@ -1,0 +1,26 @@
+name: Deploy Web Admin to Render
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'web-admin/**'
+      - '.github/workflows/deploy-render-web-admin.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy-web-admin:
+    name: Trigger Render Deploy Hook for Web Admin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Webhook
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_WEB_ADMIN }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "::error::Secret RENDER_DEPLOY_HOOK_WEB_ADMIN is not configured in repository secrets."
+            exit 1
+          fi
+          echo "Triggering deploy hook for Web Admin on Render..."
+          curl -f -X POST "$RENDER_DEPLOY_HOOK"
+          echo "Deploy triggered successfully!"
