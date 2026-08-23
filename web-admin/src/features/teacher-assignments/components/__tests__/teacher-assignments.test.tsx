@@ -133,7 +133,25 @@ describe('Módulo Teacher Assignments - Pruebas Unitarias', () => {
       expect(handleDelete).toHaveBeenCalledWith(mockAssignments[0])
     })
 
-    it('no debe renderizar la columna "Quitar" ni los botones si canManage es false', () => {
+    it('debe disparar onReassignRequest al pulsar el botón de reasignar', () => {
+      const handleReassign = vi.fn()
+      render(
+        <AssignmentsTable
+          assignments={mockAssignments}
+          isFetching={false}
+          onDeleteRequest={() => {}}
+          onReassignRequest={handleReassign}
+          canManage={true}
+        />
+      )
+
+      const reassignBtn = screen.getByTitle('Reasignar Docente Titular')
+      fireEvent.click(reassignBtn)
+
+      expect(handleReassign).toHaveBeenCalledWith(mockAssignments[0])
+    })
+
+    it('no debe renderizar la columna "Acciones" ni los botones si canManage es false', () => {
       render(
         <AssignmentsTable
           assignments={mockAssignments}
@@ -144,7 +162,8 @@ describe('Módulo Teacher Assignments - Pruebas Unitarias', () => {
       )
 
       expect(screen.queryByTitle('Eliminar asignación')).not.toBeInTheDocument()
-      expect(screen.queryByText('Quitar')).not.toBeInTheDocument()
+      expect(screen.queryByTitle('Reasignar Docente Titular')).not.toBeInTheDocument()
+      expect(screen.queryByText('Acciones')).not.toBeInTheDocument()
     })
   })
 })

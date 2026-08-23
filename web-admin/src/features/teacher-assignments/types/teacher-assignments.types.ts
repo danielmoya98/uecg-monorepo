@@ -18,6 +18,10 @@ export interface CreateTeacherAssignmentPayload {
   teacherId: string
 }
 
+export interface UpdateTeacherAssignmentPayload {
+  teacherId: string
+}
+
 export interface CloneTeacherAssignmentsPayload {
   targetClassroomIds: string[]
   assignments: {

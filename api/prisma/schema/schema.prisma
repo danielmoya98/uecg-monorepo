@@ -345,6 +345,7 @@ model TeacherAssignment {
   grades        Grade[]
 
   @@unique([classroomId, subjectId])
+  @@index([teacherId])
   @@map("teacher_assignments")
 }
 
@@ -810,7 +811,7 @@ model Grade {
 
   // Relaciones
   enrollment          Enrollment           @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
-  teacherAssignment   TeacherAssignment    @relation(fields: [teacherAssignmentId], references: [id], onDelete: Cascade)
+  teacherAssignment   TeacherAssignment    @relation(fields: [teacherAssignmentId], references: [id], onDelete: Restrict)
   trimester           Trimester            @relation(fields: [trimesterId], references: [id], onDelete: Cascade)
   modifier            User?                @relation(fields: [lastModifiedById], references: [id])
   gradeChangeRequests GradeChangeRequest[]

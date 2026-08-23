@@ -10,6 +10,7 @@ import ClassroomSelector from './classroom-selector'
 import AssignmentPanel from './assignment-panel'
 import DeleteAssignmentDrawer from './delete-assignment-drawer'
 import CloneAssignmentsDrawer from './clone-assignments-drawer'
+import ReassignTeacherModal from './reassign-teacher-modal'
 import type { TeacherAssignment } from '../types/teacher-assignments.types'
 
 export const TeacherAssignmentsPage = () => {
@@ -33,6 +34,7 @@ export const TeacherAssignmentsPage = () => {
     subjects,
     isFetchingAssignments,
     assignMutation,
+    updateMutation,
     deleteMutation,
     cloneMutation,
   } = useClassroomAssignments(selectedClassroom, canManageAssignments)
@@ -43,6 +45,10 @@ export const TeacherAssignmentsPage = () => {
   // Drawer de Eliminación
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [assignmentToDelete, setAssignmentToDelete] = useState<TeacherAssignment | null>(null)
+
+  // Modal de Reasignación
+  const [isReassignOpen, setIsReassignOpen] = useState(false)
+  const [assignmentToReassign, setAssignmentToReassign] = useState<TeacherAssignment | null>(null)
 
   const handleDeleteRequest = (assignment: TeacherAssignment) => {
     setAssignmentToDelete(assignment)
@@ -56,6 +62,23 @@ export const TeacherAssignmentsPage = () => {
         setAssignmentToDelete(null)
       },
     })
+  }
+
+  const handleReassignRequest = (assignment: TeacherAssignment) => {
+    setAssignmentToReassign(assignment)
+    setIsReassignOpen(true)
+  }
+
+  const handleReassignConfirm = ({ id, teacherId }: { id: string; teacherId: string }) => {
+    updateMutation.mutate(
+      { id, teacherId },
+      {
+        onSuccess: () => {
+          setIsReassignOpen(false)
+          setAssignmentToReassign(null)
+        },
+      }
+    )
   }
 
   // Guard de acceso restringido en UI en caso de bypass del router
@@ -123,10 +146,26 @@ export const TeacherAssignmentsPage = () => {
             }}
             isAssignPending={assignMutation.isPending}
             onDeleteRequest={handleDeleteRequest}
+            onReassignRequest={handleReassignRequest}
             onOpenCloneDrawer={handleOpenClone}
           />
         </div>
       </div>
+
+      {/* Modal de Reasignación de Docente */}
+      {canManageAssignments && (
+        <ReassignTeacherModal
+          isOpen={isReassignOpen}
+          onClose={() => {
+            setIsReassignOpen(false)
+            setAssignmentToReassign(null)
+          }}
+          assignment={assignmentToReassign}
+          teachers={teachers}
+          onConfirm={handleReassignConfirm}
+          isSubmitting={updateMutation.isPending}
+        />
+      )}
 
       {/* Drawer de Confirmación de Borrado */}
       {canManageAssignments && (
