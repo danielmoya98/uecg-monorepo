@@ -12,8 +12,8 @@ class ApiClient {
     final Dio dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
         responseType: ResponseType.json,
       ),
     );
@@ -22,19 +22,13 @@ class ApiClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await SecureStorageService.getToken();
-          if (token != null && !options.headers.containsKey('Authorization')) {
+          if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
           return handler.next(options);
         },
         onError: (DioException e, handler) async {
-          // Solo borramos el token si falla la ruta de verificación de perfil o refresh token
-          // NUNCA en rutas de login, QR o endpoints de validación
-          final path = e.requestOptions.path;
-          final isProfileOrRefresh = path.contains('/me') || path.contains('/refresh-token');
-          if (e.response?.statusCode == 401 && isProfileOrRefresh) {
-            await SecureStorageService.deleteToken();
-          }
+          // No borramos tokens automáticamente en onError para evitar deslogueos accidentales
           return handler.next(e);
         },
       ),
