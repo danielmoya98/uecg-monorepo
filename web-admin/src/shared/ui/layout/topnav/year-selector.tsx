@@ -38,7 +38,7 @@ export default function YearSelector() {
   const availableYearsList = allYearsData?.data || [];
 
   return (
-    <div className="relative hidden md:block" ref={dropdownRef}>
+    <div className="relative hidden md:block" ref={dropdownRef} id="tour-year-selector" data-tour="tour-year-selector">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex flex-col text-right focus:outline-none group px-2 cursor-pointer"

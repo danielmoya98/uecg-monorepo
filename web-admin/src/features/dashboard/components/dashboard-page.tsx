@@ -3,7 +3,6 @@ import { useRootStats, useGlobalStats, useTeacherStats } from '../hooks/use-dash
 import RootMetricsWidget from './root-metrics-widget'
 import GlobalMetricsWidget from './global-metrics-widget'
 import TeacherMetricsWidget from './teacher-metrics-widget'
-import { SetupWizardWidget } from '@/features/academic-years'
 
 export default function DashboardPage() {
   const { can, canAny, user } = useRouteContext({ from: '/_authenticated' })
@@ -49,11 +48,6 @@ export default function DashboardPage() {
           })}
         </p>
       </header>
-
-      {/* ASISTENTE DE PREPARACIÓN DE GESTIÓN (DIRECTORES Y ADMINS) */}
-      {(showAdminLayer || showRootLayer) && (
-        <SetupWizardWidget />
-      )}
 
       <div className="flex flex-col gap-10">
         {showRootLayer && (
