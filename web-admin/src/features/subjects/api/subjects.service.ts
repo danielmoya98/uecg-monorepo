@@ -6,7 +6,9 @@ export const SubjectsService = {
     page: number,
     limit: number,
     search?: string,
-    level?: string
+    level?: string,
+    isActive?: boolean,
+    all?: boolean
   ): Promise<SubjectsResponse> => {
     const params = new URLSearchParams({
       page: page.toString(),
@@ -14,6 +16,8 @@ export const SubjectsService = {
     })
     if (search) params.append('search', search)
     if (level) params.append('level', level)
+    if (typeof isActive === 'boolean') params.append('isActive', isActive.toString())
+    if (all) params.append('all', 'true')
 
     const response = await api.get(`/subjects?${params.toString()}`)
     return response.data
@@ -33,8 +37,14 @@ export const SubjectsService = {
     return response.data
   },
 
+  toggleStatus: async (id: string, isActive?: boolean): Promise<Subject> => {
+    const response = await api.patch(`/subjects/${id}/status`, { isActive })
+    return response.data
+  },
+
   delete: async (id: string): Promise<Subject> => {
     const response = await api.delete(`/subjects/${id}`)
     return response.data
   },
 }
+

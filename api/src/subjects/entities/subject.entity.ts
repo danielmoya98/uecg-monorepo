@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { EducationLevel } from '../../../prisma/generated/client';
 
 export class SubjectEntity {
@@ -14,6 +14,12 @@ export class SubjectEntity {
   })
   name: string;
 
+  @ApiPropertyOptional({
+    example: 'MAT',
+    description: 'Sigla o código corto oficial de la materia',
+  })
+  code?: string;
+
   @ApiProperty({
     enum: EducationLevel,
     example: 'SECUNDARIA',
@@ -21,12 +27,17 @@ export class SubjectEntity {
   })
   level: EducationLevel;
 
-  @ApiProperty({
-    example: 'Ciencias Exactas',
-    required: false,
-    description: 'Área de conocimiento a la que pertenece',
+  @ApiPropertyOptional({
+    example: 'Ciencia, Tecnología y Producción',
+    description: 'Área o Campo de Saberes al que pertenece',
   })
   area?: string;
+
+  @ApiProperty({
+    example: true,
+    description: 'Indica si la materia está activa en el catálogo',
+  })
+  isActive: boolean;
 
   @ApiProperty({
     example: '2026-05-27T19:12:44.000Z',
@@ -40,3 +51,4 @@ export class SubjectEntity {
   })
   updatedAt: Date;
 }
+

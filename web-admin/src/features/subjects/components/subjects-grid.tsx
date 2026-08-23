@@ -30,7 +30,7 @@ export default function SubjectsGrid({
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={`skeleton-grid-${i}`}
-            className="border border-uecg-line bg-white h-[200px] animate-pulse"
+            className="border border-uecg-line bg-white h-[210px] animate-pulse"
           />
         ))}
       </div>
@@ -73,7 +73,9 @@ export default function SubjectsGrid({
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: index * 0.04 }}
-              className={`group flex flex-col text-left border border-uecg-line bg-white h-[200px] relative overflow-hidden transition-all duration-300 ${
+              className={`group flex flex-col text-left border border-uecg-line bg-white h-[210px] relative overflow-hidden transition-all duration-300 ${
+                !s.isActive ? 'bg-gray-50/70 opacity-80' : ''
+              } ${
                 canManage ? 'hover:border-uecg-blue hover:shadow-lg' : 'opacity-95'
               }`}
             >
@@ -89,29 +91,47 @@ export default function SubjectsGrid({
                   if (canManage) onAction('edit', s)
                 }}
                 disabled={!canManage}
-                className={`p-5 flex-1 w-full relative z-10 flex flex-col text-left outline-none focus:bg-gray-50/50 transition-colors ${
+                className={`p-4 flex-1 w-full relative z-10 flex flex-col text-left outline-none focus:bg-gray-50/50 transition-colors ${
                   canManage ? 'cursor-pointer' : 'cursor-default'
                 }`}
               >
-                <div className="flex justify-between items-start w-full mb-3">
-                  <div
-                    className={`w-10 h-10 flex items-center justify-center ${getAvatarBg(
-                      s.level
-                    )} text-white font-black text-xl shadow-sm shrink-0`}
-                  >
-                    {initial}
+                <div className="flex justify-between items-start w-full mb-2">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-9 h-9 flex items-center justify-center ${getAvatarBg(
+                        s.level
+                      )} text-white font-black text-lg shadow-sm shrink-0`}
+                    >
+                      {initial}
+                    </div>
+                    {s.code && (
+                      <span className="text-[9px] font-mono font-black uppercase tracking-wider px-1.5 py-0.5 border border-uecg-line bg-gray-100 text-uecg-dark">
+                        {s.code}
+                      </span>
+                    )}
                   </div>
-                  <span
-                    className={`text-[9px] font-black text-uecg-gray uppercase tracking-widest border border-uecg-line px-2 py-0.5 bg-gray-50 transition-colors ${
-                      canManage ? 'group-hover:border-blue-200 group-hover:text-uecg-blue' : ''
-                    }`}
-                  >
-                    {s.level}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 border ${
+                        s.isActive
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-amber-50 text-amber-700 border-amber-200'
+                      }`}
+                    >
+                      {s.isActive ? 'ACTIVA' : 'INACTIVA'}
+                    </span>
+                    <span
+                      className={`text-[8px] font-black text-uecg-gray uppercase tracking-widest border border-uecg-line px-1.5 py-0.5 bg-gray-50 transition-colors ${
+                        canManage ? 'group-hover:border-blue-200 group-hover:text-uecg-blue' : ''
+                      }`}
+                    >
+                      {s.level}
+                    </span>
+                  </div>
                 </div>
 
                 <h3
-                  className={`text-xl font-black uppercase tracking-tighter text-uecg-dark mt-2 leading-none transition-colors line-clamp-2 ${
+                  className={`text-lg font-black uppercase tracking-tighter text-uecg-dark mt-1 leading-tight transition-colors line-clamp-2 ${
                     canManage ? 'group-hover:text-uecg-blue' : ''
                   }`}
                   title={s.name}
@@ -121,11 +141,11 @@ export default function SubjectsGrid({
 
                 <div className="mt-auto w-full">
                   {s.area ? (
-                    <span className="text-[9px] font-black text-uecg-blue uppercase tracking-widest bg-blue-50 border border-blue-100 px-2 py-1 truncate block w-fit max-w-full">
-                      ÁREA: {s.area}
+                    <span className="text-[9px] font-black text-uecg-blue uppercase tracking-widest bg-blue-50 border border-blue-100 px-2 py-0.5 truncate block w-fit max-w-full">
+                      {s.area}
                     </span>
                   ) : (
-                    <span className="text-[9px] font-black text-uecg-gray uppercase tracking-widest bg-gray-50 border border-uecg-line px-2 py-1 truncate block w-fit max-w-full">
+                    <span className="text-[9px] font-black text-uecg-gray uppercase tracking-widest bg-gray-50 border border-uecg-line px-2 py-0.5 truncate block w-fit max-w-full">
                       Sin Categoría
                     </span>
                   )}
@@ -133,7 +153,7 @@ export default function SubjectsGrid({
               </button>
 
               {/* Barra inferior: Editar y Eliminar (con escudo ABAC) */}
-              <div className="w-full border-t border-uecg-line bg-gray-50 flex h-12 relative z-10">
+              <div className="w-full border-t border-uecg-line bg-gray-50 flex h-11 relative z-10">
                 <button
                   type="button"
                   onClick={() => {
@@ -161,10 +181,10 @@ export default function SubjectsGrid({
                   <button
                     type="button"
                     onClick={() => onAction('delete', s)}
-                    className="w-12 h-full flex items-center justify-center border-l border-uecg-line bg-gray-50 text-uecg-gray hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors outline-none focus:ring-2 focus:ring-red-600 cursor-pointer"
+                    className="w-11 h-full flex items-center justify-center border-l border-uecg-line bg-gray-50 text-uecg-gray hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors outline-none focus:ring-2 focus:ring-red-600 cursor-pointer"
                     title="Eliminar Materia"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -175,3 +195,4 @@ export default function SubjectsGrid({
     </div>
   )
 }
+

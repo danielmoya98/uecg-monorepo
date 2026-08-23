@@ -47,13 +47,15 @@ describe('Módulo Subjects - Pruebas Unitarias y de Humo', () => {
           onSearchChange={() => {}}
           selectedLevel=""
           onLevelChange={() => {}}
+          selectedStatus="all"
+          onStatusChange={() => {}}
           allowedLevels={['INICIAL', 'PRIMARIA', 'SECUNDARIA']}
           viewMode="table"
           onViewModeChange={() => {}}
         />
       )
 
-      const input = screen.getByPlaceholderText(/BUSCAR MATERIA POR NOMBRE O ÁREA.../i)
+      const input = screen.getByPlaceholderText(/BUSCAR MATERIA POR NOMBRE, SIGLA O ÁREA.../i)
       expect(input).toBeInTheDocument()
       expect(input).toHaveValue('Matemáticas')
     })
@@ -66,13 +68,15 @@ describe('Módulo Subjects - Pruebas Unitarias y de Humo', () => {
           onSearchChange={handleSearchChange}
           selectedLevel=""
           onLevelChange={() => {}}
+          selectedStatus="all"
+          onStatusChange={() => {}}
           allowedLevels={['INICIAL', 'PRIMARIA', 'SECUNDARIA']}
           viewMode="table"
           onViewModeChange={() => {}}
         />
       )
 
-      const input = screen.getByPlaceholderText(/BUSCAR MATERIA POR NOMBRE O ÁREA.../i)
+      const input = screen.getByPlaceholderText(/BUSCAR MATERIA POR NOMBRE, SIGLA O ÁREA.../i)
       fireEvent.change(input, { target: { value: 'Física' } })
 
       expect(handleSearchChange).toHaveBeenCalledWith('Física')

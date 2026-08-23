@@ -27,8 +27,10 @@ export type AggregateSubject = {
 export type SubjectMinAggregateOutputType = {
   id: string | null
   name: string | null
+  code: string | null
   level: $Enums.EducationLevel | null
   area: string | null
+  isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -36,8 +38,10 @@ export type SubjectMinAggregateOutputType = {
 export type SubjectMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  code: string | null
   level: $Enums.EducationLevel | null
   area: string | null
+  isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -45,8 +49,10 @@ export type SubjectMaxAggregateOutputType = {
 export type SubjectCountAggregateOutputType = {
   id: number
   name: number
+  code: number
   level: number
   area: number
+  isActive: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -56,8 +62,10 @@ export type SubjectCountAggregateOutputType = {
 export type SubjectMinAggregateInputType = {
   id?: true
   name?: true
+  code?: true
   level?: true
   area?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -65,8 +73,10 @@ export type SubjectMinAggregateInputType = {
 export type SubjectMaxAggregateInputType = {
   id?: true
   name?: true
+  code?: true
   level?: true
   area?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -74,8 +84,10 @@ export type SubjectMaxAggregateInputType = {
 export type SubjectCountAggregateInputType = {
   id?: true
   name?: true
+  code?: true
   level?: true
   area?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -156,8 +168,10 @@ export type SubjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type SubjectGroupByOutputType = {
   id: string
   name: string
+  code: string | null
   level: $Enums.EducationLevel
   area: string | null
+  isActive: boolean
   createdAt: Date
   updatedAt: Date
   _count: SubjectCountAggregateOutputType | null
@@ -186,8 +200,10 @@ export type SubjectWhereInput = {
   NOT?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
   id?: Prisma.StringFilter<"Subject"> | string
   name?: Prisma.StringFilter<"Subject"> | string
+  code?: Prisma.StringNullableFilter<"Subject"> | string | null
   level?: Prisma.EnumEducationLevelFilter<"Subject"> | $Enums.EducationLevel
   area?: Prisma.StringNullableFilter<"Subject"> | string | null
+  isActive?: Prisma.BoolFilter<"Subject"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subject"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subject"> | Date | string
   assignments?: Prisma.TeacherAssignmentListRelationFilter
@@ -196,8 +212,10 @@ export type SubjectWhereInput = {
 export type SubjectOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   assignments?: Prisma.TeacherAssignmentOrderByRelationAggregateInput
@@ -205,22 +223,27 @@ export type SubjectOrderByWithRelationInput = {
 
 export type SubjectWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  name_level?: Prisma.SubjectNameLevelCompoundUniqueInput
   AND?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
   OR?: Prisma.SubjectWhereInput[]
   NOT?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
   name?: Prisma.StringFilter<"Subject"> | string
+  code?: Prisma.StringNullableFilter<"Subject"> | string | null
   level?: Prisma.EnumEducationLevelFilter<"Subject"> | $Enums.EducationLevel
   area?: Prisma.StringNullableFilter<"Subject"> | string | null
+  isActive?: Prisma.BoolFilter<"Subject"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subject"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subject"> | Date | string
   assignments?: Prisma.TeacherAssignmentListRelationFilter
-}, "id">
+}, "id" | "name_level">
 
 export type SubjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.SubjectCountOrderByAggregateInput
@@ -234,8 +257,10 @@ export type SubjectScalarWhereWithAggregatesInput = {
   NOT?: Prisma.SubjectScalarWhereWithAggregatesInput | Prisma.SubjectScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Subject"> | string
   name?: Prisma.StringWithAggregatesFilter<"Subject"> | string
+  code?: Prisma.StringNullableWithAggregatesFilter<"Subject"> | string | null
   level?: Prisma.EnumEducationLevelWithAggregatesFilter<"Subject"> | $Enums.EducationLevel
   area?: Prisma.StringNullableWithAggregatesFilter<"Subject"> | string | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"Subject"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Subject"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Subject"> | Date | string
 }
@@ -243,8 +268,10 @@ export type SubjectScalarWhereWithAggregatesInput = {
 export type SubjectCreateInput = {
   id?: string
   name: string
+  code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.TeacherAssignmentCreateNestedManyWithoutSubjectInput
@@ -253,8 +280,10 @@ export type SubjectCreateInput = {
 export type SubjectUncheckedCreateInput = {
   id?: string
   name: string
+  code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutSubjectInput
@@ -263,8 +292,10 @@ export type SubjectUncheckedCreateInput = {
 export type SubjectUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.TeacherAssignmentUpdateManyWithoutSubjectNestedInput
@@ -273,8 +304,10 @@ export type SubjectUpdateInput = {
 export type SubjectUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutSubjectNestedInput
@@ -283,8 +316,10 @@ export type SubjectUncheckedUpdateInput = {
 export type SubjectCreateManyInput = {
   id?: string
   name: string
+  code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -292,8 +327,10 @@ export type SubjectCreateManyInput = {
 export type SubjectUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -301,17 +338,26 @@ export type SubjectUpdateManyMutationInput = {
 export type SubjectUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SubjectNameLevelCompoundUniqueInput = {
+  name: string
+  level: $Enums.EducationLevel
 }
 
 export type SubjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -319,8 +365,10 @@ export type SubjectCountOrderByAggregateInput = {
 export type SubjectMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -328,8 +376,10 @@ export type SubjectMaxOrderByAggregateInput = {
 export type SubjectMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   level?: Prisma.SortOrder
   area?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -360,8 +410,10 @@ export type SubjectUpdateOneRequiredWithoutAssignmentsNestedInput = {
 export type SubjectCreateWithoutAssignmentsInput = {
   id?: string
   name: string
+  code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -369,8 +421,10 @@ export type SubjectCreateWithoutAssignmentsInput = {
 export type SubjectUncheckedCreateWithoutAssignmentsInput = {
   id?: string
   name: string
+  code?: string | null
   level: $Enums.EducationLevel
   area?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -394,8 +448,10 @@ export type SubjectUpdateToOneWithWhereWithoutAssignmentsInput = {
 export type SubjectUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -403,8 +459,10 @@ export type SubjectUpdateWithoutAssignmentsInput = {
 export type SubjectUncheckedUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
   area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -443,8 +501,10 @@ export type SubjectCountOutputTypeCountAssignmentsArgs<ExtArgs extends runtime.T
 export type SubjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  code?: boolean
   level?: boolean
   area?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   assignments?: boolean | Prisma.Subject$assignmentsArgs<ExtArgs>
@@ -454,8 +514,10 @@ export type SubjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type SubjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  code?: boolean
   level?: boolean
   area?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["subject"]>
@@ -463,8 +525,10 @@ export type SubjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type SubjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  code?: boolean
   level?: boolean
   area?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["subject"]>
@@ -472,13 +536,15 @@ export type SubjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type SubjectSelectScalar = {
   id?: boolean
   name?: boolean
+  code?: boolean
   level?: boolean
   area?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "level" | "area" | "createdAt" | "updatedAt", ExtArgs["result"]["subject"]>
+export type SubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "level" | "area" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subject"]>
 export type SubjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | Prisma.Subject$assignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.SubjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -494,8 +560,10 @@ export type $SubjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    code: string | null
     level: $Enums.EducationLevel
     area: string | null
+    isActive: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["subject"]>
@@ -924,8 +992,10 @@ export interface Prisma__SubjectClient<T, Null = never, ExtArgs extends runtime.
 export interface SubjectFieldRefs {
   readonly id: Prisma.FieldRef<"Subject", 'String'>
   readonly name: Prisma.FieldRef<"Subject", 'String'>
+  readonly code: Prisma.FieldRef<"Subject", 'String'>
   readonly level: Prisma.FieldRef<"Subject", 'EducationLevel'>
   readonly area: Prisma.FieldRef<"Subject", 'String'>
+  readonly isActive: Prisma.FieldRef<"Subject", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Subject", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Subject", 'DateTime'>
 }

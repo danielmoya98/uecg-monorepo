@@ -270,16 +270,21 @@ model AcademicYear {
 
 // 2. MATERIAS / ASIGNATURAS (Catálogo Global)
 model Subject {
-  id    String         @id @default(uuid())
-  name  String // Ej. "Matemáticas", "Física"
-  level EducationLevel // Para filtrar
-  area  String? // Ej. "Ciencias Exactas"
+  id       String         @id @default(uuid())
+  name     String // Ej. "Matemáticas", "Física"
+  code     String? // Ej. "MAT", "FIS", "LIT" (Sigla o código oficial)
+  level    EducationLevel // Para filtrar
+  area     String? // Ej. "Ciencia, Tecnología y Producción", "Comunidad y Sociedad"
+  isActive Boolean        @default(true) @map("is_active")
 
   assignments TeacherAssignment[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@unique([name, level])
+  @@index([level, isActive])
+  @@index([area])
   @@map("subjects")
 }
 
@@ -327,7 +332,7 @@ model TeacherAssignment {
   classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
 
   subjectId String  @map("subject_id")
-  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
 
   teacherId String @map("teacher_id")
   teacher   User   @relation("TeacherAssignments", fields: [teacherId], references: [id])
