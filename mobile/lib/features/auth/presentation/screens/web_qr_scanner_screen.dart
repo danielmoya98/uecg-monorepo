@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/services/secure_storage_service.dart';
 import '../providers/auth_provider.dart';
 
 class WebQrScannerScreen extends ConsumerStatefulWidget {
@@ -25,20 +26,43 @@ class _WebQrScannerScreenState extends ConsumerState<WebQrScannerScreen> {
     if (_isProcessing) return;
 
     for (final barcode in capture.barcodes) {
-      final String? rawValue = barcode.rawValue;
-      if (rawValue != null && rawValue.startsWith('uecg-web-auth:')) {
-        setState(() => _isProcessing = true);
-        final challengeId = rawValue.replaceFirst('uecg-web-auth:', '');
-        _handleAuthorize(challengeId);
-        break;
+      final String? rawValue = barcode.rawValue?.trim();
+      if (rawValue != null && rawValue.isNotEmpty) {
+        String? challengeId;
+        if (rawValue.startsWith('uecg-web-auth:')) {
+          challengeId = rawValue.replaceFirst('uecg-web-auth:', '').trim();
+        } else if (RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch(rawValue)) {
+          challengeId = rawValue;
+        }
+
+        if (challengeId != null && challengeId.isNotEmpty) {
+          setState(() => _isProcessing = true);
+          _handleAuthorize(challengeId);
+          break;
+        }
       }
     }
   }
 
   Future<void> _handleAuthorize(String challengeId) async {
-    await _cameraController.stop();
+    try {
+      await _cameraController.stop();
+    } catch (_) {}
 
     if (!mounted) return;
+
+    final token = await SecureStorageService.getToken();
+    if (token == null || token.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('⚠️ Debe iniciar sesión primero en la aplicación móvil'),
+          backgroundColor: Colors.amber,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        ),
+      );
+      Navigator.of(context).pop();
+      return;
+    }
 
     final shouldAuthorize = await showDialog<bool>(
       context: context,
@@ -82,6 +106,28 @@ class _WebQrScannerScreenState extends ConsumerState<WebQrScannerScreen> {
     );
 
     if (shouldAuthorize == true) {
+      if (!mounted) return;
+
+      // Mostramos feedback de carga
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              ),
+              SizedBox(width: 12),
+              Text('Autorizando sesión en Web...'),
+            ],
+          ),
+          duration: Duration(seconds: 2),
+          backgroundColor: AppTheme.inkBlack,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        ),
+      );
+
       final success =
           await ref.read(authProvider.notifier).authorizeWebQr(challengeId);
 
@@ -99,17 +145,21 @@ class _WebQrScannerScreenState extends ConsumerState<WebQrScannerScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('❌ Código QR inválido o expirado'),
+            content: Text('❌ Código QR expirado o no válido'),
             backgroundColor: Colors.red,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
           ),
         );
         setState(() => _isProcessing = false);
-        _cameraController.start();
+        try {
+          await _cameraController.start();
+        } catch (_) {}
       }
     } else {
       setState(() => _isProcessing = false);
-      _cameraController.start();
+      try {
+        await _cameraController.start();
+      } catch (_) {}
     }
   }
 
@@ -254,7 +304,7 @@ class QROverlayShape extends ShapeBorder {
     // Bottom-right
     path.moveTo(center.dx + half, center.dy + half - borderLength);
     path.lineTo(center.dx + half, center.dy + half);
-    path.lineTo(center.dx + half - borderLength, center.dy + half);
+    path.lineTo(center.dx - half + borderLength, center.dy + half);
 
     // Bottom-left
     path.moveTo(center.dx - half + borderLength, center.dy + half);
