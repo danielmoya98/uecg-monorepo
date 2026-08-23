@@ -5,6 +5,7 @@ import {
 } from './academic-years-ui'
 import AcademicYearDrawer from './academic-year-drawer'
 import TrimestersDrawer from './trimesters-drawer'
+import { SetupWizardWidget } from './setup-wizard-widget'
 import { useAcademicYearsData } from '../hooks/use-academic-years-data'
 import { useAcademicYearsDrawers } from '../hooks/use-academic-years-drawers'
 
@@ -41,6 +42,9 @@ export default function AcademicYearsPage() {
     <div className="flex flex-col gap-6 w-full min-h-[calc(100vh-140px)] justify-between">
       <div className="flex flex-col gap-6 w-full">
         <AcademicYearsHeader onOpenCreate={() => openForm('create')} />
+
+        {/* SETUP WIZARD / CHECKLIST DE PREPARACIÓN */}
+        <SetupWizardWidget />
 
         <AcademicYearsToolbar
           searchTerm={searchTerm}
