@@ -20,64 +20,100 @@ export type TrimesterModel = runtime.Types.Result.DefaultSelection<Prisma.$Trime
 
 export type AggregateTrimester = {
   _count: TrimesterCountAggregateOutputType | null
+  _avg: TrimesterAvgAggregateOutputType | null
+  _sum: TrimesterSumAggregateOutputType | null
   _min: TrimesterMinAggregateOutputType | null
   _max: TrimesterMaxAggregateOutputType | null
+}
+
+export type TrimesterAvgAggregateOutputType = {
+  order: number | null
+}
+
+export type TrimesterSumAggregateOutputType = {
+  order: number | null
 }
 
 export type TrimesterMinAggregateOutputType = {
   id: string | null
   academicYearId: string | null
   name: $Enums.TrimesterName | null
+  order: number | null
   startDate: Date | null
   endDate: Date | null
   isOpen: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type TrimesterMaxAggregateOutputType = {
   id: string | null
   academicYearId: string | null
   name: $Enums.TrimesterName | null
+  order: number | null
   startDate: Date | null
   endDate: Date | null
   isOpen: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type TrimesterCountAggregateOutputType = {
   id: number
   academicYearId: number
   name: number
+  order: number
   startDate: number
   endDate: number
   isOpen: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
+
+export type TrimesterAvgAggregateInputType = {
+  order?: true
+}
+
+export type TrimesterSumAggregateInputType = {
+  order?: true
+}
 
 export type TrimesterMinAggregateInputType = {
   id?: true
   academicYearId?: true
   name?: true
+  order?: true
   startDate?: true
   endDate?: true
   isOpen?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type TrimesterMaxAggregateInputType = {
   id?: true
   academicYearId?: true
   name?: true
+  order?: true
   startDate?: true
   endDate?: true
   isOpen?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type TrimesterCountAggregateInputType = {
   id?: true
   academicYearId?: true
   name?: true
+  order?: true
   startDate?: true
   endDate?: true
   isOpen?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -119,6 +155,18 @@ export type TrimesterAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: TrimesterAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: TrimesterSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: TrimesterMinAggregateInputType
@@ -149,6 +197,8 @@ export type TrimesterGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: TrimesterCountAggregateInputType | true
+  _avg?: TrimesterAvgAggregateInputType
+  _sum?: TrimesterSumAggregateInputType
   _min?: TrimesterMinAggregateInputType
   _max?: TrimesterMaxAggregateInputType
 }
@@ -157,10 +207,15 @@ export type TrimesterGroupByOutputType = {
   id: string
   academicYearId: string
   name: $Enums.TrimesterName
+  order: number
   startDate: Date
   endDate: Date
   isOpen: boolean
+  createdAt: Date
+  updatedAt: Date
   _count: TrimesterCountAggregateOutputType | null
+  _avg: TrimesterAvgAggregateOutputType | null
+  _sum: TrimesterSumAggregateOutputType | null
   _min: TrimesterMinAggregateOutputType | null
   _max: TrimesterMaxAggregateOutputType | null
 }
@@ -187,9 +242,12 @@ export type TrimesterWhereInput = {
   id?: Prisma.StringFilter<"Trimester"> | string
   academicYearId?: Prisma.StringFilter<"Trimester"> | string
   name?: Prisma.EnumTrimesterNameFilter<"Trimester"> | $Enums.TrimesterName
+  order?: Prisma.IntFilter<"Trimester"> | number
   startDate?: Prisma.DateTimeFilter<"Trimester"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Trimester"> | Date | string
   isOpen?: Prisma.BoolFilter<"Trimester"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Trimester"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Trimester"> | Date | string
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
   grades?: Prisma.GradeListRelationFilter
 }
@@ -198,9 +256,12 @@ export type TrimesterOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isOpen?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   academicYear?: Prisma.AcademicYearOrderByWithRelationInput
   grades?: Prisma.GradeOrderByRelationAggregateInput
 }
@@ -208,28 +269,37 @@ export type TrimesterOrderByWithRelationInput = {
 export type TrimesterWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   academicYearId_name?: Prisma.TrimesterAcademicYearIdNameCompoundUniqueInput
+  academicYearId_order?: Prisma.TrimesterAcademicYearIdOrderCompoundUniqueInput
   AND?: Prisma.TrimesterWhereInput | Prisma.TrimesterWhereInput[]
   OR?: Prisma.TrimesterWhereInput[]
   NOT?: Prisma.TrimesterWhereInput | Prisma.TrimesterWhereInput[]
   academicYearId?: Prisma.StringFilter<"Trimester"> | string
   name?: Prisma.EnumTrimesterNameFilter<"Trimester"> | $Enums.TrimesterName
+  order?: Prisma.IntFilter<"Trimester"> | number
   startDate?: Prisma.DateTimeFilter<"Trimester"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Trimester"> | Date | string
   isOpen?: Prisma.BoolFilter<"Trimester"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Trimester"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Trimester"> | Date | string
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
   grades?: Prisma.GradeListRelationFilter
-}, "id" | "academicYearId_name">
+}, "id" | "academicYearId_name" | "academicYearId_order">
 
 export type TrimesterOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isOpen?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.TrimesterCountOrderByAggregateInput
+  _avg?: Prisma.TrimesterAvgOrderByAggregateInput
   _max?: Prisma.TrimesterMaxOrderByAggregateInput
   _min?: Prisma.TrimesterMinOrderByAggregateInput
+  _sum?: Prisma.TrimesterSumOrderByAggregateInput
 }
 
 export type TrimesterScalarWhereWithAggregatesInput = {
@@ -239,17 +309,23 @@ export type TrimesterScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Trimester"> | string
   academicYearId?: Prisma.StringWithAggregatesFilter<"Trimester"> | string
   name?: Prisma.EnumTrimesterNameWithAggregatesFilter<"Trimester"> | $Enums.TrimesterName
+  order?: Prisma.IntWithAggregatesFilter<"Trimester"> | number
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Trimester"> | Date | string
   endDate?: Prisma.DateTimeWithAggregatesFilter<"Trimester"> | Date | string
   isOpen?: Prisma.BoolWithAggregatesFilter<"Trimester"> | boolean
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Trimester"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Trimester"> | Date | string
 }
 
 export type TrimesterCreateInput = {
   id?: string
   name: $Enums.TrimesterName
+  order?: number
   startDate: Date | string
   endDate: Date | string
   isOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutTrimestersInput
   grades?: Prisma.GradeCreateNestedManyWithoutTrimesterInput
 }
@@ -258,18 +334,24 @@ export type TrimesterUncheckedCreateInput = {
   id?: string
   academicYearId: string
   name: $Enums.TrimesterName
+  order?: number
   startDate: Date | string
   endDate: Date | string
   isOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutTrimesterInput
 }
 
 export type TrimesterUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutTrimestersNestedInput
   grades?: Prisma.GradeUpdateManyWithoutTrimesterNestedInput
 }
@@ -278,9 +360,12 @@ export type TrimesterUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   grades?: Prisma.GradeUncheckedUpdateManyWithoutTrimesterNestedInput
 }
 
@@ -288,26 +373,35 @@ export type TrimesterCreateManyInput = {
   id?: string
   academicYearId: string
   name: $Enums.TrimesterName
+  order?: number
   startDate: Date | string
   endDate: Date | string
   isOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type TrimesterUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TrimesterUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TrimesterListRelationFilter = {
@@ -325,31 +419,53 @@ export type TrimesterAcademicYearIdNameCompoundUniqueInput = {
   name: $Enums.TrimesterName
 }
 
+export type TrimesterAcademicYearIdOrderCompoundUniqueInput = {
+  academicYearId: string
+  order: number
+}
+
 export type TrimesterCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isOpen?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type TrimesterAvgOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type TrimesterMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isOpen?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type TrimesterMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isOpen?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type TrimesterSumOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type TrimesterScalarRelationFilter = {
@@ -420,18 +536,24 @@ export type TrimesterUpdateOneRequiredWithoutGradesNestedInput = {
 export type TrimesterCreateWithoutAcademicYearInput = {
   id?: string
   name: $Enums.TrimesterName
+  order?: number
   startDate: Date | string
   endDate: Date | string
   isOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   grades?: Prisma.GradeCreateNestedManyWithoutTrimesterInput
 }
 
 export type TrimesterUncheckedCreateWithoutAcademicYearInput = {
   id?: string
   name: $Enums.TrimesterName
+  order?: number
   startDate: Date | string
   endDate: Date | string
   isOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutTrimesterInput
 }
 
@@ -468,17 +590,23 @@ export type TrimesterScalarWhereInput = {
   id?: Prisma.StringFilter<"Trimester"> | string
   academicYearId?: Prisma.StringFilter<"Trimester"> | string
   name?: Prisma.EnumTrimesterNameFilter<"Trimester"> | $Enums.TrimesterName
+  order?: Prisma.IntFilter<"Trimester"> | number
   startDate?: Prisma.DateTimeFilter<"Trimester"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Trimester"> | Date | string
   isOpen?: Prisma.BoolFilter<"Trimester"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Trimester"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Trimester"> | Date | string
 }
 
 export type TrimesterCreateWithoutGradesInput = {
   id?: string
   name: $Enums.TrimesterName
+  order?: number
   startDate: Date | string
   endDate: Date | string
   isOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutTrimestersInput
 }
 
@@ -486,9 +614,12 @@ export type TrimesterUncheckedCreateWithoutGradesInput = {
   id?: string
   academicYearId: string
   name: $Enums.TrimesterName
+  order?: number
   startDate: Date | string
   endDate: Date | string
   isOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type TrimesterCreateOrConnectWithoutGradesInput = {
@@ -510,9 +641,12 @@ export type TrimesterUpdateToOneWithWhereWithoutGradesInput = {
 export type TrimesterUpdateWithoutGradesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutTrimestersNestedInput
 }
 
@@ -520,43 +654,58 @@ export type TrimesterUncheckedUpdateWithoutGradesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TrimesterCreateManyAcademicYearInput = {
   id?: string
   name: $Enums.TrimesterName
+  order?: number
   startDate: Date | string
   endDate: Date | string
   isOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type TrimesterUpdateWithoutAcademicYearInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   grades?: Prisma.GradeUpdateManyWithoutTrimesterNestedInput
 }
 
 export type TrimesterUncheckedUpdateWithoutAcademicYearInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   grades?: Prisma.GradeUncheckedUpdateManyWithoutTrimesterNestedInput
 }
 
 export type TrimesterUncheckedUpdateManyWithoutAcademicYearInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.EnumTrimesterNameFieldUpdateOperationsInput | $Enums.TrimesterName
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -594,9 +743,12 @@ export type TrimesterSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   academicYearId?: boolean
   name?: boolean
+  order?: boolean
   startDate?: boolean
   endDate?: boolean
   isOpen?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
   grades?: boolean | Prisma.Trimester$gradesArgs<ExtArgs>
   _count?: boolean | Prisma.TrimesterCountOutputTypeDefaultArgs<ExtArgs>
@@ -606,9 +758,12 @@ export type TrimesterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   academicYearId?: boolean
   name?: boolean
+  order?: boolean
   startDate?: boolean
   endDate?: boolean
   isOpen?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trimester"]>
 
@@ -616,9 +771,12 @@ export type TrimesterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   academicYearId?: boolean
   name?: boolean
+  order?: boolean
   startDate?: boolean
   endDate?: boolean
   isOpen?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trimester"]>
 
@@ -626,12 +784,15 @@ export type TrimesterSelectScalar = {
   id?: boolean
   academicYearId?: boolean
   name?: boolean
+  order?: boolean
   startDate?: boolean
   endDate?: boolean
   isOpen?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type TrimesterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "academicYearId" | "name" | "startDate" | "endDate" | "isOpen", ExtArgs["result"]["trimester"]>
+export type TrimesterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "academicYearId" | "name" | "order" | "startDate" | "endDate" | "isOpen" | "createdAt" | "updatedAt", ExtArgs["result"]["trimester"]>
 export type TrimesterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
   grades?: boolean | Prisma.Trimester$gradesArgs<ExtArgs>
@@ -654,9 +815,12 @@ export type $TrimesterPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     id: string
     academicYearId: string
     name: $Enums.TrimesterName
+    order: number
     startDate: Date
     endDate: Date
     isOpen: boolean
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["trimester"]>
   composites: {}
 }
@@ -1085,9 +1249,12 @@ export interface TrimesterFieldRefs {
   readonly id: Prisma.FieldRef<"Trimester", 'String'>
   readonly academicYearId: Prisma.FieldRef<"Trimester", 'String'>
   readonly name: Prisma.FieldRef<"Trimester", 'TrimesterName'>
+  readonly order: Prisma.FieldRef<"Trimester", 'Int'>
   readonly startDate: Prisma.FieldRef<"Trimester", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"Trimester", 'DateTime'>
   readonly isOpen: Prisma.FieldRef<"Trimester", 'Boolean'>
+  readonly createdAt: Prisma.FieldRef<"Trimester", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Trimester", 'DateTime'>
 }
     
 
