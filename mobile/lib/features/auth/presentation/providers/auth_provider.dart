@@ -49,9 +49,22 @@ class Auth extends _$Auth {
   // PANTALLA 1: SPLASH SCREEN CHECKER
   Future<void> checkAuthStatus() async {
     final token = await SecureStorageService.getToken();
-    if (token == null) {
-      state = state.copyWith(status: AuthStatus.unauthenticated);
+    if (token == null || token.isEmpty) {
+      state = state.copyWith(status: AuthStatus.unauthenticated, user: null);
       return;
+    }
+
+    // Si tenemos perfil en caché, lo asignamos de inmediato para arrancar sin delay
+    final cachedJson = await SecureStorageService.getCachedUser();
+    if (cachedJson != null && cachedJson.isNotEmpty) {
+      try {
+        final cachedUser = jsonDecode(cachedJson) as Map<String, dynamic>;
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: cachedUser,
+          isOffline: false,
+        );
+      } catch (_) {}
     }
 
     await refreshProfile();
@@ -60,7 +73,7 @@ class Auth extends _$Auth {
   // REFRESCAR PERFIL O USAR CACHÉ OFFLINE
   Future<void> refreshProfile() async {
     try {
-      final freshUserData = await _repository.getGuardianProfile();
+      final freshUserData = await _repository.getUserProfile();
       await SecureStorageService.saveCachedUser(jsonEncode(freshUserData));
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -70,7 +83,7 @@ class Auth extends _$Auth {
       );
     } catch (e) {
       final cachedJson = await SecureStorageService.getCachedUser();
-      if (cachedJson != null) {
+      if (cachedJson != null && cachedJson.isNotEmpty) {
         try {
           final cachedUser = jsonDecode(cachedJson) as Map<String, dynamic>;
           state = state.copyWith(
@@ -82,10 +95,12 @@ class Auth extends _$Auth {
         } catch (_) {}
       }
 
-      final errorMsg = e.toString().replaceAll('Exception: ', '');
-      state = state.copyWith(errorMessage: errorMsg);
-      if (!errorMsg.contains('conectar')) {
+      final errorMsg = e.toString().replaceAll('Exception: ', '').toLowerCase();
+      if (errorMsg.contains('401') || errorMsg.contains('unauthorized')) {
         logout();
+      } else {
+        // En caso de fallo de conexión no deslogueamos
+        state = state.copyWith(isOffline: true);
       }
     }
   }
@@ -94,6 +109,7 @@ class Auth extends _$Auth {
   Future<bool> login(String identifier, String password) async {
     try {
       final user = await _repository.login(identifier, password);
+      await SecureStorageService.setOnboardingSeen(true);
       state = state.copyWith(
         status: AuthStatus.authenticated,
         user: user,
@@ -160,6 +176,7 @@ class Auth extends _$Auth {
   Future<bool> registerGuardian(String ci, String email, String password) async {
     try {
       final user = await _repository.registerGuardian(ci, email, password);
+      await SecureStorageService.setOnboardingSeen(true);
       state = state.copyWith(
         status: AuthStatus.authenticated,
         user: user,
@@ -177,6 +194,7 @@ class Auth extends _$Auth {
   Future<bool> registerStudent(String ci, String birthDate, String email, String password) async {
     try {
       final user = await _repository.registerStudent(ci, birthDate, email, password);
+      await SecureStorageService.setOnboardingSeen(true);
       state = state.copyWith(
         status: AuthStatus.authenticated,
         user: user,
