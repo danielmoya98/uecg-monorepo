@@ -17,8 +17,8 @@ POST /api/v1/auth/login
   3. Verificar UserStatus !== 'INACTIVE' → ForbiddenException
   4. Verificar lockoutUntil > now → ForbiddenException con tiempo restante
   5. bcrypt.compare(password, user.password)
-  6. Si falla: incrementar failedLoginAttempts, lockout si >= 5
-  7. Si pasa: resetear failedLoginAttempts = 0, lastLoginAt = now
+  6. Si falla: incrementar failedLoginAttempts (con auto-reset de ventana expirada), lockout si >= 5
+  7. Si pasa: resetear failedLoginAttempts = 0, lockoutUntil = null, lastLoginAt = now
   8. Si requiresPasswordChange = true → retornar { status: 'SETUP_REQUIRED', setupToken }
   9. Construir lista de permisos: `${action}:${subject}`[]
   10. Generar accessToken (15m) + refreshToken (7d)
@@ -26,7 +26,7 @@ POST /api/v1/auth/login
   12. Emitir evento 'auth.login.success'
   13. SET cookie uecg_access_token (httpOnly, 15m)
   14. SET cookie uecg_refresh_token (httpOnly, 7d)
-  15. Retornar { status: 'SUCCESS', user: { id, fullName, email, role, permissions } }
+  15. Retornar { status: 'SUCCESS', user: { id, fullName, email, role, permissions }, accessToken, refreshToken, access_token }
 ```
 
 ---
@@ -42,7 +42,8 @@ POST /api/v1/auth/setup-password
   3. Hash nueva contraseña con bcrypt (10 rounds)
   4. Actualizar password + requiresPasswordChange = false en DB
   5. Generar tokens nuevos → SET cookies
-  6. Retornar { status: 'SUCCESS', user: { ... }, access_token, refresh_token }
+  6. Retornar { status: 'SUCCESS', user: { ... }, accessToken, refreshToken, access_token }
+
 ```
 
 ---

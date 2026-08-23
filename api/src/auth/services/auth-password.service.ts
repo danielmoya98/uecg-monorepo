@@ -67,27 +67,19 @@ export class AuthPasswordService {
 
     return {
       status: 'SUCCESS',
-
       message: 'Contraseña actualizada correctamente',
-
-      // Tokens are returned separately so the controller can set httpOnly cookies.
-      // They are NOT included in the final JSON response to the client.
-      _tokens: {
+      tokens: {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
       },
-
       user: {
         id: updatedUser.id,
-
         fullName: updatedUser.fullName,
-
         email: updatedUser.email,
-
         role: updatedUser.role?.name || 'GUEST',
-
         permissions: userPermissions,
       },
     };
   }
 }
+
