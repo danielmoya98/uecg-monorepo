@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthTokenService } from './services/auth-token.service';
+import { AuthTokenService, SessionMetadata } from './services/auth-token.service';
 import { AuthPasswordService } from './services/auth-password.service';
 import { AuthRecoveryService } from './services/auth-recovery.service';
 import { AuthMobileService } from './services/auth-mobile.service';
@@ -34,7 +34,7 @@ export class AuthService {
   // LOGIN
   // ======================================================
 
-  async login(email: string, pass: string) {
+  async login(email: string, pass: string, sessionMetadata?: SessionMetadata) {
     const normalizedEmail = email.trim().toLowerCase();
 
     const user = await this.prisma.user.findUnique({
@@ -195,16 +195,17 @@ export class AuthService {
       ) || [];
 
     // ======================================================
-    // SESSION TOKENS GENERATION
+    // MULTI-DEVICE SESSION TOKENS GENERATION
     // ======================================================
 
-    this.logger.log(`🔐 Generando nueva sesión para ${user.email}`);
+    this.logger.log(`🔐 Generando sesión multidispositivo para ${user.email}`);
 
     const tokens = await this.authTokenService.generateTokens(
       user.id,
       user.email,
       user.role?.name || 'GUEST',
       userPermissions,
+      sessionMetadata,
     );
 
     // ======================================================
@@ -215,6 +216,8 @@ export class AuthService {
       userId: user.id,
       email: user.email,
       role: user.role?.name || 'GUEST',
+      deviceType: sessionMetadata?.deviceType || 'UNKNOWN',
+      ipAddress: sessionMetadata?.ipAddress,
     });
 
     return {
@@ -234,10 +237,10 @@ export class AuthService {
   }
 
   // ======================================================
-  // REFRESH TOKENS
+  // REFRESH TOKENS (MULTI-DEVICE SAFE)
   // ======================================================
 
-  async refreshTokens(refreshToken: string) {
+  async refreshTokens(refreshToken: string, sessionMetadata?: SessionMetadata) {
     const decoded =
       await this.authTokenService.validateRefreshToken(refreshToken);
 
@@ -258,22 +261,24 @@ export class AuthService {
       },
     });
 
-    if (!user || !user.hashedRefreshToken) {
-      throw new ForbiddenException('Sesión inválida');
+    if (!user) {
+      throw new ForbiddenException('Usuario no encontrado');
     }
 
-    const isRefreshTokenValid = await this.authTokenService.verifyPassword(
+    // Buscar la sesión específica asociada al refresh token
+    const matchingSession = await this.authTokenService.findMatchingSession(
+      user.id,
       refreshToken,
-      user.hashedRefreshToken,
     );
 
-    if (!isRefreshTokenValid) {
+    if (!matchingSession) {
       this.eventEmitter.emit('auth.refresh.failed', {
         userId: user.id,
         email: user.email,
+        reason: 'SESSION_NOT_FOUND',
       });
 
-      throw new ForbiddenException('Refresh token inválido');
+      throw new ForbiddenException('Sesión expirada o inválida');
     }
 
     const userPermissions =
@@ -281,11 +286,16 @@ export class AuthService {
         (rp) => `${rp.permission.action}:${rp.permission.subject}`,
       ) || [];
 
+    // Rotar tokens en la sesión existente
     const tokens = await this.authTokenService.generateTokens(
       user.id,
       user.email,
       user.role?.name || 'GUEST',
       userPermissions,
+      {
+        ...sessionMetadata,
+        sessionId: matchingSession.id,
+      },
     );
 
     // ======================================================
@@ -295,6 +305,7 @@ export class AuthService {
     this.eventEmitter.emit('auth.refresh.success', {
       userId: user.id,
       email: user.email,
+      sessionId: matchingSession.id,
     });
 
     return {
@@ -350,16 +361,18 @@ export class AuthService {
   }
 
   // ======================================================
-  // LOGOUT
+  // LOGOUT (SINGLE SESSION OR ALL)
   // ======================================================
 
-  async logout(userId: string) {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        hashedRefreshToken: null,
-      },
-    });
+  async logout(userId: string, currentRefreshToken?: string) {
+    if (currentRefreshToken) {
+      await this.authTokenService.revokeSessionByToken(userId, currentRefreshToken);
+    } else {
+      // Si no se especifica token, elimina todas las sesiones del usuario
+      await this.prisma.userSession.deleteMany({
+        where: { userId },
+      });
+    }
 
     this.eventEmitter.emit('auth.logout', {
       userId,
@@ -368,6 +381,30 @@ export class AuthService {
     return {
       status: 'SUCCESS',
       message: 'Sesión cerrada exitosamente',
+    };
+  }
+
+  // ======================================================
+  // MULTI-DEVICE SESSION MANAGEMENT
+  // ======================================================
+
+  async getUserSessions(userId: string, currentRefreshToken?: string) {
+    return this.authTokenService.getUserSessions(userId, currentRefreshToken);
+  }
+
+  async revokeSession(userId: string, sessionId: string) {
+    await this.authTokenService.revokeSession(userId, sessionId);
+    return {
+      status: 'SUCCESS',
+      message: 'Sesión revocada exitosamente',
+    };
+  }
+
+  async revokeAllOtherSessions(userId: string, currentRefreshToken: string) {
+    await this.authTokenService.revokeAllOtherSessions(userId, currentRefreshToken);
+    return {
+      status: 'SUCCESS',
+      message: 'Todas las demás sesiones han sido cerradas',
     };
   }
 
@@ -385,10 +422,6 @@ export class AuthService {
     }
 
     const currentTokens = user.fcmTokens || [];
-
-    // ======================================================
-    // AVOID DUPLICATES
-    // ======================================================
 
     if (!currentTokens.includes(fcmToken)) {
       await this.prisma.user.update({
@@ -410,4 +443,3 @@ export class AuthService {
     };
   }
 }
-

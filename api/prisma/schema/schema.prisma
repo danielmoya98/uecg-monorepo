@@ -164,9 +164,26 @@ model User {
   // Dentro de tu model User { ... }
   failedLoginAttempts Int       @default(0) @map("failed_login_attempts")
   lockoutUntil        DateTime? @map("lockout_until")
-  hashedRefreshToken  String?   @map("hashed_refresh_token")
+  sessions            UserSession[]
 
   @@map("users")
+}
+
+model UserSession {
+  id                 String   @id @default(uuid())
+  userId             String   @map("user_id")
+  deviceType         String   @default("UNKNOWN") @map("device_type") // "WEB" | "MOBILE_ANDROID" | "MOBILE_IOS"
+  deviceName         String?  @map("device_name") // Ej. "Chrome en Windows", "Samsung Galaxy S23"
+  hashedRefreshToken String   @map("hashed_refresh_token")
+  ipAddress          String?  @map("ip_address")
+  userAgent          String?  @map("user_agent")
+  lastActiveAt       DateTime @default(now()) @map("last_active_at")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_sessions")
 }
 
 model Institution {
