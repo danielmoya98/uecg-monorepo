@@ -22,6 +22,10 @@ describe('AuthController', () => {
     getUserSessions: jest.fn(),
     revokeSession: jest.fn(),
     revokeAllOtherSessions: jest.fn(),
+    createQrChallenge: jest.fn(),
+    authorizeQrChallenge: jest.fn(),
+    getQrChallengeStatus: jest.fn(),
+    getPersonalSecurityLogs: jest.fn(),
   };
 
   const mockResponse = () => {

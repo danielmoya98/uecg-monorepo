@@ -25,6 +25,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SetupPasswordDto } from './dto/setup-password.dto';
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 import { RegisterFcmTokenDto } from './dto/register-fcm-token.dto';
+import { AuthorizeQrDto } from './dto/authorize-qr.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from './interfaces/authenticated-user.interface';
@@ -511,5 +512,83 @@ export class AuthController {
     @Body() dto: RegisterFcmTokenDto,
   ) {
     return this.authService.registerFcmToken(user.userId, dto.fcmToken);
+  }
+
+  // ======================================================
+  // QR LOGIN CHALLENGE-RESPONSE (WhatsApp Web Style)
+  // ======================================================
+
+  @Post('qr-challenge')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Crea un desafío QR para inicio de sesión en Web',
+  })
+  async createQrChallenge() {
+    return this.authService.createQrChallenge();
+  }
+
+  @Post('qr-challenge/authorize')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Autoriza un desafío QR escaneado desde la app móvil',
+  })
+  async authorizeQrChallenge(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: AuthorizeQrDto,
+    @Req() req: Request,
+  ) {
+    const sessionMetadata = this.extractSessionMetadata(req);
+    sessionMetadata.deviceName = sessionMetadata.deviceName || 'Navegador Web (Login QR)';
+
+    return this.authService.authorizeQrChallenge(
+      user.userId,
+      dto.challengeId,
+      sessionMetadata,
+    );
+  }
+
+  @Get('qr-challenge/:challengeId/status')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Verifica el estado del desafío QR para la Web',
+  })
+  async getQrChallengeStatus(
+    @Param('challengeId') challengeId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.getQrChallengeStatus(challengeId);
+
+    if (result.status === 'AUTHORIZED' && result.tokens) {
+      this.setTokenCookies(
+        res,
+        result.tokens.accessToken,
+        result.tokens.refreshToken,
+      );
+
+      return {
+        status: 'AUTHORIZED',
+        user: result.user,
+        accessToken: result.tokens.accessToken,
+        refreshToken: result.tokens.refreshToken,
+        access_token: result.tokens.accessToken,
+      };
+    }
+
+    return result;
+  }
+
+  // ======================================================
+  // PERSONAL SECURITY LOGS
+  // ======================================================
+
+  @Get('security-logs')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Obtiene los registros personales de actividad y seguridad del usuario',
+  })
+  async getPersonalSecurityLogs(@CurrentUser() user: AuthenticatedUser) {
+    return this.authService.getPersonalSecurityLogs(user.userId);
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../../core/network/api_client.dart';
@@ -6,14 +7,12 @@ import '../../../../core/services/secure_storage_service.dart';
 class AuthRepository {
   final Dio _dio = ApiClient.dio;
 
-  // 🔥 NUEVO: Enviar el FCM Token al Backend
+  // Enviar el FCM Token al Backend
   Future<void> syncFcmToken(String fcmToken) async {
     try {
-      // Dio inyectará el JWT gracias a tu interceptor
-      await _dio.patch('/auth/fcm-token', data: {'fcmToken': fcmToken});
-      print('✅ FCM Token sincronizado con NestJS');
-    } catch (e) {
-      print('⚠️ Error al sincronizar FCM Token: $e');
+      await _dio.post('/auth/fcm-token', data: {'fcmToken': fcmToken});
+    } catch (_) {
+      // Manejo silencioso de error de sync push
     }
   }
 
@@ -24,21 +23,30 @@ class AuthRepository {
         '/auth/login',
         data: {'email': identifier, 'password': password},
       );
-      final data = response.data['data'];
+      final data = response.data['data'] ?? response.data;
 
       // Guardamos el JWT
       final token = data['accessToken'] ?? data['access_token'];
       if (token != null) {
         await SecureStorageService.saveToken(token);
       }
-
-      // 🔥 LA MAGIA: Sincronizar Token FCM
-      String? fcmToken = await FirebaseMessaging.instance.getToken();
-      if (fcmToken != null) {
-        await syncFcmToken(fcmToken);
+      final refreshToken = data['refreshToken'];
+      if (refreshToken != null) {
+        await SecureStorageService.saveRefreshToken(refreshToken);
       }
 
-      return data['user'];
+      final user = data['user'] as Map<String, dynamic>;
+      await SecureStorageService.saveCachedUser(jsonEncode(user));
+
+      // Sincronizar Token FCM
+      try {
+        String? fcmToken = await FirebaseMessaging.instance.getToken();
+        if (fcmToken != null) {
+          await syncFcmToken(fcmToken);
+        }
+      } catch (_) {}
+
+      return user;
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) throw Exception('Credenciales incorrectas');
       throw Exception('Error al conectar con el servidor');
@@ -52,21 +60,28 @@ class AuthRepository {
         '/auth/register-guardian',
         data: {'ci': ci, 'recoveryEmail': email, 'password': password},
       );
-      final data = response.data['data'];
+      final data = response.data['data'] ?? response.data;
 
-      // Guardamos el JWT
       final token = data['accessToken'] ?? data['access_token'];
       if (token != null) {
         await SecureStorageService.saveToken(token);
       }
-
-      // 🔥 Sincronizar Token FCM
-      String? fcmToken = await FirebaseMessaging.instance.getToken();
-      if (fcmToken != null) {
-        await syncFcmToken(fcmToken);
+      final refreshToken = data['refreshToken'];
+      if (refreshToken != null) {
+        await SecureStorageService.saveRefreshToken(refreshToken);
       }
 
-      return data['user'];
+      final user = data['user'] as Map<String, dynamic>;
+      await SecureStorageService.saveCachedUser(jsonEncode(user));
+
+      try {
+        String? fcmToken = await FirebaseMessaging.instance.getToken();
+        if (fcmToken != null) {
+          await syncFcmToken(fcmToken);
+        }
+      } catch (_) {}
+
+      return user;
     } catch (e) {
       throw Exception('Error al registrar el tutor. Verifique su CI.');
     }
@@ -79,22 +94,28 @@ class AuthRepository {
         '/auth/register-student',
         data: {'ci': ci, 'birthDate': birthDate, 'recoveryEmail': email, 'password': password},
       );
-      final data = response.data['data'];
+      final data = response.data['data'] ?? response.data;
 
-      // Guardamos el JWT
       final token = data['accessToken'] ?? data['access_token'];
       if (token != null) {
         await SecureStorageService.saveToken(token);
       }
-
-
-      // 🔥 Sincronizar Token FCM
-      String? fcmToken = await FirebaseMessaging.instance.getToken();
-      if (fcmToken != null) {
-        await syncFcmToken(fcmToken);
+      final refreshToken = data['refreshToken'];
+      if (refreshToken != null) {
+        await SecureStorageService.saveRefreshToken(refreshToken);
       }
 
-      return data['user'];
+      final user = data['user'] as Map<String, dynamic>;
+      await SecureStorageService.saveCachedUser(jsonEncode(user));
+
+      try {
+        String? fcmToken = await FirebaseMessaging.instance.getToken();
+        if (fcmToken != null) {
+          await syncFcmToken(fcmToken);
+        }
+      } catch (_) {}
+
+      return user;
     } catch (e) {
       throw Exception('Error al registrar el estudiante. Verifique sus datos.');
     }
@@ -113,11 +134,55 @@ class AuthRepository {
     );
   }
 
-  // 6. OBTENER PERFIL ACTUAL (El Latido Principal)
+  // 6. AUTORIZAR QR WEB LOGIN (Estilo WhatsApp Web)
+  Future<bool> authorizeWebQr(String challengeId) async {
+    try {
+      final response = await _dio.post(
+        '/auth/qr-challenge/authorize',
+        data: {'challengeId': challengeId},
+      );
+      return response.data['status'] == 'SUCCESS';
+    } catch (e) {
+      throw Exception('El código QR ha expirado o no es válido');
+    }
+  }
+
+  // 7. OBTENER SESIONES ACTIVAS
+  Future<List<Map<String, dynamic>>> getUserSessions() async {
+    try {
+      final response = await _dio.get('/auth/sessions');
+      final list = response.data['sessions'] as List<dynamic>? ?? [];
+      return list.map((item) => item as Map<String, dynamic>).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // 8. REVOCAR SESIÓN
+  Future<bool> revokeSession(String sessionId) async {
+    try {
+      final response = await _dio.delete('/auth/sessions/$sessionId');
+      return response.data['status'] == 'SUCCESS';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // 9. REVOCAR TODAS LAS DEMÁS SESIONES
+  Future<bool> revokeOtherSessions() async {
+    try {
+      final response = await _dio.delete('/auth/sessions/other');
+      return response.data['status'] == 'SUCCESS';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // 10. OBTENER PERFIL ACTUAL
   Future<Map<String, dynamic>> getGuardianProfile() async {
     try {
       final response = await _dio.get('/guardians/me');
-      return response.data['data'];
+      return response.data['data'] ?? response.data;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         throw Exception('No pudimos cargar tus datos familiares. Acércate a secretaría.');
