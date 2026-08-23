@@ -72,6 +72,7 @@ describe('AcademicYearsService - Pruebas Unitarias', () => {
     mockPrisma.academicYear.delete.mockReset();
     mockPrisma.academicYear.count.mockReset();
     mockPrisma.classroom.count.mockReset();
+    mockPrisma.enrollment = { count: jest.fn() };
     mockPrisma.trimester.deleteMany.mockReset();
     mockTrimesters.createDefaultTrimesters.mockReset();
     mockEventEmitter.emit.mockReset();
@@ -157,7 +158,10 @@ describe('AcademicYearsService - Pruebas Unitarias', () => {
         id: 'year-uuid',
         year: 2026,
         name: 'Old Name',
+        startDate: new Date('2026-02-01'),
+        endDate: new Date('2026-11-30'),
         status: AcademicStatus.PLANNING,
+        trimesters: [],
       };
 
       mockPrisma.academicYear.findUnique.mockResolvedValueOnce(mockYear); // find in tx
@@ -175,6 +179,54 @@ describe('AcademicYearsService - Pruebas Unitarias', () => {
         'academic-year.updated',
         expect.any(Object),
       );
+    });
+
+    it('debe validar fechas efectivas cuando solo se actualiza startDate', async () => {
+      const mockYear = {
+        id: 'year-uuid',
+        year: 2026,
+        name: 'Gestión 2026',
+        startDate: new Date('2026-02-01'),
+        endDate: new Date('2026-11-30'),
+        status: AcademicStatus.PLANNING,
+        trimesters: [],
+      };
+
+      mockPrisma.academicYear.findUnique.mockResolvedValueOnce(mockYear);
+
+      // Enviar startDate posterior a endDate existente
+      await expect(
+        service.update('year-uuid', {
+          startDate: new Date('2026-12-15'),
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('debe lanzar BadRequestException si el nuevo rango deja trimestres fuera', async () => {
+      const mockYear = {
+        id: 'year-uuid',
+        year: 2026,
+        name: 'Gestión 2026',
+        startDate: new Date('2026-02-01'),
+        endDate: new Date('2026-11-30'),
+        status: AcademicStatus.PLANNING,
+        trimesters: [
+          {
+            name: 'TERCER_TRIMESTRE',
+            startDate: new Date('2026-09-01'),
+            endDate: new Date('2026-11-20'),
+          },
+        ],
+      };
+
+      mockPrisma.academicYear.findUnique.mockResolvedValueOnce(mockYear);
+
+      // Acortar endDate a julio, dejando al tercer trimestre fuera
+      await expect(
+        service.update('year-uuid', {
+          endDate: new Date('2026-07-30'),
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -195,7 +247,7 @@ describe('AcademicYearsService - Pruebas Unitarias', () => {
       expect(mockPrisma.academicYear.delete).not.toHaveBeenCalled();
     });
 
-    it('debe eliminar la gestión y sus trimestres asociados si no tiene cursos', async () => {
+    it('debe lanzar ConflictException si la gestión tiene inscripciones asociadas', async () => {
       const mockYear = {
         id: 'year-uuid',
         year: 2026,
@@ -204,6 +256,24 @@ describe('AcademicYearsService - Pruebas Unitarias', () => {
 
       mockPrisma.academicYear.findUnique.mockResolvedValue(mockYear);
       mockPrisma.classroom.count.mockResolvedValue(0);
+      mockPrisma.enrollment.count.mockResolvedValue(5); // 5 enrollments
+
+      await expect(service.remove('year-uuid')).rejects.toThrow(
+        ConflictException,
+      );
+      expect(mockPrisma.academicYear.delete).not.toHaveBeenCalled();
+    });
+
+    it('debe eliminar la gestión y sus trimestres asociados si no tiene cursos ni inscripciones', async () => {
+      const mockYear = {
+        id: 'year-uuid',
+        year: 2026,
+        name: 'Gestión 2026',
+      };
+
+      mockPrisma.academicYear.findUnique.mockResolvedValue(mockYear);
+      mockPrisma.classroom.count.mockResolvedValue(0);
+      mockPrisma.enrollment.count.mockResolvedValue(0);
 
       await service.remove('year-uuid');
 

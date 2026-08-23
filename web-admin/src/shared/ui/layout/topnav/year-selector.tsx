@@ -23,7 +23,7 @@ export default function YearSelector() {
 
   useEffect(() => {
     if (currentYear?.year !== undefined && !selectedYear) {
-      setSelectedYear(currentYear.year.toString());
+      setSelectedYear(currentYear.year.toString(), currentYear.id);
     }
   }, [currentYear, selectedYear, setSelectedYear]);
 
@@ -68,7 +68,7 @@ export default function YearSelector() {
                 <button
                   key={yearObj.id}
                   onClick={() => {
-                    setSelectedYear(yearObj.year.toString());
+                    setSelectedYear(yearObj.year.toString(), yearObj.id);
                     setIsOpen(false);
                   }}
                   className={`px-4 py-2.5 flex items-center justify-between text-left transition-colors border-l-4 cursor-pointer ${selectedYear === yearObj.year.toString()
