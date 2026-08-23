@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import {
   CheckCircle2,
   AlertCircle,
@@ -15,9 +15,11 @@ import { useAcademicYearReadiness } from '../hooks/use-academic-years-data'
 interface SetupWizardWidgetProps {
   academicYearId?: string
   className?: string
+  onAction?: (stepId: string) => void
 }
 
-export function SetupWizardWidget({ academicYearId, className = '' }: SetupWizardWidgetProps) {
+export function SetupWizardWidget({ academicYearId, className = '', onAction }: SetupWizardWidgetProps) {
+  const navigate = useNavigate()
   const { data: readiness, isLoading, refetch, isFetching } = useAcademicYearReadiness(academicYearId)
   const [isExpanded, setIsExpanded] = useState(true)
 
@@ -170,8 +172,15 @@ export function SetupWizardWidget({ academicYearId, className = '' }: SetupWizar
 
                 {/* LADO DERECHO: CTA DE ACCIÓN */}
                 <div className="shrink-0 pl-8 md:pl-0">
-                  <Link
-                    to={step.actionUrl as any}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onAction) {
+                        onAction(step.id)
+                      } else {
+                        navigate({ to: step.actionUrl as any })
+                      }
+                    }}
                     className={`inline-flex items-center gap-1.5 px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
                       isCompleted
                         ? 'border border-gray-200 text-gray-600 hover:bg-gray-100'
@@ -182,7 +191,7 @@ export function SetupWizardWidget({ academicYearId, className = '' }: SetupWizar
                   >
                     <span>{step.actionLabel}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
+                  </button>
                 </div>
               </div>
             )
