@@ -7,6 +7,8 @@ import {
   ProfileLoader,
   ProfileForm,
   SecurityPanel,
+  SessionsPanel,
+  SecurityLogsTable,
   ChangePasswordDrawer,
 } from '@/features/profile'
 
@@ -27,12 +29,14 @@ function ProfilePage() {
       <ProfileHeader />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20">
-        <div className="lg:col-span-8 flex flex-col gap-6">
+        <div className="lg:col-span-7 flex flex-col gap-6">
           <ProfileForm profileData={profileData} isSubmitting={isSubmitting} onSubmit={updateProfile} />
+          <SecurityLogsTable />
         </div>
 
-        <div className="lg:col-span-4 flex flex-col gap-6">
+        <div className="lg:col-span-5 flex flex-col gap-6">
           <SecurityPanel onOpenChangePasswordDrawer={openPasswordDrawer} />
+          <SessionsPanel />
         </div>
       </div>
 

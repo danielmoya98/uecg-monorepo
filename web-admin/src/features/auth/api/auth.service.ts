@@ -16,6 +16,16 @@ export const AuthService = {
     return response.data.data ?? response.data
   },
 
+  createQrChallenge: async () => {
+    const response = await api.post('/auth/qr-challenge')
+    return response.data
+  },
+
+  getQrChallengeStatus: async (challengeId: string) => {
+    const response = await api.get(`/auth/qr-challenge/${challengeId}/status`)
+    return response.data
+  },
+
   saveSessionMetadata: (user: AuthUser) => {
     useAuthStore.getState().setUser(user)
     // 🔥 NOTIFICADOR: Le avisa en el acto al AppRouter que ya hay un nuevo usuario en disco
