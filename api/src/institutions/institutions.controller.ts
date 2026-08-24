@@ -65,8 +65,14 @@ export class InstitutionsController {
   @RequirePermissions(SystemPermissions.MANAGE_ALL_INSTITUTION) // 🔥 ABAC
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Actualiza la configuración de la campaña RUDE' })
-  async updateCampaignSettings(@Body() body: UpdateCampaignSettingsDto) {
-    const result = await this.institutionsService.updateCampaignSettings(body);
+  async updateCampaignSettings(
+    @Body() body: UpdateCampaignSettingsDto,
+    @Req() req: RequestWithUser,
+  ) {
+    const result = await this.institutionsService.updateCampaignSettings(
+      body,
+      req.user.userId,
+    );
     await this.cacheManager.clear();
     return result;
   }
@@ -83,9 +89,14 @@ export class InstitutionsController {
   @RequirePermissions(SystemPermissions.MANAGE_ALL_INSTITUTION) // 🔥 ABAC
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Actualiza las reglas de asistencia' })
-  async updateAttendanceSettings(@Body() body: UpdateAttendanceSettingsDto) {
-    const result =
-      await this.institutionsService.updateAttendanceSettings(body);
+  async updateAttendanceSettings(
+    @Body() body: UpdateAttendanceSettingsDto,
+    @Req() req: RequestWithUser,
+  ) {
+    const result = await this.institutionsService.updateAttendanceSettings(
+      body,
+      req.user.userId,
+    );
     await this.cacheManager.clear();
     return result;
   }
@@ -113,7 +124,10 @@ export class InstitutionsController {
     if (!createInstitutionDto.directorId) {
       createInstitutionDto.directorId = req.user.userId;
     }
-    const result = await this.institutionsService.create(createInstitutionDto);
+    const result = await this.institutionsService.create(
+      createInstitutionDto,
+      req.user.userId,
+    );
     await this.cacheManager.clear();
     return result;
   }
@@ -143,12 +157,12 @@ export class InstitutionsController {
   async update(
     @Param('id') id: string,
     @Body() updateInstitutionDto: UpdateInstitutionDto,
+    @Req() req: RequestWithUser,
   ) {
-    // Ya NO sobrescribimos updateInstitutionDto.directorId con req.user.userId.
-    // El director se actualiza de manera explícita en el DTO si se incluye en el request body.
     const result = await this.institutionsService.update(
       id,
       updateInstitutionDto,
+      req.user.userId,
     );
     await this.cacheManager.clear();
     return result;

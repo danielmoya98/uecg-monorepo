@@ -3,21 +3,30 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateInstitutionDto } from './dto/create-institution.dto';
 import { UpdateInstitutionDto } from './dto/update-institution.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { NotificationChannel } from '../../prisma/generated/client';
 import { InstitutionConfigService } from './institution-config.service';
+import {
+  INSTITUTION_EVENTS,
+  InstitutionCreatedEvent,
+  InstitutionUpdatedEvent,
+  InstitutionCampaignSettingsUpdatedEvent,
+  InstitutionAttendanceSettingsUpdatedEvent,
+} from './events/institution-events';
 
 @Injectable()
 export class InstitutionsService {
   constructor(
     private prisma: PrismaService,
     private institutionConfig: InstitutionConfigService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
-  async create(data: CreateInstitutionDto) {
+  async create(data: CreateInstitutionDto, userId?: string) {
     const existing = await this.prisma.institution.findUnique({
       where: { rueCode: data.rueCode },
     });
@@ -26,6 +35,17 @@ export class InstitutionsService {
 
     const institution = await this.prisma.institution.create({ data });
     this.institutionConfig.invalidate();
+
+    this.eventEmitter.emit(
+      INSTITUTION_EVENTS.CREATED,
+      new InstitutionCreatedEvent(
+        institution.id,
+        institution.rueCode,
+        institution.name,
+        userId,
+      ),
+    );
+
     return {
       data: institution,
       message: 'Institución registrada exitosamente',
@@ -85,7 +105,7 @@ export class InstitutionsService {
     return { data: institution };
   }
 
-  async update(id: string, updateData: UpdateInstitutionDto) {
+  async update(id: string, updateData: UpdateInstitutionDto, userId?: string) {
     const institution = await this.prisma.institution.findUnique({
       where: { id },
     });
@@ -96,6 +116,12 @@ export class InstitutionsService {
       data: updateData,
     });
     this.institutionConfig.invalidate();
+
+    this.eventEmitter.emit(
+      INSTITUTION_EVENTS.UPDATED,
+      new InstitutionUpdatedEvent(updated.id, updateData, userId),
+    );
+
     return { data: updated, message: 'Datos institucionales actualizados' };
   }
 
@@ -113,11 +139,14 @@ export class InstitutionsService {
     };
   }
 
-  async updateCampaignSettings(data: {
-    enableDigitalRudeUpdates?: boolean;
-    maxRudeUpdatesPerYear?: number;
-    activeNotificationChannels?: string[];
-  }) {
+  async updateCampaignSettings(
+    data: {
+      enableDigitalRudeUpdates?: boolean;
+      maxRudeUpdatesPerYear?: number;
+      activeNotificationChannels?: string[];
+    },
+    userId?: string,
+  ) {
     const institution = await this.institutionConfig.get();
 
     let channels;
@@ -144,6 +173,15 @@ export class InstitutionsService {
 
     this.institutionConfig.invalidate();
 
+    this.eventEmitter.emit(
+      INSTITUTION_EVENTS.CAMPAIGN_UPDATED,
+      new InstitutionCampaignSettingsUpdatedEvent(
+        institution.id,
+        data,
+        userId,
+      ),
+    );
+
     return {
       data: updated,
       message: 'Configuración de la Campaña RUDE actualizada exitosamente',
@@ -165,13 +203,16 @@ export class InstitutionsService {
     };
   }
 
-  async updateAttendanceSettings(data: {
-    enableQrAttendance?: boolean;
-    enableBiometricAttendance?: boolean;
-    lateToleranceMinutes?: number;
-    absentToleranceMinutes?: number;
-    notificationFrequency?: string;
-  }) {
+  async updateAttendanceSettings(
+    data: {
+      enableQrAttendance?: boolean;
+      enableBiometricAttendance?: boolean;
+      lateToleranceMinutes?: number;
+      absentToleranceMinutes?: number;
+      notificationFrequency?: string;
+    },
+    userId?: string,
+  ) {
     const institution = await this.institutionConfig.get();
 
     const updated = await this.prisma.institution.update({
@@ -193,6 +234,15 @@ export class InstitutionsService {
     });
 
     this.institutionConfig.invalidate();
+
+    this.eventEmitter.emit(
+      INSTITUTION_EVENTS.ATTENDANCE_UPDATED,
+      new InstitutionAttendanceSettingsUpdatedEvent(
+        institution.id,
+        data,
+        userId,
+      ),
+    );
 
     return { data: updated, message: 'Configuración de Asistencia guardada.' };
   }

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InstitutionsService } from './institutions.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { InstitutionConfigService } from './institution-config.service';
@@ -56,12 +57,17 @@ describe('InstitutionsService', () => {
     invalidate: jest.fn(),
   };
 
+  const mockEventEmitter = {
+    emit: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         InstitutionsService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: InstitutionConfigService, useValue: mockConfigService },
+        { provide: EventEmitter2, useValue: mockEventEmitter },
       ],
     }).compile();
 
