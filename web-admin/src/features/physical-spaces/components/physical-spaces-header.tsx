@@ -12,8 +12,11 @@ export function PhysicalSpacesHeader({
 }: PhysicalSpacesHeaderProps) {
   return (
     <PageHeader
-      kicker="INFRAESTRUCTURA"
-      kickerIcon={MapPin}
+      breadcrumbs={[
+        { label: 'ADMINISTRACIÓN' },
+        { label: 'INFRAESTRUCTURA', href: '/physical-spaces' },
+        { label: 'ESPACIOS FÍSICOS', icon: MapPin },
+      ]}
       title="Espacios Físicos"
       description="Gestión de aulas, laboratorios, canchas y ambientes escolares."
     >
@@ -24,6 +27,7 @@ export function PhysicalSpacesHeader({
           onClick={onOpenCreate}
           icon={Plus}
           variant="dark"
+          hotkey="N"
         >
           Registrar Espacio
         </PageHeaderButton>
@@ -31,4 +35,3 @@ export function PhysicalSpacesHeader({
     </PageHeader>
   )
 }
-

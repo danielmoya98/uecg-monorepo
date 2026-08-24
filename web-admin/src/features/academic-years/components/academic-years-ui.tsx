@@ -27,8 +27,11 @@ export interface AcademicYearsHeaderProps {
 
 export const AcademicYearsHeader = ({ onOpenCreate }: AcademicYearsHeaderProps) => (
   <PageHeader
-    kicker="ESTRUCTURA ACADÉMICA"
-    kickerIcon={Calendar}
+    breadcrumbs={[
+      { label: 'ADMINISTRACIÓN' },
+      { label: 'ESTRUCTURA ACADÉMICA', href: '/academic-years' },
+      { label: 'GESTIONES ESCOLARES', icon: Calendar },
+    ]}
     title="Años Lectivos"
     description="Configuración y administración de gestiones escolares y periodos trimestrales."
   >
@@ -38,11 +41,13 @@ export const AcademicYearsHeader = ({ onOpenCreate }: AcademicYearsHeaderProps) 
       onClick={onOpenCreate}
       icon={Plus}
       variant="dark"
+      hotkey="N"
     >
       Nueva Gestión
     </PageHeaderButton>
   </PageHeader>
 )
+
 
 export interface AcademicYearsToolbarProps {
   searchTerm: string

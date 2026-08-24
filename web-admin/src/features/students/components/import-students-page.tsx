@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { ChevronLeft, FileSpreadsheet, HelpCircle } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { FileSpreadsheet, HelpCircle } from "lucide-react";
+import { PageHeader, PageHeaderButton } from "@/shared/ui";
+
 
 // Hooks
 import { useImportConfig } from "../hooks/use-import-config";
@@ -50,27 +51,26 @@ export default function ImportStudentsPage() {
 
   return (
     <div className="flex flex-col gap-6 w-full relative animate-in fade-in duration-300 min-h-[calc(100vh-140px)]">
-      {/* HEADER */}
-
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-uecg-line pb-4">
-        <div>
-          <Link
-            to="/students"
-            className="text-[10px] font-black text-uecg-gray uppercase tracking-widest hover:text-uecg-blue flex items-center gap-1 w-max transition-colors mb-2 cursor-pointer"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" /> Volver a Población
-          </Link>
-          <h1 className="text-4xl font-black tracking-tighter uppercase text-uecg-dark flex items-center gap-3">
-            <FileSpreadsheet className="w-8 h-8 text-uecg-blue" /> Migración por Curso
-          </h1>
-        </div>
-        <button
+      {/* HEADER SUIZO CON BREADCRUMBS */}
+      <PageHeader
+        breadcrumbs={[
+          { label: 'ADMINISTRACIÓN' },
+          { label: 'POBLACIÓN ESTUDIANTIL', href: '/students' },
+          { label: 'MIGRACIÓN EXCEL', icon: FileSpreadsheet },
+        ]}
+        title="Migración por Curso"
+        description="Carga masiva de nómina y asignación de RUDE mediante planillas estandarizadas."
+      >
+        <PageHeaderButton
           onClick={() => setIsTutorialOpen(true)}
-          className="flex items-center gap-2 px-4 py-3 bg-white text-uecg-dark border border-uecg-line font-black text-[10px] uppercase tracking-widest hover:bg-uecg-blue hover:text-white transition-colors outline-none shadow-sm cursor-pointer"
+          icon={HelpCircle}
+          variant="secondary"
+          hotkey="?"
         >
-          <HelpCircle className="w-4 h-4" /> ¿Cómo funciona esto?
-        </button>
-      </header>
+          ¿Cómo funciona esto?
+        </PageHeaderButton>
+      </PageHeader>
+
 
       {/* CONTENIDO PRINCIPAL */}
       {uploadResult ? (

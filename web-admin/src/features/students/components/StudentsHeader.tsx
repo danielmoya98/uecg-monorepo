@@ -1,6 +1,7 @@
 import { GraduationCap, FileSpreadsheet, Plus, Download, Loader2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { PageHeader, PageHeaderButton } from "@/shared/ui/page-header";
+import { SwissKbd } from "@/shared/ui/swiss-kbd";
 
 interface StudentsHeaderProps {
   currentYearName?: string;
@@ -30,8 +31,11 @@ export const StudentsHeader = ({
       )}
 
       <PageHeader
-        kicker={currentYearName ? `GESTIÓN ACTIVA: ${currentYearName}` : 'PADRÓN ESTUDIANTIL'}
-        kickerIcon={GraduationCap}
+        breadcrumbs={[
+          { label: 'ADMINISTRACIÓN' },
+          { label: currentYearName ? `GESTIÓN ${currentYearName}` : 'GESTIÓN ACADÉMICA', href: '/academic-years' },
+          { label: 'POBLACIÓN ESTUDIANTIL', icon: GraduationCap },
+        ]}
         title="Población Escolar"
         description="Administración integral de estudiantes, expedientes RUDE y libretas Ley 070."
       >
@@ -62,11 +66,13 @@ export const StudentsHeader = ({
             to="/enrollments/new"
             className="px-6 py-4 font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-sm transition-all cursor-pointer outline-none bg-uecg-dark text-white hover:bg-uecg-blue border-none select-none"
           >
-            <Plus className="w-4 h-4" /> Registrar Alumno
+            <Plus className="w-4 h-4" />
+            <span>Registrar Alumno</span>
+            <SwissKbd className="ml-1 opacity-80 border-white/20 bg-white/20 text-white">N</SwissKbd>
           </Link>
         )}
       </PageHeader>
     </div>
   );
 };
-
+export default StudentsHeader;

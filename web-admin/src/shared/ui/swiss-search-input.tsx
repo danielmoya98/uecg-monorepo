@@ -1,10 +1,12 @@
 import React, { useRef, useEffect } from 'react'
 import { Search, X, List, LayoutGrid } from 'lucide-react'
+import { SwissKbd } from './swiss-kbd'
 
 export interface SwissSearchInputProps {
   value: string
   onChange: (val: string) => void
   placeholder?: string
+  hotkeyHint?: string
   viewMode?: 'table' | 'grid'
   onViewModeChange?: (mode: 'table' | 'grid') => void
   showViewToggle?: boolean
@@ -15,7 +17,8 @@ export interface SwissSearchInputProps {
 export function SwissSearchInput({
   value,
   onChange,
-  placeholder = 'BUSCAR ESTUDIANTE (CTRL+K)...',
+  placeholder = 'BUSCAR ESTUDIANTE...',
+  hotkeyHint = '⌘K',
   viewMode,
   onViewModeChange,
   showViewToggle = false,
@@ -51,9 +54,10 @@ export function SwissSearchInput({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-full border border-uecg-line bg-white pl-11 pr-12 py-3 text-uecg-text focus:border-uecg-blue focus:outline-none uppercase text-[11px] font-bold tracking-widest placeholder:text-gray-400 transition-colors shadow-sm"
+          className="w-full h-full border border-uecg-line bg-white dark:bg-zinc-900 dark:border-zinc-700 pl-11 pr-16 py-3 text-uecg-text dark:text-zinc-100 focus:border-uecg-blue focus:outline-none uppercase text-[11px] font-bold tracking-widest placeholder:text-gray-400 dark:placeholder:text-zinc-500 transition-colors shadow-sm"
         />
-        {value && (
+
+        {value ? (
           <button
             type="button"
             onClick={() => onChange('')}
@@ -62,19 +66,23 @@ export function SwissSearchInput({
           >
             <X className="w-4 h-4" />
           </button>
-        )}
+        ) : hotkeyHint ? (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center pointer-events-none">
+            <SwissKbd className="opacity-70">{hotkeyHint}</SwissKbd>
+          </div>
+        ) : null}
       </div>
 
       {/* Toggle opcional de modo de visualización */}
       {showViewToggle && onViewModeChange && viewMode && (
-        <div className="flex border border-uecg-line bg-white shadow-sm shrink-0">
+        <div className="flex border border-uecg-line dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm shrink-0">
           <button
             type="button"
             onClick={() => onViewModeChange('table')}
             className={`px-4 py-3 flex items-center justify-center transition-colors cursor-pointer ${
               viewMode === 'table'
-                ? 'bg-uecg-dark text-white shadow-inner'
-                : 'text-uecg-gray hover:text-uecg-dark hover:bg-gray-50'
+                ? 'bg-uecg-dark text-white shadow-inner dark:bg-zinc-800'
+                : 'text-uecg-gray hover:text-uecg-dark hover:bg-gray-50 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
             }`}
             title="Vista de Lista"
             aria-label="Vista de Lista"
@@ -84,10 +92,10 @@ export function SwissSearchInput({
           <button
             type="button"
             onClick={() => onViewModeChange('grid')}
-            className={`px-4 py-3 flex items-center justify-center transition-colors cursor-pointer border-l border-uecg-line ${
+            className={`px-4 py-3 flex items-center justify-center transition-colors cursor-pointer border-l border-uecg-line dark:border-zinc-700 ${
               viewMode === 'grid'
-                ? 'bg-uecg-dark text-white shadow-inner border-transparent'
-                : 'text-uecg-gray hover:text-uecg-dark hover:bg-gray-50'
+                ? 'bg-uecg-dark text-white shadow-inner border-transparent dark:bg-zinc-800'
+                : 'text-uecg-gray hover:text-uecg-dark hover:bg-gray-50 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
             }`}
             title="Vista de Cuadrícula"
             aria-label="Vista de Cuadrícula"
