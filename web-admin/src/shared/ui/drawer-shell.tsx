@@ -28,34 +28,34 @@ export function DrawerHeader({
 }: DrawerHeaderProps) {
   const variantStyles = {
     default: {
-      container: 'bg-gray-50 border-b border-uecg-line text-uecg-dark dark:bg-[#18181b] dark:text-zinc-100 dark:border-zinc-800',
-      iconBox: 'bg-uecg-blue text-white shadow-sm',
-      kickerColor: 'text-uecg-blue dark:text-blue-400',
+      container: 'bg-[#000060] text-white border-b border-blue-950/40 dark:bg-[#121214] dark:border-zinc-800 shadow-sm',
+      iconBox: 'bg-uecg-blue dark:bg-blue-600 text-white shadow-sm',
+      kickerColor: 'text-blue-300 dark:text-blue-400',
     },
     dark: {
-      container: 'bg-uecg-dark border-b border-white/10 text-white dark:bg-[#121214] dark:border-zinc-800',
-      iconBox: 'bg-uecg-blue text-white shadow-sm',
-      kickerColor: 'text-blue-200 dark:text-blue-400',
+      container: 'bg-[#000060] text-white border-b border-blue-950/40 dark:bg-[#121214] dark:border-zinc-800 shadow-sm',
+      iconBox: 'bg-uecg-blue dark:bg-blue-600 text-white shadow-sm',
+      kickerColor: 'text-blue-300 dark:text-blue-400',
     },
     blue: {
-      container: 'bg-blue-50 border-b border-blue-200 text-uecg-blue dark:bg-blue-950/40 dark:border-blue-900/50 dark:text-blue-300',
-      iconBox: 'bg-uecg-blue text-white shadow-sm',
-      kickerColor: 'text-uecg-blue dark:text-blue-400',
+      container: 'bg-blue-700 text-white border-b border-blue-800 dark:bg-[#0c1322] dark:border-blue-900/60 shadow-sm',
+      iconBox: 'bg-blue-600 dark:bg-blue-500 text-white shadow-sm',
+      kickerColor: 'text-blue-200 dark:text-blue-300',
     },
     danger: {
-      container: 'bg-red-50 border-b border-red-200 text-red-600 dark:bg-red-950/40 dark:border-red-900/50 dark:text-red-400',
-      iconBox: 'bg-red-600 text-white shadow-sm',
-      kickerColor: 'text-red-600 dark:text-red-400',
+      container: 'bg-red-600 text-white border-b border-red-700 dark:bg-[#1a0c0c] dark:border-red-900/60 shadow-sm',
+      iconBox: 'bg-red-700 dark:bg-red-600 text-white shadow-sm',
+      kickerColor: 'text-red-200 dark:text-red-300',
     },
     success: {
-      container: 'bg-emerald-50 border-b border-emerald-200 text-emerald-700 dark:bg-emerald-950/40 dark:border-emerald-900/50 dark:text-emerald-400',
-      iconBox: 'bg-emerald-600 text-white shadow-sm',
-      kickerColor: 'text-emerald-700 dark:text-emerald-400',
+      container: 'bg-emerald-700 text-white border-b border-emerald-800 dark:bg-[#0c1a12] dark:border-emerald-900/60 shadow-sm',
+      iconBox: 'bg-emerald-600 dark:bg-emerald-500 text-white shadow-sm',
+      kickerColor: 'text-emerald-200 dark:text-emerald-300',
     },
     warning: {
-      container: 'bg-amber-50 border-b border-amber-200 text-amber-800 dark:bg-amber-950/40 dark:border-amber-900/50 dark:text-amber-400',
-      iconBox: 'bg-amber-600 text-white shadow-sm',
-      kickerColor: 'text-amber-700 dark:text-amber-400',
+      container: 'bg-amber-600 text-white border-b border-amber-700 dark:bg-[#1a1408] dark:border-amber-900/60 shadow-sm',
+      iconBox: 'bg-amber-700 dark:bg-amber-600 text-white shadow-sm',
+      kickerColor: 'text-amber-200 dark:text-amber-300',
     },
     custom: {
       container: '',
@@ -70,15 +70,15 @@ export function DrawerHeader({
     >
       {/* 📐 Patrones geométricos estilo Bauhaus en marca de agua */}
       <div
-        className="absolute -right-8 -top-8 w-24 h-24 border-[6px] border-current opacity-10 rounded-none rotate-45 pointer-events-none"
+        className="absolute -right-8 -top-8 w-24 h-24 border-[6px] border-white/10 rounded-none rotate-45 pointer-events-none"
         aria-hidden="true"
       />
       <div
-        className="absolute right-12 -bottom-4 w-12 h-12 bg-current opacity-10 -rotate-12 pointer-events-none"
+        className="absolute right-12 -bottom-4 w-12 h-12 bg-white/10 -rotate-12 pointer-events-none"
         aria-hidden="true"
       />
       <div
-        className="absolute left-1/2 bottom-0 w-8 h-2 bg-current opacity-10 pointer-events-none"
+        className="absolute left-1/2 bottom-0 w-8 h-2 bg-white/10 pointer-events-none"
         aria-hidden="true"
       />
 
@@ -101,7 +101,7 @@ export function DrawerHeader({
           )}
           <h2
             id="drawer-title"
-            className="text-xl font-black uppercase tracking-tighter mt-0.5 text-inherit leading-tight"
+            className="text-xl font-black uppercase tracking-tighter mt-0.5 text-white leading-tight"
           >
             {title}
           </h2>
@@ -114,7 +114,7 @@ export function DrawerHeader({
           type="button"
           onClick={onClose}
           disabled={isSubmitting}
-          className="p-1.5 relative z-10 text-inherit/60 hover:text-inherit transition-colors focus:outline-none disabled:opacity-50 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 rounded-full cursor-pointer"
+          className="p-1.5 relative z-10 text-white/70 hover:text-white transition-colors focus:outline-none disabled:opacity-50 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer"
           aria-label="Cerrar cajón"
         >
           <X className="w-5 h-5" />
