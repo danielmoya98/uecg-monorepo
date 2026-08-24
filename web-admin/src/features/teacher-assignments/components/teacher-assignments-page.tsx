@@ -112,7 +112,12 @@ export const TeacherAssignmentsPage = () => {
 
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] w-full animate-in fade-in duration-300">
-      <AssignmentsHeader year={currentYear.year} canManage={canManageAssignments} />
+      <AssignmentsHeader
+        year={currentYear.year}
+        canManage={canManageAssignments}
+        onOpenClone={() => handleOpenClone(assignments)}
+        isCloneDisabled={!selectedClassroom || assignments.length === 0}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[60vh] pb-20">
         {/* COLUMNA IZQUIERDA (Selector de Cursos) */}

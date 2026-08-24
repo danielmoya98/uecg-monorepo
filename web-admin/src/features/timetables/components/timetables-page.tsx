@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
 import { Loader2, AlertTriangle, Download, LayoutGrid } from 'lucide-react'
 
+import { PageHeader, PageHeaderButton } from '@/shared/ui/page-header'
 import { AcademicYearsService } from '@/features/academic-years/api/academic-years.service'
 import { ClassroomsService } from '@/features/classrooms/api/classrooms.service'
 import type { Classroom } from '@/features/classrooms/types/classrooms.types'
@@ -72,40 +73,26 @@ export function TimetablesPage() {
 
   return (
     <div className="flex flex-col gap-8 max-w-7xl mx-auto pb-20 animate-in fade-in duration-300">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-uecg-line pb-6 mt-4 relative overflow-hidden">
-        <div className="relative z-10">
-          <span className="text-[10px] font-black uppercase tracking-widest text-uecg-blue flex items-center gap-2">
-            <LayoutGrid className="w-3.5 h-3.5" aria-hidden="true" /> GESTIÓN {currentYear.year}
-          </span>
-          <h1 className="text-4xl mt-1.5 font-black tracking-tighter uppercase text-uecg-dark leading-none">
-            Matriz de Horarios
-          </h1>
-        </div>
-
+      <PageHeader
+        kicker={`GESTIÓN ${currentYear.year}`}
+        kickerIcon={LayoutGrid}
+        title="Matriz de Horarios"
+      >
         {canManageTimetables && (
-          <button
-            type="button"
+          <PageHeaderButton
             id="btn-export-timetables"
             data-tour="btn-export-timetables"
             onClick={handleStartExport}
-            disabled={isExporting || classrooms.length === 0}
-            className={`relative z-10 px-6 py-4 font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-sm transition-all cursor-pointer outline-none border-none
-              ${
-                isExporting
-                  ? 'bg-gray-100 text-uecg-gray border border-uecg-line cursor-wait'
-                  : 'bg-uecg-dark text-white hover:bg-uecg-blue'
-              }
-            `}
+            disabled={classrooms.length === 0}
+            isLoading={isExporting}
+            loadingText="Empaquetando ZIP..."
+            icon={Download}
+            variant="dark"
           >
-            {isExporting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Download className="w-4 h-4" aria-hidden="true" />
-            )}
-            {isExporting ? 'Empaquetando ZIP...' : 'Exportar Lote Maestro'}
-          </button>
+            Exportar Lote Maestro
+          </PageHeaderButton>
         )}
-      </header>
+      </PageHeader>
 
       {/* Listado Principal de Aulas */}
       {isLoadingClassrooms ? (
