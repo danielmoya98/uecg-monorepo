@@ -15,6 +15,7 @@ import { AuthTokenService, SessionMetadata } from './services/auth-token.service
 import { AuthPasswordService } from './services/auth-password.service';
 import { AuthRecoveryService } from './services/auth-recovery.service';
 import { AuthMobileService } from './services/auth-mobile.service';
+import { EncryptionService } from '../common/services/encryption.service';
 import { RegisterGuardianDto } from './dto/register-guardian.dto';
 import { RegisterStudentDto } from './dto/register-student.dto';
 import { SetupInitialDirectorDto } from './dto/setup-initial-director.dto';
@@ -33,6 +34,7 @@ export class AuthService {
     private authPasswordService: AuthPasswordService,
     private authRecoveryService: AuthRecoveryService,
     private authMobileService: AuthMobileService,
+    private encryptionService: EncryptionService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -687,8 +689,11 @@ export class AuthService {
           email: normalizedEmail,
           fullName: dto.fullName.trim(),
           password: hashedPassword,
-          ci: dto.ci,
-          phone: dto.phone,
+          ci: dto.ci ? this.encryptionService.encrypt(dto.ci) : null,
+          ciHash: dto.ci
+            ? (this.encryptionService.generateBlindIndex(dto.ci) as string)
+            : null,
+          phone: dto.phone ? this.encryptionService.encrypt(dto.phone) : null,
           roleId: role.id,
           status: 'ACTIVE',
         },

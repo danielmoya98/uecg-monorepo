@@ -12,6 +12,7 @@ import {
   Req,
   UnauthorizedException,
   Logger,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -373,7 +374,7 @@ export class AuthController {
   })
   async revokeSession(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('id') sessionId: string,
+    @Param('id', ParseUUIDPipe) sessionId: string,
   ) {
     return this.authService.revokeSession(user.userId, sessionId);
   }

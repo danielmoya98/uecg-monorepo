@@ -12,6 +12,7 @@ import {
   HttpStatus,
   UseInterceptors,
   Req,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { TeacherAssignmentsService } from './teacher-assignments.service';
 import { CreateTeacherAssignmentDto } from './dto/create-teacher-assignment.dto';
@@ -78,7 +79,7 @@ export class TeacherAssignmentsController {
     summary: 'Reasigna/actualiza el docente asignado a una materia en un curso',
   })
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTeacherAssignmentDto: UpdateTeacherAssignmentDto,
   ) {
     return this.teacherAssignmentsService.update(
@@ -91,7 +92,7 @@ export class TeacherAssignmentsController {
   @RequirePermissions(SystemPermissions.MANAGE_ALL_TEACHER_ASSIGNMENT) // 🔥 ABAC
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Elimina una asignación de carga horaria' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.teacherAssignmentsService.remove(id);
   }
 }

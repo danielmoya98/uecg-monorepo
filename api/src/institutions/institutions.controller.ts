@@ -12,6 +12,7 @@ import {
   Inject,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { Request } from "express";
 import { InstitutionsService } from "./institutions.service";
@@ -146,7 +147,7 @@ export class InstitutionsController {
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(300000)
   @ApiOperation({ summary: "Obtiene una institución por su ID" })
-  findOne(@Param("id") id: string) {
+  findOne(@Param("id", ParseUUIDPipe) id: string) {
     return this.institutionsService.findOne(id);
   }
 
@@ -155,7 +156,7 @@ export class InstitutionsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Actualiza los datos del RUE" })
   async update(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() updateInstitutionDto: UpdateInstitutionDto,
     @Req() req: RequestWithUser,
   ) {

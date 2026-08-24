@@ -8,6 +8,7 @@ import { AuthTokenService } from '../auth-token.service';
 import { AuthPasswordService } from '../auth-password.service';
 import { AuthRecoveryService } from '../auth-recovery.service';
 import { AuthMobileService } from '../auth-mobile.service';
+import { EncryptionService } from '../../../common/services/encryption.service';
 
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
@@ -22,6 +23,12 @@ describe('AuthService', () => {
     get: jest.fn(),
     set: jest.fn(),
     del: jest.fn(),
+  };
+
+  const mockEncryptionService = {
+    encrypt: jest.fn((val) => val ? `enc_${val}` : null),
+    decrypt: jest.fn((val) => val ? val.replace('enc_', '') : null),
+    generateBlindIndex: jest.fn((val) => val ? `hash_${val}` : null),
   };
 
   const mockPrismaService = {
@@ -82,6 +89,7 @@ describe('AuthService', () => {
         { provide: AuthPasswordService, useValue: mockAuthPasswordService },
         { provide: AuthRecoveryService, useValue: mockAuthRecoveryService },
         { provide: AuthMobileService, useValue: mockAuthMobileService },
+        { provide: EncryptionService, useValue: mockEncryptionService },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();

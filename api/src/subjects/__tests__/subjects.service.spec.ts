@@ -70,6 +70,8 @@ describe('SubjectsService - Pruebas Unitarias', () => {
           code: 'QUI',
           level: EducationLevel.SECUNDARIA,
           area: 'Ciencia, Tecnología y Producción',
+          requiresSpecialSpace: false,
+          allowedSpaceType: null,
           isActive: true,
         },
       });

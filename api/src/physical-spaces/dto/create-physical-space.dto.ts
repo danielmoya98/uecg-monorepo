@@ -4,9 +4,13 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsInt,
+  Min,
+  Max,
   MinLength,
   MaxLength,
 } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
 import { SpaceType } from '../../../prisma/generated/client';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -15,6 +19,7 @@ export class CreatePhysicalSpaceDto {
     description: 'Nombre del espacio físico',
     example: 'Aula 101',
   })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @IsNotEmpty({ message: 'El nombre del espacio es obligatorio' })
   @MinLength(2, { message: 'El nombre debe tener al menos 2 caracteres' })
@@ -32,6 +37,10 @@ export class CreatePhysicalSpaceDto {
     required: false,
   })
   @IsOptional()
+  @Type(() => Number)
+  @IsInt({ message: 'La capacidad debe ser un número entero' })
+  @Min(1, { message: 'La capacidad debe ser de al menos 1 persona' })
+  @Max(500, { message: 'La capacidad no puede exceder las 500 personas' })
   capacity?: number;
 
   @ApiProperty({
