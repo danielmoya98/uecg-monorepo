@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { SwissKbd } from './swiss-kbd'
 
 export interface SwissPaginationProps {
@@ -28,27 +29,29 @@ export function SwissPagination({
         {totalItems !== undefined && ` • Total: ${totalItems} ${itemLabel}`}
       </span>
       <div className="flex shrink-0 items-center">
-        <button
+        <motion.button
           type="button"
+          whileTap={page > 1 ? { scale: 0.95 } : undefined}
           onClick={() => onPageChange(Math.max(1, page - 1))}
           disabled={page <= 1}
-          className="px-3 py-1.5 border border-uecg-line bg-white text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5"
+          className="px-3 py-1.5 border border-uecg-line bg-white text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5 select-none"
         >
           <SwissKbd className="text-[8px] px-1 py-0 opacity-60">←</SwissKbd>
           <span>Anterior</span>
-        </button>
+        </motion.button>
         <span className="px-3 py-1.5 bg-uecg-blue text-white border border-uecg-blue text-[10px] font-bold uppercase tracking-widest select-none flex items-center justify-center min-w-[60px]">
           {page} / {currentTotalPages}
         </span>
-        <button
+        <motion.button
           type="button"
+          whileTap={page < currentTotalPages ? { scale: 0.95 } : undefined}
           onClick={() => onPageChange(Math.min(currentTotalPages, page + 1))}
           disabled={page >= currentTotalPages}
-          className="px-3 py-1.5 border border-uecg-line border-l-0 bg-white text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5"
+          className="px-3 py-1.5 border border-uecg-line border-l-0 bg-white text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5 select-none"
         >
           <span>Siguiente</span>
           <SwissKbd className="text-[8px] px-1 py-0 opacity-60">→</SwissKbd>
-        </button>
+        </motion.button>
       </div>
     </div>
   )
