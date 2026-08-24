@@ -1,8 +1,8 @@
 import { useRouteContext } from '@tanstack/react-router'
-import { Loader2, ShieldAlert } from 'lucide-react'
+import { ShieldAlert } from 'lucide-react'
 import { useIdentityData } from '../hooks/use-identity-data'
 import { useIdentityExport } from '../hooks/use-identity-export'
-import { IdentityHeader, ExportFiltersPanel, ExportActionPanel } from './identity-panels'
+import { IdentityHeader, IdentitySkeleton, ExportFiltersPanel, ExportActionPanel } from './identity-panels'
 
 function IdentityCommandCenterInner() {
   // 1. Inteligencia ABAC síncrona desde el contexto del Router
@@ -41,14 +41,7 @@ function IdentityCommandCenterInner() {
   }
 
   if (!currentYear) {
-    return (
-      <div className="flex h-[50vh] flex-col items-center justify-center gap-4 text-uecg-gray">
-        <Loader2 className="w-8 h-8 animate-spin text-uecg-blue" />
-        <span className="text-[10px] font-black uppercase tracking-widest">
-          Cargando Gestión Académica Activa...
-        </span>
-      </div>
-    )
+    return <IdentitySkeleton />
   }
 
   // 5. Renderizado Principal

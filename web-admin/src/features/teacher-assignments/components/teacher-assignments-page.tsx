@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useRouteContext } from '@tanstack/react-router'
-import { Loader2, ShieldAlert } from 'lucide-react'
+import { ShieldAlert } from 'lucide-react'
 import { useAssignmentsData } from '../hooks/use-assignments-data'
 import { useClassroomSelection } from '../hooks/use-classroom-selection'
 import { useClassroomAssignments } from '../hooks/use-classroom-assignments'
 import { useCloneDrawer } from '../hooks/use-clone-drawer'
-import { AssignmentsHeader, NoActiveYearAlert } from './ui-parts'
+import { AssignmentsHeader, NoActiveYearAlert, TeacherAssignmentsSkeleton } from './ui-parts'
+
 import ClassroomSelector from './classroom-selector'
 import AssignmentPanel from './assignment-panel'
 import DeleteAssignmentDrawer from './delete-assignment-drawer'
@@ -99,12 +100,9 @@ export const TeacherAssignmentsPage = () => {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex h-[50vh] w-full items-center justify-center animate-in fade-in">
-        <Loader2 className="w-10 h-10 animate-spin text-uecg-blue" />
-      </div>
-    )
+    return <TeacherAssignmentsSkeleton />
   }
+
 
   if (!currentYear) {
     return <NoActiveYearAlert />

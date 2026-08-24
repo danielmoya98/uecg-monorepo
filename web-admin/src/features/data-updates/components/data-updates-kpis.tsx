@@ -2,9 +2,10 @@ import { AlertTriangle, CheckCircle, FileText } from "lucide-react";
 
 interface DataUpdatesKPIsProps {
   pendingCount: number;
+  isLoading?: boolean;
 }
 
-export const DataUpdatesKPIs = ({ pendingCount }: DataUpdatesKPIsProps) => {
+export const DataUpdatesKPIs = ({ pendingCount, isLoading = false }: DataUpdatesKPIsProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border border-transparent">
       {/* KPI 1: Pendientes */}
@@ -16,9 +17,13 @@ export const DataUpdatesKPIs = ({ pendingCount }: DataUpdatesKPIsProps) => {
           <AlertTriangle className="text-yellow-600 w-5 h-5" strokeWidth={2.5} />
         </div>
         <div className="mt-auto flex items-end justify-between">
-          <span className="text-5xl font-black text-yellow-700 tracking-tighter leading-none">
-            {pendingCount}
-          </span>
+          {isLoading ? (
+            <div className="h-10 w-16 bg-yellow-200 animate-pulse" />
+          ) : (
+            <span className="text-5xl font-black text-yellow-700 tracking-tighter leading-none">
+              {pendingCount}
+            </span>
+          )}
           <span className="text-[9px] font-bold text-yellow-600 uppercase tracking-widest text-right max-w-[100px]">
             Solicitudes Pendientes
           </span>

@@ -1,5 +1,3 @@
-import { Loader2 } from "lucide-react";
-
 // Hooks
 import { useRudeProtection } from "../hooks/use-rude-protection";
 import { useDataUpdatesData } from "../hooks/use-data-updates-data";
@@ -15,7 +13,7 @@ import { DataUpdatesTable } from "./data-updates-table";
 
 export const DataUpdatesPage = () => {
   // 1. Escudo ABAC y Seguridad
-  const { isLoaded, canReadRude, canManageRude } = useRudeProtection();
+  const { canReadRude, canManageRude } = useRudeProtection();
 
   // 2. Datos y Filtros
   const { searchTerm, setSearchTerm, pendingRequests, filteredRequests, isLoading, refetch } =
@@ -24,17 +22,7 @@ export const DataUpdatesPage = () => {
   // 3. Modales
   const { isDrawerOpen, selectedRequest, openDiffDrawer, closeDiffDrawer } = useDataUpdatesDrawers();
 
-  // 4. Prevenir FOUC de Seguridad
-  if (!isLoaded || !canReadRude) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center" role="status" aria-live="polite">
-        <Loader2 className="w-8 h-8 animate-spin text-uecg-blue" />
-        <span className="sr-only">Cargando verificación de seguridad...</span>
-      </div>
-    );
-  }
-
-  // 5. Renderizado Orquestado
+  // 4. Renderizado Orquestado con Skeletons Suizos
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto relative animate-in fade-in duration-300">
       <DataUpdatesHeader />
@@ -42,7 +30,7 @@ export const DataUpdatesPage = () => {
       {/* Solo los que pueden escribir ven el Centro de Mando Omnicanal (Push/WhatsApp) */}
       {canManageRude && <BroadcastCommandCenter />}
 
-      <DataUpdatesKPIs pendingCount={pendingRequests.length} />
+      <DataUpdatesKPIs pendingCount={pendingRequests.length} isLoading={isLoading} />
 
       <DataUpdatesToolbar searchTerm={searchTerm} onSearchChange={setSearchTerm} onRefresh={refetch} />
 
