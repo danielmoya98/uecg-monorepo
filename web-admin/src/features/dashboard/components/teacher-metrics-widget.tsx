@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Clock, ClipboardCheck, ArrowRight, BookOpen, Users, Loader2 } from "lucide-react";
+import { Clock, ClipboardCheck, ArrowRight, BookOpen, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import type { TeacherStats } from "../types/dashboard.types";
 
@@ -64,7 +64,10 @@ export default function TeacherMetricsWidget({ stats, isLoading }: TeacherMetric
           </div>
           <div className="mt-auto" aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin text-uecg-gray" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="h-8 w-20 bg-gray-200 animate-pulse" />
+                <div className="h-2.5 w-28 bg-gray-100 animate-pulse mt-1" />
+              </div>
             ) : (
               <>
                 <span className="text-4xl font-black text-uecg-blue tracking-tighter block leading-none">
@@ -95,7 +98,10 @@ export default function TeacherMetricsWidget({ stats, isLoading }: TeacherMetric
           </div>
           <div className="mt-auto" aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin text-uecg-gray" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="h-8 w-16 bg-gray-200 animate-pulse" />
+                <div className="h-2.5 w-20 bg-gray-100 animate-pulse mt-1" />
+              </div>
             ) : (
               <>
                 <span className="text-4xl font-black text-uecg-blue tracking-tighter block leading-none">
@@ -124,7 +130,10 @@ export default function TeacherMetricsWidget({ stats, isLoading }: TeacherMetric
           </div>
           <div className="mt-auto" aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin text-uecg-gray" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="h-7 w-24 bg-gray-200 animate-pulse" />
+                <div className="h-2.5 w-16 bg-gray-100 animate-pulse mt-1" />
+              </div>
             ) : (
               <>
                 <span className={`text-2xl font-black uppercase tracking-tighter block leading-none ${stats?.attendanceStatus === "Al día" ? "text-green-600" : "text-yellow-600"}`}>
@@ -150,7 +159,10 @@ export default function TeacherMetricsWidget({ stats, isLoading }: TeacherMetric
           </span>
           <div className="mt-auto relative z-10" aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin text-white/50" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="h-7 w-28 bg-white/20 animate-pulse" />
+                <div className="h-2.5 w-24 bg-white/10 animate-pulse mt-1" />
+              </div>
             ) : (
               <>
                 <span className={`text-3xl font-black uppercase block leading-none ${stats?.currentTrimester === "Cerrado" ? "text-red-400" : "text-[#00FF88]"}`}>

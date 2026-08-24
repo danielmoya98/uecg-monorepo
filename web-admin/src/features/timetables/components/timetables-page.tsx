@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
-import { Loader2, AlertTriangle, Download, LayoutGrid } from 'lucide-react'
+import { AlertTriangle, LayoutGrid, Download } from 'lucide-react'
+
+
+
 
 import { PageHeader, PageHeaderButton } from '@/shared/ui/page-header'
 import { AcademicYearsService } from '@/features/academic-years/api/academic-years.service'
@@ -42,15 +45,18 @@ export function TimetablesPage() {
   // 6. Visualización de Cargando Gestión Escolar
   if (isLoadingYear) {
     return (
-      <div
-        className="flex h-[50vh] items-center justify-center"
-        role="progressbar"
-        aria-label="Cargando año escolar..."
-      >
-        <Loader2 className="w-10 h-10 animate-spin text-uecg-blue" />
+      <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-20 animate-in fade-in duration-300 w-full">
+        <PageHeader
+          kicker="HORARIOS Y ASIGNACIÓN DE AULAS"
+          kickerIcon={LayoutGrid}
+          title="Planificación Horaria"
+          description="Diseño de bloques pedagógicos y control de colisiones docentes."
+        />
+        <ClassroomsSkeleton />
       </div>
     )
   }
+
 
   // 7. Visualización de Módulo Bloqueado si no hay año escolar activo
   if (!currentYear) {

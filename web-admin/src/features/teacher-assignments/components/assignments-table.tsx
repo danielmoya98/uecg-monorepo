@@ -4,7 +4,8 @@ import type { TeacherAssignment } from '../types/teacher-assignments.types'
 
 interface AssignmentsTableProps {
   assignments: TeacherAssignment[]
-  isFetching: boolean
+  isFetching?: boolean
+  isPending?: boolean
   onDeleteRequest: (assignment: TeacherAssignment) => void
   onReassignRequest?: (assignment: TeacherAssignment) => void
   canManage: boolean
@@ -12,15 +13,17 @@ interface AssignmentsTableProps {
 
 export const AssignmentsTable = ({
   assignments,
-  isFetching,
+  isFetching = false,
+  isPending = false,
   onDeleteRequest,
   onReassignRequest,
   canManage,
 }: AssignmentsTableProps) => {
   const colSpanCount = canManage ? 3 : 2
+  const showSkeleton = isPending || (isFetching && assignments.length === 0)
 
   return (
-    <SwissTableContainer isFetching={isFetching}>
+    <SwissTableContainer isFetching={isFetching} isPending={isPending}>
       <table className="w-full text-left border-collapse">
         <thead>
           <tr className="bg-gray-50 border-b border-uecg-line">
@@ -38,7 +41,23 @@ export const AssignmentsTable = ({
           </tr>
         </thead>
         <tbody>
-          {assignments.length === 0 ? (
+          {showSkeleton ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <tr key={`assign-sk-${i}`} className="border-b border-uecg-line animate-pulse">
+                <td className="px-4 py-4 border-r border-uecg-line">
+                  <div className="h-4 w-40 bg-gray-200" />
+                </td>
+                <td className="px-4 py-4 border-r border-uecg-line">
+                  <div className="h-3 w-48 bg-gray-100" />
+                </td>
+                {canManage && (
+                  <td className="px-4 py-4 text-center">
+                    <div className="h-4 w-12 bg-gray-200 mx-auto" />
+                  </td>
+                )}
+              </tr>
+            ))
+          ) : assignments.length === 0 ? (
             <tr>
               <td colSpan={colSpanCount} className="p-0">
                 <SwissEmptyState

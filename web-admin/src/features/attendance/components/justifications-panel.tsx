@@ -122,10 +122,13 @@ export const JustificationsPanel = () => {
 
           <div className="mt-4 flex flex-col gap-2 max-h-[400px] overflow-y-auto custom-scrollbar">
             {isSearching && (
-              <div className="flex items-center justify-center p-4">
-                <Loader2 className="w-5 h-5 animate-spin text-uecg-blue" />
+              <div className="flex flex-col gap-2 p-2 animate-pulse">
+                <div className="h-10 bg-gray-100 border border-uecg-line" />
+                <div className="h-10 bg-gray-100 border border-uecg-line" />
+                <div className="h-10 bg-gray-100 border border-uecg-line" />
               </div>
             )}
+
             {!isSearching && debouncedSearch.length > 2 && foundStudents.length === 0 && (
               <p className="text-[10px] text-center font-bold uppercase tracking-widest text-uecg-gray dark:text-zinc-400 p-4 border border-dashed border-uecg-line dark:border-zinc-800 select-none">
                 No se encontraron resultados.
@@ -194,10 +197,19 @@ export const JustificationsPanel = () => {
 
             <div className="flex-1 p-6 bg-gray-50 overflow-y-auto custom-scrollbar min-h-[300px]">
               {isLoadingDebts ? (
-                <div className="flex justify-center py-20">
-                  <Loader2 className="w-10 h-10 animate-spin text-uecg-blue" />
+                <div className="grid grid-cols-1 gap-4 animate-pulse">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={`debt-sk-${i}`} className="bg-white border border-uecg-line p-5 flex flex-col gap-2">
+                      <div className="flex justify-between">
+                        <div className="h-4 w-32 bg-gray-200" />
+                        <div className="h-4 w-20 bg-gray-200" />
+                      </div>
+                      <div className="h-3 w-48 bg-gray-100" />
+                    </div>
+                  ))}
                 </div>
               ) : debts?.length === 0 ? (
+
                 <div className="p-10 bg-green-50 border border-green-200 text-center shadow-sm select-none">
                   <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
                   <h3 className="text-sm font-black uppercase tracking-widest text-green-800">

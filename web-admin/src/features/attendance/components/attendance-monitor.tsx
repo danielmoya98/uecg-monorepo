@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
-import { Loader2, CheckCircle2, Clock, XCircle, AlertCircle } from 'lucide-react'
+import { CheckCircle2, Clock, XCircle, AlertCircle } from 'lucide-react'
+
 import { toast } from 'sonner'
 import { AttendanceService } from '../api/attendance.service'
 import type { ManualAttendancePayload } from '../types/attendance.types'
@@ -69,14 +70,51 @@ export const AttendanceMonitor = ({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-16 border border-uecg-line bg-white shadow-sm">
-        <Loader2 className="w-8 h-8 animate-spin text-uecg-blue mb-4" />
-        <span className="text-[10px] font-black uppercase tracking-widest text-uecg-gray">
-          Cargando monitor en vivo...
-        </span>
+      <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+        {/* Skeleton Summary Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 border border-uecg-line bg-white shadow-sm animate-pulse">
+          <div className="h-12 bg-gray-100" />
+          <div className="h-12 bg-gray-100" />
+          <div className="h-12 bg-gray-100" />
+          <div className="h-12 bg-gray-100" />
+        </div>
+
+        {/* Skeleton Table */}
+        <div className="border border-uecg-line bg-white shadow-sm overflow-hidden">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50 border-b border-uecg-line">
+                <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">Estudiante</th>
+                <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line text-center">Hora</th>
+                <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line text-center">Estado</th>
+                <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center">Acción Manual</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <tr key={`att-sk-${i}`} className="border-b border-uecg-line animate-pulse">
+                  <td className="px-4 py-3 border-r border-uecg-line">
+                    <div className="h-3.5 w-48 bg-gray-200" />
+                    <div className="h-2.5 w-24 bg-gray-100 mt-1" />
+                  </td>
+                  <td className="px-4 py-3 border-r border-uecg-line text-center">
+                    <div className="h-3 w-16 bg-gray-100 mx-auto" />
+                  </td>
+                  <td className="px-4 py-3 border-r border-uecg-line text-center">
+                    <div className="h-5 w-20 bg-gray-200 mx-auto" />
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <div className="h-7 w-32 bg-gray-100 mx-auto" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    );
+    )
   }
+
 
   const students = monitorResponse?.data || []
   const summary = monitorResponse?.summary || {

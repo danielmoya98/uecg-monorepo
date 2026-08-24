@@ -4,7 +4,7 @@ import {
   useProfileData,
   useProfileDrawers,
   ProfileHeader,
-  ProfileLoader,
+  ProfileSkeleton,
   ProfileForm,
   SecurityPanel,
   SessionsPanel,
@@ -21,8 +21,9 @@ function ProfilePage() {
   const { isPasswordDrawerOpen, openPasswordDrawer, closePasswordDrawer } = useProfileDrawers()
 
   if (isLoading || !profileData) {
-    return <ProfileLoader />
+    return <ProfileSkeleton />
   }
+
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-7xl animate-in fade-in duration-300">
