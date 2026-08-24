@@ -21,7 +21,6 @@ import { SwissSearchInput, SwissTableContainer, SwissEmptyState } from '@/shared
 import type { AcademicYearData } from '../types/academic-years.types'
 import { PageHeader, PageHeaderButton } from '@/shared/ui/page-header'
 
-
 export interface AcademicYearsHeaderProps {
   onOpenCreate: () => void
 }
@@ -45,7 +44,6 @@ export const AcademicYearsHeader = ({ onOpenCreate }: AcademicYearsHeaderProps) 
   </PageHeader>
 )
 
-
 export interface AcademicYearsToolbarProps {
   searchTerm: string
   onSearchChange: (value: string) => void
@@ -68,7 +66,6 @@ export const AcademicYearsToolbar = ({
     />
   </div>
 )
-
 
 const StatusBadge = ({ status }: { status: string }) => {
   switch (status) {
@@ -98,17 +95,17 @@ const StatusBadge = ({ status }: { status: string }) => {
 const TableRowSkeleton = () => (
   <tr className="border-b border-uecg-line animate-pulse h-16 bg-white">
     <td className="px-6 py-3 border-r border-uecg-line">
-      <div className="h-4 bg-gray-200 dark:bg-zinc-800 w-1/2"></div>
-      <div className="h-3 bg-gray-100 dark:bg-zinc-900 w-1/4 mt-2"></div>
+      <div className="h-4 bg-gray-200 w-1/2"></div>
+      <div className="h-3 bg-gray-100 w-1/4 mt-2"></div>
     </td>
     <td className="px-6 py-3 border-r border-uecg-line">
-      <div className="h-4 bg-gray-200 dark:bg-zinc-800 w-1/2"></div>
+      <div className="h-4 bg-gray-200 w-1/2"></div>
     </td>
     <td className="px-6 py-3 border-r border-uecg-line">
-      <div className="h-5 bg-gray-200 dark:bg-zinc-800 w-20"></div>
+      <div className="h-5 bg-gray-200 w-20"></div>
     </td>
     <td className="px-6 py-3 text-center">
-      <div className="h-8 bg-gray-100 dark:bg-zinc-900 w-8 mx-auto"></div>
+      <div className="h-8 bg-gray-100 w-8 mx-auto"></div>
     </td>
   </tr>
 )
@@ -183,16 +180,15 @@ export const AcademicYearsTable = ({
   }
 
   return (
-
     <>
       <SwissTableContainer isPending={isLoadingData}>
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800">
-              <th scope="col" className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">Gestión</th>
-              <th scope="col" className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">Periodo (Inicio - Fin)</th>
-              <th scope="col" className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">Estado</th>
-              <th scope="col" className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 text-center w-24">Acción</th>
+            <tr className="bg-gray-50 border-b border-uecg-line">
+              <th scope="col" className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">Gestión</th>
+              <th scope="col" className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">Periodo (Inicio - Fin)</th>
+              <th scope="col" className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">Estado</th>
+              <th scope="col" className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-24">Acción</th>
             </tr>
           </thead>
           <motion.tbody layout>
@@ -214,16 +210,16 @@ export const AcademicYearsTable = ({
                 <motion.tr
                   layout
                   key={y.id}
-                  className="border-b border-uecg-line dark:border-zinc-800 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 transition-colors bg-white dark:bg-[#121214] h-16"
+                  className="border-b border-uecg-line hover:bg-blue-50/20 transition-colors bg-white h-16"
                 >
-                  <td className="px-6 py-3 border-r border-uecg-line dark:border-zinc-800">
-                    <p className="font-black uppercase tracking-tight text-uecg-text dark:text-zinc-100 text-sm leading-none">{y.name}</p>
-                    <p className="text-[10px] text-uecg-gray dark:text-zinc-400 font-bold mt-1.5 tracking-widest leading-none">AÑO: {y.year}</p>
+                  <td className="px-6 py-3 border-r border-uecg-line">
+                    <p className="font-black uppercase tracking-tight text-uecg-text text-sm leading-none">{y.name}</p>
+                    <p className="text-[10px] text-uecg-gray font-bold mt-1.5 tracking-widest leading-none">AÑO: {y.year}</p>
                   </td>
-                  <td className="px-6 py-3 border-r border-uecg-line dark:border-zinc-800 font-mono text-xs font-bold text-uecg-gray dark:text-zinc-300 tracking-widest">
-                    {y.startDate.substring(0, 10)} <span className="text-uecg-blue dark:text-blue-400 mx-2 font-sans">→</span> {y.endDate.substring(0, 10)}
+                  <td className="px-6 py-3 border-r border-uecg-line font-mono text-xs font-bold text-uecg-gray tracking-widest">
+                    {y.startDate.substring(0, 10)} <span className="text-uecg-blue mx-2 font-sans">→</span> {y.endDate.substring(0, 10)}
                   </td>
-                  <td className="px-6 py-3 border-r border-uecg-line dark:border-zinc-800">
+                  <td className="px-6 py-3 border-r border-uecg-line">
                     <StatusBadge status={y.status} />
                   </td>
                   <td className="px-6 py-3 text-center">
@@ -231,7 +227,7 @@ export const AcademicYearsTable = ({
                       id={`dropdown-trigger-${y.id}`}
                       type="button"
                       onClick={(e) => handleOpenDropdown(e, y.id)}
-                      className={`text-uecg-gray dark:text-zinc-400 hover:text-uecg-blue dark:hover:text-blue-400 p-2 focus:outline-none cursor-pointer transition-colors ${dropdownState?.id === y.id ? 'text-uecg-blue bg-gray-50 dark:bg-zinc-800' : ''}`}
+                      className={`text-uecg-gray hover:text-uecg-blue p-2 focus:outline-none cursor-pointer transition-colors ${dropdownState?.id === y.id ? 'text-uecg-blue bg-gray-50' : ''}`}
                       disabled={isUpdatingStatus}
                       aria-haspopup="menu"
                       aria-expanded={dropdownState?.id === y.id}
@@ -264,21 +260,21 @@ export const AcademicYearsTable = ({
             top: `${dropdownState.coords.top}px`,
             left: `${dropdownState.coords.left}px`,
           }}
-          className="w-52 bg-white dark:bg-[#121214] border border-uecg-line dark:border-zinc-800 shadow-2xl z-[99999] flex flex-col text-left"
+          className="w-52 bg-white border border-uecg-line shadow-2xl z-[99999] flex flex-col text-left"
         >
           {(() => {
             const y = years.find((item: AcademicYearData) => item.id === dropdownState.id)
             if (!y) return null
             return (
               <>
-                <div className="px-3 py-2 border-b border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400">Opciones</span>
+                <div className="px-3 py-2 border-b border-uecg-line bg-gray-50">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-uecg-gray">Opciones</span>
                 </div>
                 <button
                   role="menuitem"
                   type="button"
                   onClick={() => { setDropdownState(null); onEdit(y); }}
-                  className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-uecg-text dark:text-zinc-200 hover:bg-uecg-blue hover:text-white transition-colors cursor-pointer border-none bg-transparent w-full text-left outline-none"
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-uecg-blue hover:text-white transition-colors cursor-pointer border-none bg-transparent w-full text-left outline-none"
                 >
                   <Edit className="w-3.5 h-3.5 shrink-0" /> Editar Datos
                 </button>
@@ -289,7 +285,7 @@ export const AcademicYearsTable = ({
                   id="btn-open-trimesters"
                   data-tour="btn-open-trimesters"
                   onClick={() => { setDropdownState(null); onOpenTrimesters(y); }}
-                  className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-uecg-text dark:text-zinc-200 hover:bg-uecg-blue hover:text-white transition-colors border-t border-uecg-line dark:border-zinc-800 cursor-pointer border-none bg-transparent w-full text-left outline-none"
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-uecg-blue hover:text-white transition-colors border-t border-uecg-line cursor-pointer border-none bg-transparent w-full text-left outline-none"
                 >
                   <Settings2 className="w-3.5 h-3.5 shrink-0" /> Configurar Trimestres
                 </button>
@@ -299,7 +295,7 @@ export const AcademicYearsTable = ({
                     role="menuitem"
                     type="button"
                     onClick={() => { setDropdownState(null); onStatusChange(y.id, 'ACTIVE'); }}
-                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-green-600 dark:text-green-400 hover:bg-green-600 hover:text-white transition-colors border-t border-uecg-line dark:border-zinc-800 cursor-pointer border-none bg-transparent w-full text-left outline-none"
+                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-green-600 hover:bg-green-600 hover:text-white transition-colors border-t border-uecg-line cursor-pointer border-none bg-transparent w-full text-left outline-none"
                   >
                     <Power className="w-3.5 h-3.5 shrink-0" /> Activar Gestión
                   </button>
@@ -309,7 +305,7 @@ export const AcademicYearsTable = ({
                     role="menuitem"
                     type="button"
                     onClick={() => { setDropdownState(null); onStatusChange(y.id, 'CLOSED'); }}
-                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-yellow-600 dark:text-yellow-400 hover:bg-yellow-600 hover:text-white transition-colors border-t border-uecg-line dark:border-zinc-800 cursor-pointer border-none bg-transparent w-full text-left outline-none"
+                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-yellow-600 hover:bg-yellow-600 hover:text-white transition-colors border-t border-uecg-line cursor-pointer border-none bg-transparent w-full text-left outline-none"
                   >
                     <PowerOff className="w-3.5 h-3.5 shrink-0" /> Cerrar Gestión
                   </button>
@@ -319,7 +315,7 @@ export const AcademicYearsTable = ({
                     role="menuitem"
                     type="button"
                     onClick={() => { setDropdownState(null); onStatusChange(y.id, 'ACTIVE'); }}
-                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-uecg-blue dark:text-blue-400 hover:bg-uecg-blue hover:text-white transition-colors border-t border-uecg-line dark:border-zinc-800 cursor-pointer border-none bg-transparent w-full text-left outline-none"
+                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-uecg-blue hover:bg-uecg-blue hover:text-white transition-colors border-t border-uecg-line cursor-pointer border-none bg-transparent w-full text-left outline-none"
                   >
                     <RefreshCcw className="w-3.5 h-3.5 shrink-0" /> Reactivar Gestión
                   </button>
@@ -329,7 +325,7 @@ export const AcademicYearsTable = ({
                     role="menuitem"
                     type="button"
                     onClick={() => { setDropdownState(null); onDelete(y); }}
-                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-colors border-t border-uecg-line dark:border-zinc-800 cursor-pointer border-none bg-transparent w-full text-left outline-none"
+                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-red-600 hover:bg-red-600 hover:text-white transition-colors border-t border-uecg-line cursor-pointer border-none bg-transparent w-full text-left outline-none"
                   >
                     <Trash2 className="w-3.5 h-3.5 shrink-0" /> Eliminar
                   </button>
@@ -343,4 +339,3 @@ export const AcademicYearsTable = ({
     </>
   )
 }
-

@@ -1,3 +1,4 @@
+import { ShieldCheck } from 'lucide-react'
 import { SwissEmptyState } from '@/shared/ui'
 import type { Role } from '../api/rbac.service'
 import { RoleCard } from './role-card'
@@ -11,8 +12,9 @@ interface RoleGridProps {
 export const RoleGrid = ({ roles, onAction }: RoleGridProps) => {
   if (roles.length === 0) {
     return (
-      <div className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] shadow-sm">
+      <div className="border border-uecg-line bg-white shadow-sm">
         <SwissEmptyState
+          icon={ShieldCheck}
           title="Sin Roles Encontrados"
           description="No se encontraron roles coincidentes en el sistema."
         />

@@ -18,11 +18,12 @@ export default function EnrollmentsFilters({
   onViewModeChange,
 }: EnrollmentsFiltersProps) {
   const types = [
-    { id: "Todos", label: "TODAS LAS SOLICITUDES" },
+    { id: "TODOS", label: "TODAS LAS SOLICITUDES" },
     { id: "NUEVO", label: "NUEVOS" },
     { id: "ANTIGUO", label: "ANTIGUOS" },
     { id: "TRASPASO", label: "TRASPASOS" },
   ];
+
 
   return (
     <div className="flex flex-col md:flex-row gap-4">

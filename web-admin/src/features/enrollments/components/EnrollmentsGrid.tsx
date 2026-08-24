@@ -13,15 +13,15 @@ interface EnrollmentsGridProps {
 }
 
 const getBadgeStyles = (type: string) => {
-  if (type === "NUEVO") return "bg-uecg-dark text-white border-uecg-dark dark:bg-zinc-800 dark:border-zinc-700";
+  if (type === "NUEVO") return "bg-uecg-dark text-white border-uecg-dark";
   if (type === "TRASPASO") return "bg-yellow-500 text-white border-yellow-500";
-  return "bg-uecg-blue text-white border-uecg-blue dark:bg-blue-600";
+  return "bg-uecg-blue text-white border-uecg-blue";
 };
 
 const getLabelStyles = (type: string) => {
-  if (type === "NUEVO") return "bg-gray-100 dark:bg-zinc-800 text-uecg-dark dark:text-zinc-200 border-gray-200 dark:border-zinc-700";
-  if (type === "TRASPASO") return "bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-900/40";
-  return "bg-blue-50 dark:bg-blue-950/20 text-uecg-blue dark:text-blue-400 border-blue-100 dark:border-blue-900/40";
+  if (type === "NUEVO") return "bg-gray-100 text-uecg-dark border-gray-200";
+  if (type === "TRASPASO") return "bg-yellow-50 text-yellow-700 border-yellow-200";
+  return "bg-blue-50 text-uecg-blue border-blue-100";
 };
 
 export default function EnrollmentsGrid({
@@ -45,12 +45,12 @@ export default function EnrollmentsGrid({
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={`skeleton-enrollment-${i}`}
-              className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] h-[200px] animate-pulse shadow-sm"
+              className="border border-uecg-line bg-white h-[200px] animate-pulse shadow-sm"
             />
           ))}
         </div>
       ) : enrollments.length === 0 ? (
-        <div className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] shadow-sm">
+        <div className="border border-uecg-line bg-white shadow-sm">
           <SwissEmptyState
             title="Bandeja Vacía"
             description="No hay solicitudes pendientes de revisión."
@@ -64,7 +64,7 @@ export default function EnrollmentsGrid({
             return (
               <div
                 key={req.id}
-                className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] shadow-sm flex flex-col justify-between hover:border-uecg-blue dark:hover:border-blue-500 hover:shadow-md transition-all duration-300 animate-in fade-in zoom-in-95 group fill-mode-both"
+                className="border border-uecg-line bg-white shadow-sm flex flex-col justify-between hover:border-uecg-blue hover:shadow-md transition-all duration-300 animate-in fade-in zoom-in-95 group fill-mode-both"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 {/* Cabecera del Card */}
@@ -77,20 +77,20 @@ export default function EnrollmentsGrid({
                     {initial}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-black uppercase tracking-tight text-xs text-uecg-dark dark:text-zinc-100 truncate group-hover:text-uecg-blue dark:group-hover:text-blue-400 transition-colors">
+                    <p className="font-black uppercase tracking-tight text-xs text-uecg-dark truncate group-hover:text-uecg-blue transition-colors">
                       {req.studentName}
                     </p>
-                    <p className="text-[9px] font-bold text-uecg-gray dark:text-zinc-400 uppercase tracking-widest mt-0.5 truncate">
+                    <p className="text-[9px] font-bold text-uecg-gray uppercase tracking-widest mt-0.5 truncate">
                       CI: {req.ci}
                     </p>
-                    <p className="text-[10px] font-black text-uecg-text dark:text-zinc-300 uppercase tracking-widest mt-1.5 truncate">
+                    <p className="text-[10px] font-black text-uecg-text uppercase tracking-widest mt-1.5 truncate">
                       {req.grade}
                     </p>
                   </div>
                 </div>
 
                 {/* Subheader / Metadata */}
-                <div className="px-5 py-3 bg-gray-50/50 dark:bg-zinc-900/50 border-t border-b border-uecg-line dark:border-zinc-800 flex items-center justify-between">
+                <div className="px-5 py-3 bg-gray-50/50 border-t border-b border-uecg-line flex items-center justify-between">
                   <span
                     className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 border ${getLabelStyles(
                       req.type
@@ -98,17 +98,17 @@ export default function EnrollmentsGrid({
                   >
                     {req.type}
                   </span>
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-uecg-gray dark:text-zinc-400">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-uecg-gray">
                     {req.date}
                   </span>
                 </div>
 
                 {/* Botones de acción */}
-                <div className="p-3 bg-white dark:bg-[#121214] flex items-center justify-between gap-2">
+                <div className="p-3 bg-white flex items-center justify-between gap-2">
                   <button
                     onClick={() => onPrint(req.id)}
                     disabled={generatingPdfId === req.id}
-                    className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-uecg-gray dark:text-zinc-400 hover:text-uecg-dark dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-uecg-line dark:hover:border-zinc-700 disabled:opacity-50"
+                    className="p-2 hover:bg-gray-100 text-uecg-gray hover:text-uecg-dark transition-colors cursor-pointer border border-transparent hover:border-uecg-line disabled:opacity-50"
                     title="Imprimir RUDE"
                   >
                     {generatingPdfId === req.id ? (
@@ -122,14 +122,14 @@ export default function EnrollmentsGrid({
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => onReject(req.id)}
-                        className="px-3 py-1.5 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 text-[9px] font-black uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1"
+                        className="px-3 py-1.5 border border-red-200 text-red-600 hover:bg-red-50 text-[9px] font-black uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1"
                         title="Rechazar Inscripción"
                       >
                         <X className="w-3.5 h-3.5" /> Rechazar
                       </button>
                       <button
                         onClick={() => onApprove(req)}
-                        className="px-3 py-1.5 bg-uecg-dark dark:bg-zinc-800 hover:bg-uecg-blue dark:hover:bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1"
+                        className="px-3 py-1.5 bg-uecg-dark hover:bg-uecg-blue text-white text-[9px] font-black uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1"
                         title="Aprobar Inscripción"
                       >
                         <Check className="w-3.5 h-3.5" /> Aprobar
