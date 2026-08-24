@@ -1,6 +1,10 @@
 export { default as TeacherAssignmentsPage } from './components/teacher-assignments-page'
+export { ReassignTeacherDrawer, ReassignTeacherModal } from './components/reassign-teacher-modal'
+export { DeleteAssignmentDrawer } from './components/delete-assignment-drawer'
+export { CloneAssignmentsDrawer } from './components/clone-assignments-drawer'
 export { TeacherAssignmentsService } from './api/teacher-assignments.service'
 export * from './types/teacher-assignments.types'
 export { useAssignmentsData } from './hooks/use-assignments-data'
 export { useClassroomSelection } from './hooks/use-classroom-selection'
 export { useCloneDrawer } from './hooks/use-clone-drawer'
+
