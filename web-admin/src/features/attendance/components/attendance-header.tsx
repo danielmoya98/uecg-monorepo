@@ -1,5 +1,6 @@
 import { ClipboardCheck, Users, QrCode, UserCheck } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { PageHeader } from '@/shared/ui/page-header'
 import type { AttendanceTab } from '../hooks/use-attendance-workspace'
 
 interface AttendanceHeaderProps {
@@ -23,15 +24,12 @@ export const AttendanceHeader = ({
 
   return (
     <>
-      <header className="border-b border-uecg-line pb-4 mt-2">
-        <span className="text-[10px] font-black uppercase tracking-widest text-uecg-gray bg-gray-100 px-2 py-0.5 border border-uecg-line select-none">
-          Control Central
-        </span>
-        <h1 className="text-4xl mt-2 font-black tracking-tighter uppercase text-uecg-dark flex items-center gap-3">
-          <ClipboardCheck className="w-8 h-8 text-uecg-blue" strokeWidth={3} />
-          Gestión de Asistencia
-        </h1>
-      </header>
+      <PageHeader
+        kicker="CONTROL CENTRAL"
+        kickerIcon={ClipboardCheck}
+        title="Gestión de Asistencia"
+        description="Monitoreo de ingresos en tiempo real, lector de credenciales y registro de licencias."
+      />
 
       <div className="flex border-b border-uecg-line overflow-x-auto bg-gray-50/50 p-1 gap-1">
         {tabs.map((tab) => {
@@ -65,3 +63,4 @@ export const AttendanceHeader = ({
     </>
   )
 }
+

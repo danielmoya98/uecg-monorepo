@@ -1,26 +1,21 @@
 import { FileText, ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { PageHeader } from "@/shared/ui/page-header";
 
 export const NewEnrollmentHeader = () => (
-    <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-uecg-line pb-4">
-        <div>
-            <span className="label-swiss !text-[10px] text-uecg-gray font-black uppercase tracking-widest">
-                Secretaría / Ventanilla
-            </span>
-            <h1 className="text-4xl mt-1 font-black tracking-tighter uppercase text-uecg-dark flex items-center gap-3">
-                <FileText className="w-8 h-8 text-uecg-blue" />
-                Nueva Inscripción Manual
-            </h1>
-            <p className="mt-2 text-xs font-bold tracking-widest uppercase text-uecg-gray">
-                Transcripción directa de fólders físicos entregados por los padres.
-            </p>
-        </div>
-
+    <PageHeader
+        kicker="SECRETARÍA / VENTANILLA"
+        kickerIcon={FileText}
+        title="Nueva Inscripción Manual"
+        description="Transcripción directa de fólders físicos entregados por los padres de familia."
+    >
         <Link
             to="/enrollments"
-            className="px-5 py-3 font-bold uppercase tracking-widest text-[11px] border border-uecg-line text-uecg-gray hover:bg-gray-50 transition-colors flex items-center gap-2"
+            className="px-6 py-4 font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-sm transition-all cursor-pointer outline-none bg-white border border-uecg-line text-uecg-dark hover:bg-gray-50 select-none"
         >
             <ArrowLeft className="w-4 h-4" /> Volver a Bandeja
         </Link>
-    </header>
+    </PageHeader>
 );
+export default NewEnrollmentHeader;
+
