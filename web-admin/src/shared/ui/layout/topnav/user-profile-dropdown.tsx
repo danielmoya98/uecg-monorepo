@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { Settings, LogOut, ChevronDown, User, Calendar } from "lucide-react";
+import { LogOut, ChevronDown, User } from "lucide-react";
 import { AuthService } from "@/features/auth";
 
 export default function UserProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 🟢 Consumo de credenciales síncrono sin loaders parciales
-  const { user, can } = useRouteContext({ from: '/_authenticated' });
+  // Consumo de credenciales síncrono
+  const { user } = useRouteContext({ from: '/_authenticated' });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,20 +46,24 @@ export default function UserProfileDropdown() {
             <p className="text-[10px] font-bold mt-1.5 text-gray-300 truncate">{user?.email || "--"}</p>
           </div>
           <div className="flex flex-col bg-white">
-            <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-text hover:bg-gray-50 hover:text-uecg-blue transition-colors border-b border-uecg-line/50 cursor-pointer"><User className="w-4 h-4" /> Perfil de Usuario</Link>
+            <Link
+              to="/profile"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-text hover:bg-gray-50 hover:text-uecg-blue transition-colors cursor-pointer"
+            >
+              <User className="w-4 h-4" /> Perfil de Usuario
+            </Link>
 
-            {can("manage:all", "AcademicYear") && (
-              <Link to="/academic-years" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-text hover:bg-gray-50 hover:text-uecg-blue transition-colors border-b border-uecg-line/50 cursor-pointer"><Calendar className="w-4 h-4" /> Gestión Académica</Link>
-            )}
-
-            {can("manage:all", "Institution") && (
-              <Link to="/settings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-text hover:bg-gray-50 hover:text-uecg-blue transition-colors cursor-pointer"><Settings className="w-4 h-4" /> Configuración Global RUE</Link>
-            )}
-
-            <button onClick={() => AuthService.logout()} className="flex items-center gap-3 px-5 py-4 text-[10px] font-black uppercase tracking-widest text-red-600 bg-red-50 border-t border-uecg-line hover:bg-red-600 hover:text-white transition-colors w-full text-left cursor-pointer"><LogOut className="w-4 h-4" /> Finalizar Sesión</button>
+            <button
+              onClick={() => AuthService.logout()}
+              className="flex items-center gap-3 px-5 py-4 text-[10px] font-black uppercase tracking-widest text-red-600 bg-red-50 border-t border-uecg-line hover:bg-red-600 hover:text-white transition-colors w-full text-left cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" /> Finalizar Sesión
+            </button>
           </div>
         </div>
       )}
     </div>
   );
 }
+
