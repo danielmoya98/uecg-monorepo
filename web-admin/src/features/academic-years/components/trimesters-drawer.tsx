@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
-import { X, Save, Loader2, CalendarRange, Lock, Unlock, AlertCircle } from 'lucide-react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { Save, Loader2, CalendarRange, Lock, Unlock, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import { useTrimestersData } from '../hooks/use-trimesters-data'
 import type { AcademicYearData, Trimester } from '../types/academic-years.types'
+
 
 interface TrimesterCardProps {
   trimester: Trimester
@@ -192,96 +192,53 @@ export default function TrimestersDrawer({ isOpen, onClose, academicYear }: Trim
     }
   }, [isOpen, onClose, isUpdating])
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="trimesters-drawer-title"
-          className="fixed inset-0 z-[9999] flex justify-end"
-        >
-          {/* Overlay difuminado */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={!isUpdating ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-          />
-
-          {/* Panel Lateral Drawer */}
-          <motion.div
-            ref={drawerRef}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-[420px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* Cabecera */}
-            <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark text-white p-5 gap-4 shrink-0">
-              <div className="flex-1 min-w-0">
-                <span className="label-swiss !mb-0 !text-[9px] text-blue-200">Panel de Control</span>
-                <h2
-                  id="trimesters-drawer-title"
-                  className="text-xl font-black uppercase tracking-tighter mt-0.5 flex items-center gap-2 truncate"
-                >
-                  <CalendarRange className="w-5 h-5 shrink-0 text-uecg-blue" />
-                  <span className="truncate">Trimestres {academicYear?.year}</span>
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isUpdating}
-                className="p-1.5 text-white/50 hover:text-white transition-colors cursor-pointer focus:outline-none shrink-0"
-                aria-label="Cerrar ventana"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Contenido */}
-            <div className="p-5 flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4">
-              <div className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest leading-relaxed bg-blue-50/50 border border-blue-200 p-3 flex flex-col gap-1">
-                <span className="text-uecg-blue font-black flex items-center gap-1.5">
-                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                  Regla de Exclusividad de Periodos
-                </span>
-                <p>
-                  Solo puede existir <strong>un único trimestre abierto a la vez</strong>. Al activar la casilla de un trimestre, el sistema cerrará automáticamente los demás de forma atómica.
-                </p>
-              </div>
-              {isLoading ? (
-                <div className="flex justify-center p-10">
-                  <Loader2 className="w-8 h-8 animate-spin text-uecg-blue" />
-                </div>
-              ) : trimestersList.length === 0 ? (
-                <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-uecg-line bg-gray-50 mt-4">
-                  <div className="w-12 h-12 border-4 border-gray-200 rotate-45 mb-6 flex items-center justify-center"></div>
-                  <p className="text-[11px] font-black uppercase tracking-widest text-uecg-gray">
-                    Sin Trimestres Registrados
-                  </p>
-                </div>
-              ) : (
-                trimestersList.map((t) => (
-                  <TrimesterCard
-                    key={t.id}
-                    trimester={t}
-                    onUpdate={(trimesterId, payload) =>
-                      updateTrimester({ id: trimesterId, payload })
-                    }
-                    isUpdating={isUpdating}
-                  />
-                ))
-              )}
-            </div>
-          </motion.div>
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`Trimestres ${academicYear?.year || ''}`}
+      kicker="Calendario Escolar"
+      icon={<CalendarRange className="w-5 h-5 text-white" />}
+      headerVariant="dark"
+      isSubmitting={isUpdating}
+      maxWidth="max-w-[440px]"
+    >
+      {/* Contenido */}
+      <div className="p-5 flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4">
+        <div className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest leading-relaxed bg-blue-50/50 border border-blue-200 p-3 flex flex-col gap-1 dark:bg-blue-950/20 dark:border-blue-900/40">
+          <span className="text-uecg-blue dark:text-blue-400 font-black flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            Regla de Exclusividad de Periodos
+          </span>
+          <p>
+            Solo puede existir <strong>un único trimestre abierto a la vez</strong>. Al activar la casilla de un trimestre, el sistema cerrará automáticamente los demás de forma atómica.
+          </p>
         </div>
-      )}
-    </AnimatePresence>,
-    document.body
+        {isLoading ? (
+          <div className="flex justify-center p-10">
+            <Loader2 className="w-8 h-8 animate-spin text-uecg-blue" />
+          </div>
+        ) : trimestersList.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-uecg-line bg-gray-50 mt-4">
+            <div className="w-12 h-12 border-4 border-gray-200 rotate-45 mb-6 flex items-center justify-center"></div>
+            <p className="text-[11px] font-black uppercase tracking-widest text-uecg-gray">
+              Sin Trimestres Registrados
+            </p>
+          </div>
+        ) : (
+          trimestersList.map((t) => (
+            <TrimesterCard
+              key={t.id}
+              trimester={t}
+              onUpdate={(trimesterId, payload) =>
+                updateTrimester({ id: trimesterId, payload })
+              }
+              isUpdating={isUpdating}
+            />
+          ))
+        )}
+      </div>
+    </DrawerShell>
   )
 }
+

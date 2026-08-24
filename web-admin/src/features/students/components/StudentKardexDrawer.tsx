@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { X, Loader2, FileText, User, Home, Phone, Sparkles } from "lucide-react";
+import { Loader2, FileText, User, Home, Phone, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { DrawerShell } from "@/shared/ui/drawer-shell";
 import { EnrollmentsService } from "@/features/enrollments/api/enrollments.service";
+
 
 interface StudentKardexDrawerProps {
   isOpen: boolean;
@@ -11,23 +11,6 @@ interface StudentKardexDrawerProps {
 }
 
 export default function StudentKardexDrawer({ isOpen, onClose, enrollmentId }: StudentKardexDrawerProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Cerrar al pulsar Escape
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
   // Consultar datos del Kardex
   const { data: kardex, isLoading } = useQuery({
     queryKey: ["student_kardex", enrollmentId],
@@ -41,46 +24,19 @@ export default function StudentKardexDrawer({ isOpen, onClose, enrollmentId }: S
   const rudeData = kardex?.rudeRecord || kardex?.rudeData || {};
   const guardians = student?.guardians || [];
 
-  const content = (
-    <div
-      className="fixed inset-0 z-[9999] flex justify-end"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="kardex-title"
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Kardex de Estudiante"
+      kicker="Expediente Oficial RUDE"
+      icon={<FileText className="w-5 h-5 text-white" />}
+      headerVariant="dark"
+      maxWidth="max-w-2xl"
     >
-      {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
-        onClick={onClose}
-      />
-
-      {/* Drawer */}
-      <div
-        className="relative h-full w-full max-w-2xl border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
-      >
-        {/* Cabecera */}
-        <div className="flex items-center justify-between border-b-4 border-uecg-blue bg-uecg-dark p-6 text-white shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-uecg-blue flex items-center justify-center">
-              <FileText className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <span className="text-[9px] font-black uppercase tracking-widest text-blue-200">Expediente Oficial RUDE</span>
-              <h2 id="kardex-title" className="text-xl font-black uppercase tracking-tighter mt-0.5">
-                Kardex de Estudiante
-              </h2>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-white/50 hover:text-white transition-colors bg-white/10 rounded-full hover:bg-white/20 cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
+      <div className="flex flex-col h-full">
         {/* Contenido */}
-        <div className="flex-1 p-6 overflow-y-auto bg-gray-50 flex flex-col gap-6 custom-scrollbar">
+        <div className="flex-1 p-6 overflow-y-auto bg-gray-50 dark:bg-zinc-900/50 flex flex-col gap-6 custom-scrollbar">
           {isLoading ? (
             <div className="flex-1 flex flex-col items-center justify-center text-uecg-gray gap-4">
               <Loader2 className="w-10 h-10 animate-spin text-uecg-blue" />
@@ -263,7 +219,7 @@ export default function StudentKardexDrawer({ isOpen, onClose, enrollmentId }: S
         </div>
 
         {/* Footer */}
-        <footer className="p-5 border-t border-uecg-line bg-gray-50 flex shrink-0">
+        <footer className="p-5 border-t border-uecg-line bg-gray-50 dark:bg-zinc-900 flex shrink-0">
           <button
             onClick={onClose}
             className="flex-1 py-3 text-[10px] font-black uppercase tracking-widest bg-uecg-dark text-white hover:bg-black transition-colors shadow-sm outline-none cursor-pointer"
@@ -272,8 +228,7 @@ export default function StudentKardexDrawer({ isOpen, onClose, enrollmentId }: S
           </button>
         </footer>
       </div>
-    </div>
+    </DrawerShell>
   );
-
-  return isClient ? createPortal(content, document.body) : null;
 }
+

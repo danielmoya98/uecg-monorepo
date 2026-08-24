@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
-import { X, ShieldAlert, Save, AlertTriangle, Users, Check } from 'lucide-react'
+import { ShieldAlert, Save, AlertTriangle, Users, Check, ShieldCheck } from 'lucide-react'
 import { toast } from 'sonner'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
+
 
 import { RbacService } from '../api/rbac.service'
 import type { Role, Permission } from '../api/rbac.service'
@@ -383,59 +385,25 @@ export default function RoleDrawer({
     }
   }
 
+  const title =
+    mode === 'create'
+      ? 'Definir Rol'
+      : mode === 'delete'
+      ? 'Auditoría de Rol'
+      : 'Matriz de Permisos'
+
   return (
-    <div
-      className={`fixed inset-0 z-[9999] flex justify-end ${
-        isOpen ? 'pointer-events-auto' : 'pointer-events-none'
-      }`}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="drawer-title"
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      kicker="Políticas de Acceso"
+      icon={mode === 'delete' ? '!' : <ShieldCheck className="w-5 h-5 text-white" />}
+      headerVariant={mode === 'delete' ? 'danger' : 'default'}
+      isSubmitting={isSubmitting}
+      maxWidth="max-w-[500px]"
     >
-      {/* Fondo Traslúcido con Clic de Cierre */}
-      <div
-        className={`absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 ease-out cursor-pointer ${
-          isOpen ? 'opacity-100' : 'opacity-0'
-        }`}
-        onClick={!isSubmitting ? onClose : undefined}
-        aria-hidden="true"
-      />
-
-      {/* Cajón de Desplazamiento */}
-      <div
-        className={`relative h-full w-full max-w-[480px] border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 ease-in-out flex flex-col will-change-transform transform-gpu ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        {/* Cabecera del Drawer */}
-        <div className="flex items-center justify-between border-b border-uecg-line p-6 bg-gray-50">
-          <div>
-            <span className="text-[9px] font-black uppercase tracking-widest text-uecg-gray">
-              Políticas de Acceso
-            </span>
-            <h2
-              id="drawer-title"
-              className="text-2xl font-black uppercase tracking-tighter text-uecg-dark mt-0.5"
-            >
-              {mode === 'create'
-                ? 'Definir Rol'
-                : mode === 'delete'
-                ? 'Auditoría de Rol'
-                : 'Matriz de Permisos'}
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isSubmitting}
-            className="p-2 text-uecg-gray hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500"
-            aria-label="Cerrar cajón"
-          >
-            <X className="w-5 h-5" strokeWidth={2.5} />
-          </button>
-        </div>
-
-        {/* Cuerpo Scrollable */}
+      <div className="flex flex-col h-full overflow-hidden">
         <div className="overflow-y-auto flex-1 custom-scrollbar bg-white" tabIndex={0}>
           {renderContent()}
         </div>
@@ -502,6 +470,7 @@ export default function RoleDrawer({
           ) : null}
         </div>
       </div>
-    </div>
+    </DrawerShell>
   )
 }
+

@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { X, Loader2, Download, ScanLine, AlertTriangle, KeySquare } from 'lucide-react'
+import { Loader2, Download, ScanLine, AlertTriangle, KeySquare } from 'lucide-react'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import { StudentCarnetDocument } from './student-carnet-document'
 import type { Enrollment, QRAccessResult } from '../types/identity.types'
+
 
 interface StudentCarnetDrawerProps {
   isOpen: boolean
@@ -57,60 +58,18 @@ export const StudentCarnetDrawer = ({
     }
   }
 
-  // Elementos Bauhaus visuales
-  const headerDecoration = (
-    <>
-      <div className="absolute -left-8 -bottom-8 w-24 h-24 border-[4px] border-uecg-blue opacity-20 rounded-full pointer-events-none" />
-      <div className="absolute left-8 -bottom-4 w-12 h-12 border-[2px] border-white opacity-10 rounded-full pointer-events-none" />
-    </>
-  )
-
-  // Inyectar en el body a través de un Portal
-  return createPortal(
-    <div
-      className="fixed inset-0 z-[9999] flex justify-end"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="drawer-title"
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Carnet de Estudiante"
+      kicker="Identidad Digital"
+      icon={<ScanLine className="w-5 h-5 text-white" />}
+      headerVariant="dark"
+      isSubmitting={isGenerating || isRevoking}
+      maxWidth="max-w-lg"
     >
-      {/* Fondo interactivo optimizado para GPU */}
-      <div
-        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
-        onClick={onClose}
-      />
-
-      {/* Cajón suizo brutalista */}
-      <div
-        className="relative h-full w-full max-w-lg border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 flex flex-col z-10 will-change-transform transform-gpu"
-        style={{ transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
-      >
-        {/* Cabecera geométrica del drawer */}
-        <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark p-6 relative overflow-hidden text-white shrink-0">
-          {headerDecoration}
-
-          <div className="relative z-10 flex items-center gap-4">
-            <div className="w-10 h-10 bg-uecg-blue text-white flex items-center justify-center shadow-sm">
-              <ScanLine className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="label-swiss !mb-0 !text-[9px] text-blue-200">IDENTIDAD DIGITAL</span>
-              <h2
-                id="drawer-title"
-                className="text-xl font-black uppercase tracking-tighter mt-0.5 text-white"
-              >
-                Carnet de Estudiante
-              </h2>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            type="button"
-            className="p-1.5 relative z-10 text-white/50 hover:text-white transition-colors outline-none bg-white/10 rounded-full hover:bg-white/20 cursor-pointer"
-            aria-label="Cerrar panel"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+      <div className="flex flex-col h-full">
 
         {/* Contenido principal */}
         <div className="flex-1 p-6 overflow-hidden bg-gray-50 flex flex-col relative" tabIndex={0}>
@@ -220,8 +179,8 @@ export const StudentCarnetDrawer = ({
           )}
         </footer>
       </div>
-    </div>,
-    document.body
+    </DrawerShell>
   )
 }
 export default StudentCarnetDrawer
+

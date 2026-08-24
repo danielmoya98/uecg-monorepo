@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { X, Save, Loader2, MapPin, ChevronDown } from 'lucide-react'
+import { Save, Loader2, MapPin, ChevronDown } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { AnimatePresence, motion } from 'framer-motion'
 import { toast } from 'sonner'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import { PhysicalSpacesService } from '../api/physical-spaces.service'
 import { physicalSpaceSchema, type PhysicalSpaceFormValues } from '../schemas/physical-space.schema'
 import type { PhysicalSpace, PhysicalSpacePayload } from '../types/physical-spaces.types'
+
 
 interface Option {
   value: string
@@ -210,68 +210,29 @@ export default function PhysicalSpaceDrawer({ isOpen, onClose, mode, data }: Phy
     }
   }, [isOpen, onClose, mutation.isPending])
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex justify-end">
-          {/* Overlay interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={!mutation.isPending ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-          />
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title={mode === 'create' ? 'Nuevo Espacio' : 'Editar Espacio'}
+      kicker="Infraestructura"
+      icon={<MapPin className="w-5 h-5 text-white" />}
+      headerVariant="default"
+      isSubmitting={mutation.isPending}
+      maxWidth="max-w-md"
+    >
+      {/* FORMULARIO */}
+      <form
+        onSubmit={handleSubmit((d) => mutation.mutate(d as unknown as PhysicalSpacePayload))}
+        className="flex flex-col flex-1 overflow-y-auto p-6 gap-6 custom-scrollbar"
+      >
+        {/* Inputs ocultos para React Hook Form */}
+        <input type="hidden" {...register('type')} />
 
-          {/* Panel Lateral Drawer */}
-          <motion.div
-            ref={drawerRef}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-md border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* HEADER GEOMÉTRICO */}
-            <div className="flex items-center justify-between border-b p-6 relative overflow-hidden bg-gray-50 border-uecg-line text-uecg-gray shrink-0">
-              <div className="absolute -right-8 -top-8 w-24 h-24 border-[6px] border-current opacity-10 rounded-none rotate-45 pointer-events-none"></div>
-              <div className="absolute right-12 -bottom-4 w-12 h-12 bg-current opacity-10 -rotate-12 pointer-events-none"></div>
-              <div className="absolute left-1/2 bottom-0 w-8 h-2 bg-current opacity-10 pointer-events-none"></div>
-
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-10 h-10 flex items-center justify-center shadow-sm text-white font-black text-lg bg-uecg-blue">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="label-swiss !mb-0 !text-[9px] text-inherit">Infraestructura</span>
-                  <h2 className="text-xl font-black uppercase tracking-tighter mt-0.5 text-uecg-dark">
-                    {mode === 'create' ? 'Nuevo Espacio' : 'Editar Espacio'}
-                  </h2>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={mutation.isPending}
-                className="p-1.5 relative z-10 hover:text-red-600 transition-colors focus:outline-none disabled:opacity-50 bg-white/50 rounded-full hover:bg-white cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* FORMULARIO */}
-            <form
-              onSubmit={handleSubmit((d) => mutation.mutate(d as unknown as PhysicalSpacePayload))}
-              className="flex flex-col flex-1 overflow-y-auto p-6 gap-6 custom-scrollbar"
-            >
-              {/* Inputs ocultos para React Hook Form */}
-              <input type="hidden" {...register('type')} />
-
-              <div>
-                <label className="label-swiss !text-[10px] !mb-1.5 block">
-                  Nombre del Espacio (Identificador Único)
-                </label>
+        <div>
+          <label className="label-swiss !text-[10px] !mb-1.5 block">
+            Nombre del Espacio (Identificador Único)
+          </label>
                 <input
                   type="text"
                   {...register('name')}
@@ -417,10 +378,7 @@ export default function PhysicalSpaceDrawer({ isOpen, onClose, mode, data }: Phy
                 </button>
               </div>
             </form>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+    </DrawerShell>
   )
 }
+

@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import {
-  X,
   CheckCircle,
   XCircle,
   Loader2,
@@ -12,10 +10,11 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { AnimatePresence, motion } from "framer-motion";
+import { DrawerShell } from "@/shared/ui/drawer-shell";
 import { DataUpdatesService } from "../api/data-updates.service";
 import { EnrollmentsService } from "@/features/enrollments/api/enrollments.service";
 import type { DataUpdateRequest } from "../types/data-updates.types";
+
 
 interface Props {
   isOpen: boolean;
@@ -145,54 +144,18 @@ export const DiffUpdateDrawer = ({ isOpen, onClose, request, onSuccess, canManag
   const currentData = currentDataResponse?.data?.data || currentDataResponse?.data || currentDataResponse;
   const proposed = request.proposedData;
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[99999] flex justify-end" role="dialog" aria-modal="true" aria-labelledby="diff-drawer-title">
-          {/* Overlay interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={!isSubmitting ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-          />
-
-          {/* Panel Lateral Drawer */}
-          <motion.div
-            ref={drawerRef}
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-3xl border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* Header del Cajón */}
-            <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark p-6 md:p-8 relative overflow-hidden text-white shrink-0">
-              <div className="absolute -left-8 -bottom-8 w-32 h-32 border-[8px] border-white opacity-5 rounded-none rotate-45 pointer-events-none"></div>
-              <div className="absolute right-16 -top-4 w-12 h-12 bg-white opacity-10 -rotate-12 pointer-events-none"></div>
-
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-12 h-12 bg-uecg-blue text-white flex items-center justify-center shadow-sm">
-                  <ShieldAlert className="w-6 h-6" />
-                </div>
-                <div>
-                  <span className="label-swiss !mb-0 !text-[9px] text-blue-200 font-bold tracking-widest uppercase">AUDITORÍA DE EXPEDIENTE</span>
-                  <h2 id="diff-drawer-title" className="text-2xl font-black uppercase tracking-tighter text-white mt-0.5">
-                    Revisión de Cambios
-                  </h2>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isSubmitting}
-                className="p-2 relative z-10 text-white/50 hover:text-white transition-colors focus:outline-none bg-white/10 hover:bg-white/20 rounded-none cursor-pointer disabled:opacity-50"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Revisión de Cambios"
+      kicker="Auditoría de Expediente"
+      icon={<ShieldAlert className="w-5 h-5 text-white" />}
+      headerVariant="dark"
+      isSubmitting={isSubmitting}
+      maxWidth="max-w-3xl"
+    >
+      <div className="flex flex-col h-full">
 
             {/* Contenido / Cuerpo con Scroll */}
             <div className="p-6 md:p-8 overflow-y-auto flex-1 custom-scrollbar bg-gray-50">
@@ -351,11 +314,9 @@ export const DiffUpdateDrawer = ({ isOpen, onClose, request, onSuccess, canManag
                 )}
               </div>
             )}
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+      </div>
+    </DrawerShell>
   );
 };
 export default DiffUpdateDrawer;
+
