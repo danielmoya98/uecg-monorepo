@@ -158,7 +158,7 @@ export default function SetupWizardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0B3A64] via-[#0F4C81] to-[#0A2D4F] text-white flex flex-col justify-between p-4 sm:p-6 md:p-10 font-sans antialiased relative selection:bg-blue-300 selection:text-[#0F4C81]">
+    <div className="min-h-screen bg-gradient-to-b from-[#000060] via-[#000089] to-[#000045] text-white flex flex-col justify-between p-4 sm:p-6 md:p-10 font-sans antialiased relative selection:bg-blue-300 selection:text-uecg-blue">
       {/* Background Decorative Grid */}
       <div
         className="absolute inset-0 opacity-5 pointer-events-none"
@@ -215,17 +215,17 @@ export default function SetupWizardPage() {
                 }}
                 className={`p-3 border text-left transition-all flex flex-col justify-between gap-2 backdrop-blur-xs cursor-default ${
                   isCurrent
-                    ? 'bg-white text-[#0F4C81] border-white shadow-xl ring-2 ring-blue-300'
+                    ? 'bg-white text-uecg-blue border-white shadow-xl ring-2 ring-blue-300'
                     : isDone
                       ? 'bg-white/20 text-blue-100 border-white/30 cursor-pointer hover:bg-white/30'
                       : 'bg-black/20 text-white/50 border-white/10'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className={`text-[10px] font-mono font-black uppercase tracking-widest ${isCurrent ? 'text-[#0F4C81]' : 'text-blue-200'}`}>
+                  <span className={`text-[10px] font-mono font-black uppercase tracking-widest ${isCurrent ? 'text-uecg-blue' : 'text-blue-200'}`}>
                     0{s.id}
                   </span>
-                  <Icon className={`w-4 h-4 ${isCurrent ? 'text-[#0F4C81]' : isDone ? 'text-emerald-300' : 'text-white/40'}`} />
+                  <Icon className={`w-4 h-4 ${isCurrent ? 'text-uecg-blue' : isDone ? 'text-emerald-300' : 'text-white/40'}`} />
                 </div>
                 <div>
                   <h3 className="text-xs font-black uppercase tracking-tight line-clamp-1">{s.title}</h3>
@@ -247,7 +247,7 @@ export default function SetupWizardPage() {
           {currentStep === 1 && (
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="border-b border-gray-200 pb-4">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-[#0F4C81] border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-uecg-blue border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
                   <User className="w-3.5 h-3.5" /> Cuenta de Administradora / Directora
                 </div>
                 <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight uppercase">
@@ -266,7 +266,7 @@ export default function SetupWizardPage() {
                   <input
                     {...register('fullName')}
                     placeholder="Ej. Lic. María Elena Ramos"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   <span className="text-[9px] text-gray-500">Nombre con el que figurará en actas y reportes</span>
                   {errors.fullName && <p className="text-[10px] font-bold text-red-500">{errors.fullName.message}</p>}
@@ -279,7 +279,7 @@ export default function SetupWizardPage() {
                   <input
                     {...register('ci')}
                     placeholder="Ej. 1234567 CH"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   <span className="text-[9px] text-gray-500">Número de carnet y expedición</span>
                   {errors.ci && <p className="text-[10px] font-bold text-red-500">{errors.ci.message}</p>}
@@ -293,7 +293,7 @@ export default function SetupWizardPage() {
                     type="email"
                     {...register('email')}
                     placeholder="directora@uecg.edu.bo"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   <span className="text-[9px] text-gray-500">Servirá para iniciar sesión en la plataforma</span>
                   {errors.email && <p className="text-[10px] font-bold text-red-500">{errors.email.message}</p>}
@@ -307,7 +307,7 @@ export default function SetupWizardPage() {
                     type="password"
                     {...register('password')}
                     placeholder="Mínimo 8 caracteres"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   <span className="text-[9px] text-gray-500">Recomendamos usar mayúsculas, números y símbolos</span>
                   {errors.password && <p className="text-[10px] font-bold text-red-500">{errors.password.message}</p>}
@@ -320,7 +320,7 @@ export default function SetupWizardPage() {
                   <input
                     {...register('phone')}
                     placeholder="Ej. 78901234"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -331,7 +331,7 @@ export default function SetupWizardPage() {
           {currentStep === 2 && (
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="border-b border-gray-200 pb-4">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-[#0F4C81] border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-uecg-blue border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
                   <School className="w-3.5 h-3.5" /> Ficha SIE / RUE Ministerial
                 </div>
                 <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight uppercase">
@@ -350,7 +350,7 @@ export default function SetupWizardPage() {
                   <input
                     {...register('rueCode')}
                     placeholder="Ej. 80730145"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   <span className="text-[9px] text-gray-500">Código oficial de registro educativo ministerial</span>
                   {errors.rueCode && <p className="text-[10px] font-bold text-red-500">{errors.rueCode.message}</p>}
@@ -363,7 +363,7 @@ export default function SetupWizardPage() {
                   <input
                     {...register('institutionName')}
                     placeholder="Unidad Educativa Colegio Che Guevara"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   <span className="text-[9px] text-gray-500">Tal como aparece en la Resolución Administrativa</span>
                   {errors.institutionName && <p className="text-[10px] font-bold text-red-500">{errors.institutionName.message}</p>}
@@ -414,7 +414,7 @@ export default function SetupWizardPage() {
                   <input
                     {...register('municipality')}
                     placeholder="Ej. Sucre"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                 </div>
 
@@ -425,7 +425,7 @@ export default function SetupWizardPage() {
                   <input
                     {...register('district')}
                     placeholder="Ej. Sucre 1"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                 </div>
 
@@ -436,7 +436,7 @@ export default function SetupWizardPage() {
                   <input
                     {...register('address')}
                     placeholder="Ej. Zona Villa Armonía, Calle Principal #123"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   {errors.address && <p className="text-[10px] font-bold text-red-500">{errors.address.message}</p>}
                 </div>
@@ -460,7 +460,7 @@ export default function SetupWizardPage() {
                           onClick={() => toggleArrayItem('shifts', t.id)}
                           className={`px-4 py-2 text-xs font-black uppercase tracking-wider border cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-[#0F4C81] text-white border-[#0F4C81] shadow-sm'
+                              ? 'bg-uecg-blue text-white border-uecg-blue shadow-sm'
                               : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
                           }`}
                         >
@@ -490,7 +490,7 @@ export default function SetupWizardPage() {
                           onClick={() => toggleArrayItem('levels', l.id)}
                           className={`px-4 py-2 text-xs font-black uppercase tracking-wider border cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-[#0F4C81] text-white border-[#0F4C81] shadow-sm'
+                              ? 'bg-uecg-blue text-white border-uecg-blue shadow-sm'
                               : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
                           }`}
                         >
@@ -509,7 +509,7 @@ export default function SetupWizardPage() {
           {currentStep === 3 && (
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="border-b border-gray-200 pb-4">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-[#0F4C81] border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-uecg-blue border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
                   <Sliders className="w-3.5 h-3.5" /> Parámetros del Motor Operativo
                 </div>
                 <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight uppercase">
@@ -530,16 +530,16 @@ export default function SetupWizardPage() {
                       onClick={() => setValue('schedulingMode', 'FIXED_BASE')}
                       className={`p-4 border cursor-pointer flex flex-col justify-between gap-3 transition-all ${
                         formValues.schedulingMode === 'FIXED_BASE'
-                          ? 'border-[#0F4C81] bg-blue-50/50 ring-2 ring-[#0F4C81] shadow-sm'
+                          ? 'border-uecg-blue bg-blue-50/50 ring-2 ring-uecg-blue shadow-sm'
                           : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase tracking-wider text-[#0F4C81]">
+                        <span className="text-xs font-black uppercase tracking-wider text-uecg-blue">
                           1. Aula Fija / Tradicional (Recomendado)
                         </span>
                         {formValues.schedulingMode === 'FIXED_BASE' && (
-                          <CheckCircle2 className="w-4 h-4 text-[#0F4C81]" />
+                          <CheckCircle2 className="w-4 h-4 text-uecg-blue" />
                         )}
                       </div>
                       <p className="text-[11px] text-gray-600 leading-relaxed">
@@ -551,16 +551,16 @@ export default function SetupWizardPage() {
                       onClick={() => setValue('schedulingMode', 'DYNAMIC')}
                       className={`p-4 border cursor-pointer flex flex-col justify-between gap-3 transition-all ${
                         formValues.schedulingMode === 'DYNAMIC'
-                          ? 'border-[#0F4C81] bg-blue-50/50 ring-2 ring-[#0F4C81] shadow-sm'
+                          ? 'border-uecg-blue bg-blue-50/50 ring-2 ring-uecg-blue shadow-sm'
                           : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase tracking-wider text-[#0F4C81]">
+                        <span className="text-xs font-black uppercase tracking-wider text-uecg-blue">
                           2. Aulas Dinámicas / Rotativas
                         </span>
                         {formValues.schedulingMode === 'DYNAMIC' && (
-                          <CheckCircle2 className="w-4 h-4 text-[#0F4C81]" />
+                          <CheckCircle2 className="w-4 h-4 text-uecg-blue" />
                         )}
                       </div>
                       <p className="text-[11px] text-gray-600 leading-relaxed">
@@ -578,7 +578,7 @@ export default function SetupWizardPage() {
                     type="number"
                     {...register('lateToleranceMinutes')}
                     placeholder="5"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   <span className="text-[9px] text-gray-500">Margen de gracia tras el toque de timbre (Puntual vs Atraso)</span>
                 </div>
@@ -591,7 +591,7 @@ export default function SetupWizardPage() {
                     type="number"
                     {...register('absentToleranceMinutes')}
                     placeholder="15"
-                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-uecg-blue focus:bg-white focus:outline-none transition-colors"
                   />
                   <span className="text-[9px] text-gray-500">Pasado este tiempo el escáner marcará falta automática</span>
                 </div>
@@ -616,7 +616,7 @@ export default function SetupWizardPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 border border-gray-200 bg-gray-50/80 space-y-1.5">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0F4C81]">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-uecg-blue">
                     Directora / Administrador Principal
                   </h4>
                   <p className="text-xs font-bold text-gray-900">{formValues.fullName}</p>
@@ -625,7 +625,7 @@ export default function SetupWizardPage() {
                 </div>
 
                 <div className="p-4 border border-gray-200 bg-gray-50/80 space-y-1.5">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0F4C81]">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-uecg-blue">
                     Unidad Educativa &bull; RUE
                   </h4>
                   <p className="text-xs font-bold text-gray-900">{formValues.institutionName}</p>
@@ -636,7 +636,7 @@ export default function SetupWizardPage() {
                 </div>
 
                 <div className="p-4 border border-gray-200 bg-gray-50/80 space-y-1.5 md:col-span-2">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0F4C81]">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-uecg-blue">
                     Turnos, Niveles y Motor Operativo
                   </h4>
                   <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-600">
@@ -648,8 +648,8 @@ export default function SetupWizardPage() {
                 </div>
               </div>
 
-              <div className="p-4 bg-blue-50/70 border-l-4 border-[#0F4C81] text-xs text-gray-700 leading-relaxed flex items-start gap-3">
-                <Info className="w-5 h-5 text-[#0F4C81] shrink-0 mt-0.5" />
+              <div className="p-4 bg-blue-50/70 border-l-4 border-uecg-blue text-xs text-gray-700 leading-relaxed flex items-start gap-3">
+                <Info className="w-5 h-5 text-uecg-blue shrink-0 mt-0.5" />
                 <div>
                   <strong>Asistente Interactivo de Primera Gestión:</strong> Al hacer clic en <em>"Inicializar Colegio y Comenzar Guía"</em>, el sistema creará tu sesión de inmediato y abrirá el <strong>Tour Interactivo (Driver.js)</strong> para guiarte en la creación del primer año lectivo, cursos y profesores.
                 </div>
@@ -676,7 +676,7 @@ export default function SetupWizardPage() {
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="px-7 py-2.5 text-xs font-black uppercase tracking-wider bg-[#0F4C81] text-white hover:bg-blue-800 transition-colors flex items-center gap-2 cursor-pointer shadow-md"
+                className="px-7 py-2.5 text-xs font-black uppercase tracking-wider bg-[#000089] text-white hover:bg-blue-800 transition-colors flex items-center gap-2 cursor-pointer shadow-md"
               >
                 Siguiente <ArrowRight className="w-3.5 h-3.5" />
               </button>
