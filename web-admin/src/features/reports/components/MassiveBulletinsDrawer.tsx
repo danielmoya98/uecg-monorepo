@@ -132,15 +132,15 @@ export default function MassiveBulletinsDrawer({
       aria-modal="true"
       aria-labelledby="drawer-title"
     >
-      {/* Backdrop con difuminado suave de fondo */}
+      {/* Backdrop interactivo optimizado para GPU */}
       <div
-        className="absolute inset-0 bg-uecg-dark/80 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
         onClick={onClose}
       />
 
       {/* Panel del Drawer deslizable */}
       <div
-        className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col z-10 border-l border-uecg-line animate-in slide-in-from-right duration-300"
+        className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col z-10 border-l border-uecg-line animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
       >
         {/* Header */}
         <div className="p-6 border-b border-uecg-line bg-gray-50 flex items-center justify-between shrink-0">

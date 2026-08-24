@@ -284,11 +284,11 @@ export const JustificationsPanel = () => {
             aria-labelledby="drawer-title"
           >
             <div
-              className="absolute inset-0 bg-uecg-dark/60 backdrop-blur-sm transition-opacity duration-300 opacity-100"
+              className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
               onClick={() => !justifyMutation.isPending && setRecordToJustify(null)}
             />
 
-            <div className="relative h-full w-full max-w-[450px] border-l border-uecg-line bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+            <div className="relative h-full w-full max-w-[450px] border-l border-uecg-line bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 will-change-transform transform-gpu">
               <div className="flex items-center justify-between border-b p-6 relative overflow-hidden bg-uecg-blue border-uecg-blue/20 text-white shrink-0">
                 <div className="absolute -left-8 -bottom-8 w-24 h-24 border-[4px] border-white opacity-10 rounded-none rotate-12 pointer-events-none" />
 

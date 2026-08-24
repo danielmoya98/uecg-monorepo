@@ -39,8 +39,8 @@ export default function GlobalSearch() {
 
       {mounted && isOpen && createPortal(
         <div className="fixed inset-0 z-[99999] flex items-start justify-center pt-[12vh] pointer-events-auto">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
-          <div className="w-full max-w-3xl bg-white border border-uecg-line shadow-2xl flex flex-col overflow-hidden relative z-10 mx-4">
+          <div className="absolute inset-0 bg-uecg-dark/75 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer" onClick={() => setIsOpen(false)} />
+          <div className="w-full max-w-3xl bg-white border border-uecg-line shadow-2xl flex flex-col overflow-hidden relative z-10 mx-4 will-change-transform transform-gpu animate-in fade-in zoom-in-95 duration-150">
             <div className="relative flex items-center border-b border-uecg-line bg-gray-50 p-2">
               <Search className="absolute left-6 w-6 h-6 text-uecg-blue" />
               <input type="text" autoFocus placeholder="¿QUÉ MÓDULO BUSCAS?" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-transparent pl-16 pr-16 py-6 text-2xl md:text-3xl font-black uppercase tracking-tighter text-uecg-text focus:outline-none placeholder:text-uecg-gray/50" />

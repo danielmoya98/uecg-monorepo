@@ -71,13 +71,14 @@ export default function DeleteClassPeriodDrawer({
     <AnimatePresence>
       {isOpen && period && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop con Blur */}
+          {/* Backdrop optimizado para GPU */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
             onClick={!isDeleting ? onClose : undefined}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
             aria-hidden="true"
           />
 
@@ -92,7 +93,7 @@ export default function DeleteClassPeriodDrawer({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="relative w-full max-w-md bg-white border border-uecg-line shadow-2xl overflow-hidden z-10"
+            className="relative w-full max-w-md bg-white border border-uecg-line shadow-2xl overflow-hidden z-10 will-change-transform transform-gpu"
           >
             {/* Header con advertencia roja */}
             <div className="bg-red-50/80 border-b border-red-100 p-6 flex items-start justify-between">

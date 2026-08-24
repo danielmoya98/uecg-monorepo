@@ -59,13 +59,13 @@ export default function ImportGuideDrawer({ isOpen, onClose }: ImportGuideDrawer
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-uecg-dark/40 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
-        className="relative h-full w-full max-w-md border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 flex flex-col z-10 animate-in slide-in-from-right duration-300"
+        className="relative h-full w-full max-w-md border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark p-6 text-white shrink-0">
