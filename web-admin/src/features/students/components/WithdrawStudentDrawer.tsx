@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { X, Loader2, AlertTriangle, AlertOctagon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { toast } from "sonner";
+import { DrawerShell } from "@/shared/ui/drawer-shell";
 import { EnrollmentsService } from "@/features/enrollments/api/enrollments.service";
 
 interface WithdrawStudentDrawerProps {
@@ -12,14 +13,9 @@ interface WithdrawStudentDrawerProps {
 }
 
 export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: WithdrawStudentDrawerProps) {
-  const [isClient, setIsClient] = useState(false);
   const [reason, setReason] = useState("");
   const [confirmName, setConfirmName] = useState("");
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   // Reset del formulario cuando cambia el estudiante o se abre/cierra
   useEffect(() => {
@@ -28,17 +24,6 @@ export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: W
       setConfirmName("");
     }
   }, [isOpen, enrollment]);
-
-  // Escape key support
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
 
   // Mutación para dar de baja
   const mutation = useMutation({
@@ -57,7 +42,7 @@ export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: W
     },
   });
 
-  if (!isOpen || !enrollment) return null;
+  if (!enrollment) return null;
 
   const isConfirmed = confirmName.trim().toUpperCase() === enrollment.studentName?.toUpperCase();
 
@@ -70,79 +55,52 @@ export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: W
     "SITUACIÓN DE FUERZA MAYOR",
   ];
 
-  const content = (
-    <div
-      className="fixed inset-0 z-[9999] flex justify-end"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="withdraw-title"
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Dar de Baja Alumno"
+      kicker="Zona de Alta Seguridad"
+      icon="!"
+      headerVariant="danger"
+      isSubmitting={mutation.isPending}
+      maxWidth="max-w-md"
     >
-      {/* Background overlay */}
-      <div
-        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
-        onClick={onClose}
-      />
-
-      {/* Drawer panel */}
-      <div
-        className="relative h-full w-full max-w-md border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b-4 border-red-500 bg-uecg-dark p-6 text-white shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-600 flex items-center justify-center">
-              <AlertOctagon className="w-5 h-5 text-white animate-pulse" />
-            </div>
+      <div className="flex flex-col h-full">
+        {/* Cuerpo */}
+        <div className="flex-1 p-6 overflow-y-auto bg-gray-50 dark:bg-zinc-900/50 flex flex-col gap-6 custom-scrollbar">
+          <div className="border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 p-4 flex gap-3">
+            <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
             <div>
-              <span className="text-[9px] font-black uppercase tracking-widest text-red-300">Zona de Alta Seguridad</span>
-              <h2 id="withdraw-title" className="text-lg font-black uppercase tracking-tighter mt-0.5">
-                Dar de Baja Alumno
-              </h2>
+              <span className="text-[10px] font-black uppercase tracking-tight text-red-700 dark:text-red-400 block mb-1">
+                Acción Irreversible
+              </span>
+              <p className="text-[10px] font-bold text-red-900/80 dark:text-red-300 uppercase tracking-widest leading-relaxed">
+                Dar de baja implica revocar el estado de estudiante regular, anular accesos biométricos/QR y registrar la baja formal en los reportes ministeriales SIE.
+              </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-white/50 hover:text-white transition-colors bg-white/10 rounded-full hover:bg-white/20 cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
 
-        {/* Content */}
-        <div className="flex-1 p-6 overflow-y-auto bg-gray-50 flex flex-col gap-6 custom-scrollbar">
-          {/* Advertencia Crítica */}
-          <div className="border border-red-200 bg-red-50 p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-red-700">
-              <AlertTriangle className="w-5 h-5 shrink-0" />
-              <span className="text-xs font-black uppercase tracking-tight">ADVERTENCIA DE SEGURIDAD</span>
+          <div className="bg-white dark:bg-zinc-900 p-5 border border-uecg-line shadow-sm flex flex-col gap-4">
+            <div>
+              <span className="text-[9px] font-black uppercase text-uecg-gray tracking-widest">Estudiante a Retirar</span>
+              <p className="text-xs font-black uppercase text-uecg-dark dark:text-zinc-100 mt-0.5">
+                {enrollment.studentName}
+              </p>
+              <p className="text-[10px] font-bold text-uecg-gray mt-1">C.I.: {enrollment.ci}</p>
             </div>
-            <p className="text-[10px] font-bold text-uecg-dark uppercase tracking-widest leading-relaxed">
-              Está a punto de retirar de forma oficial y permanente al estudiante:
-            </p>
-            <p className="text-xs font-black text-red-700 uppercase tracking-tight mt-1">
-              {enrollment.studentName}
-            </p>
-            <p className="text-[9px] font-bold text-uecg-gray uppercase tracking-widest leading-relaxed">
-              Esta acción inhabilitará su carnet QR de ingreso, detendrá su registro de asistencia y lo
-              excluirá de las libretas de calificaciones de la presente gestión escolar.
-            </p>
-          </div>
 
-          {/* Formulario */}
-          <div className="flex flex-col gap-4 bg-white p-5 border border-uecg-line shadow-sm">
-            {/* Razón de la baja */}
-            <div className="flex flex-col gap-1.5">
-              <label className="label-swiss !mb-0 !text-[10px]">
-                Seleccione la Razón de la Baja <span className="text-red-500">*</span>
-              </label>
+            {/* Motivo de Retiro */}
+            <div className="flex flex-col gap-1.5 border-t border-uecg-line pt-3">
+              <label className="label-swiss !mb-0 !text-[10px]">Motivo del Retiro / Baja</label>
               <select
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="w-full border border-uecg-line bg-white p-3 uppercase outline-none text-xs font-bold focus:border-red-500 cursor-pointer transition-colors"
+                className="w-full border border-uecg-line bg-white dark:bg-zinc-800 p-2.5 uppercase outline-none text-xs font-bold focus:border-red-500 transition-colors"
               >
                 <option value="">-- SELECCIONE UN MOTIVO --</option>
-                {reasons.map((r, i) => (
-                  <option key={`reason-${i}`} value={r}>
+                {reasons.map((r) => (
+                  <option key={r} value={r}>
                     {r}
                   </option>
                 ))}
@@ -151,7 +109,7 @@ export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: W
 
             {/* Chivato de Confirmación de Nombre */}
             <div className="flex flex-col gap-1.5 mt-2">
-              <label className="label-swiss !mb-0 !text-[10px] text-red-600">
+              <label className="label-swiss !mb-0 !text-[10px] text-red-600 dark:text-red-400">
                 Para confirmar, escriba el nombre completo del alumno:
               </label>
               <input
@@ -159,7 +117,7 @@ export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: W
                 placeholder="ESCRIBA EL NOMBRE COMPLETO..."
                 value={confirmName}
                 onChange={(e) => setConfirmName(e.target.value)}
-                className="w-full border border-uecg-line bg-white p-3 uppercase outline-none text-xs font-bold focus:border-red-500 transition-colors"
+                className="w-full border border-uecg-line bg-white dark:bg-zinc-800 p-3 uppercase outline-none text-xs font-bold focus:border-red-500 transition-colors"
               />
               <p className="text-[8px] font-bold text-uecg-gray uppercase tracking-widest mt-1">
                 Debe coincidir exactamente con el nombre de arriba (fijarse en mayúsculas/acentos).
@@ -169,10 +127,10 @@ export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: W
         </div>
 
         {/* Footer */}
-        <footer className="p-5 border-t border-uecg-line bg-gray-50 flex gap-3 shrink-0">
+        <footer className="p-5 border-t border-uecg-line bg-gray-50 dark:bg-zinc-900 flex gap-3 shrink-0">
           <button
             onClick={onClose}
-            className="flex-1 py-3 text-[10px] font-bold uppercase tracking-widest border border-uecg-line bg-white hover:bg-gray-100 text-uecg-gray transition-colors shadow-sm outline-none cursor-pointer"
+            className="flex-1 py-3 text-[10px] font-bold uppercase tracking-widest border border-uecg-line bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 text-uecg-gray dark:text-zinc-200 transition-colors shadow-sm outline-none cursor-pointer"
           >
             Cancelar
           </button>
@@ -189,8 +147,6 @@ export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: W
           </button>
         </footer>
       </div>
-    </div>
+    </DrawerShell>
   );
-
-  return isClient ? createPortal(content, document.body) : null;
 }

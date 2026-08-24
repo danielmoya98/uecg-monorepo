@@ -1,14 +1,13 @@
-import { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
-import { X, Save, Loader2 } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, motion } from "framer-motion";
+import { DrawerShell } from "@/shared/ui/drawer-shell";
 import {
   passwordSchema,
   type PasswordFormValues,
 } from "../schemas/profile.schema";
 import { useChangePassword } from "../hooks/use-change-password";
+
 
 interface ChangePasswordDrawerProps {
   isOpen: boolean;
@@ -19,8 +18,6 @@ export default function ChangePasswordDrawer({
   isOpen,
   onClose,
 }: ChangePasswordDrawerProps) {
-  const drawerRef = useRef<HTMLDivElement>(null);
-
   const handleSuccess = () => {
     reset();
     onClose();
@@ -42,57 +39,6 @@ export default function ChangePasswordDrawer({
     },
   });
 
-  // Focus lock and Escape key handler
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (!isSubmitting) {
-          reset();
-          onClose();
-        }
-      }
-      if (e.key === "Tab") {
-        if (!drawerRef.current) return;
-        const focusableElements = drawerRef.current.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        const firstElement = focusableElements[0] as HTMLElement;
-        const lastElement = focusableElements[
-          focusableElements.length - 1
-        ] as HTMLElement;
-
-        if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
-            lastElement.focus();
-            e.preventDefault();
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            firstElement.focus();
-            e.preventDefault();
-          }
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    const previousFocus = document.activeElement as HTMLElement;
-
-    setTimeout(() => {
-      const firstInput = drawerRef.current?.querySelector(
-        "button:not([disabled]), input:not([disabled])"
-      ) as HTMLElement;
-      firstInput?.focus();
-    }, 100);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      previousFocus?.focus();
-    };
-  }, [isOpen, onClose, isSubmitting, reset]);
-
   const onSubmit = (data: PasswordFormValues) => {
     changePassword({
       currentPassword: data.currentPassword,
@@ -105,64 +51,24 @@ export default function ChangePasswordDrawer({
     onClose();
   };
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="drawer-title"
-          className="fixed inset-0 z-[9999] flex justify-end"
+
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Cambiar Clave"
+      kicker="Seguridad de Acceso"
+      icon="🔑"
+      headerVariant="default"
+      isSubmitting={isSubmitting}
+      maxWidth="max-w-md"
+    >
+      {/* Contenido */}
+      <div className="p-5 overflow-y-auto flex-1 custom-scrollbar">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-5"
         >
-          {/* Overlay interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={!isSubmitting ? handleClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-          />
-
-          {/* Panel Lateral Drawer */}
-          <motion.div
-            ref={drawerRef}
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-[400px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* Cabecera del Cajón */}
-            <div className="flex items-center justify-between border-b p-5 border-uecg-line bg-gray-50 shrink-0">
-              <div>
-                <span className="label-swiss !mb-0 !text-[9px] text-uecg-blue">
-                  Seguridad de Acceso
-                </span>
-                <h2
-                  id="drawer-title"
-                  className="text-xl font-black uppercase tracking-tighter text-uecg-text mt-0.5"
-                >
-                  Cambiar Clave
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={handleClose}
-                disabled={isSubmitting}
-                className="p-1.5 text-uecg-gray hover:text-red-600 transition-colors focus:outline-none cursor-pointer disabled:opacity-50"
-                aria-label="Cerrar ventana"
-              >
-                <X className="w-5 h-5" aria-hidden="true" />
-              </button>
-            </div>
-
-            {/* Contenido */}
-            <div className="p-5 overflow-y-auto flex-1 custom-scrollbar">
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex flex-col gap-5"
-              >
                 <div className="bg-blue-50 border border-blue-200 p-4 mb-2">
                   <p className="text-[10px] text-uecg-blue font-bold uppercase tracking-widest leading-relaxed">
                     Su nueva contraseña debe ser segura y no debe compartirla
@@ -284,10 +190,7 @@ export default function ChangePasswordDrawer({
                 </button>
               </form>
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+    </DrawerShell>
   );
 }
+

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { X, Loader2, FileCheck2, AlertTriangle, Play } from "lucide-react";
+import { Loader2, FileCheck2, AlertTriangle, Play } from "lucide-react";
+import { DrawerShell } from "@/shared/ui/drawer-shell";
 
 interface PreviewExcelDrawerProps {
   isOpen: boolean;
@@ -19,74 +18,29 @@ export default function PreviewExcelDrawer({
   onConfirm,
   selectedClassroomId,
 }: PreviewExcelDrawerProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Escape key support
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
   const isBlockActive = !selectedClassroomId;
 
-  const content = (
-    <div
-      className="fixed inset-0 z-[9999] flex justify-end"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="preview-title"
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Previsualizador de Carga"
+      kicker="Revisión de Estructura"
+      icon={<FileCheck2 className="w-5 h-5 text-white" />}
+      headerVariant="dark"
+      isSubmitting={isUploading}
+      maxWidth="max-w-2xl"
     >
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
-        onClick={onClose}
-      />
-
-      {/* Panel */}
-      <div
-        className="relative h-full w-full max-w-2xl border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark p-6 text-white shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-uecg-blue flex items-center justify-center">
-              <FileCheck2 className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <span className="text-[9px] font-black uppercase tracking-widest text-blue-200">Revisión de Estructura</span>
-              <h2 id="preview-title" className="text-lg font-black uppercase tracking-tighter mt-0.5">
-                Previsualizador de Carga
-              </h2>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-white/50 hover:text-white transition-colors bg-white/10 rounded-full hover:bg-white/20 cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
+      <div className="flex flex-col h-full">
         {/* Cuerpo */}
-        <div className="flex-1 p-6 overflow-hidden bg-gray-50 flex flex-col gap-6 relative">
+        <div className="flex-1 p-6 overflow-hidden bg-gray-50 dark:bg-zinc-900/50 flex flex-col gap-6 relative">
           {/* Bloqueador de Validación */}
           {isBlockActive && (
-            <div className="absolute inset-0 bg-white/95 z-30 flex flex-col items-center justify-center text-center p-8">
-              <div className="w-16 h-16 bg-yellow-50 border border-yellow-200 rounded-none flex items-center justify-center mb-5 rotate-12">
-                <AlertTriangle className="w-8 h-8 text-yellow-600 -rotate-12" />
+            <div className="absolute inset-0 bg-white/95 dark:bg-zinc-900/95 z-30 flex flex-col items-center justify-center text-center p-8">
+              <div className="w-16 h-16 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900/40 rounded-none flex items-center justify-center mb-5 rotate-12">
+                <AlertTriangle className="w-8 h-8 text-yellow-600 dark:text-yellow-400 -rotate-12" />
               </div>
-              <h3 className="text-sm font-black uppercase tracking-widest text-uecg-dark mb-2">
+              <h3 className="text-sm font-black uppercase tracking-widest text-uecg-dark dark:text-zinc-100 mb-2">
                 Falta Asignar Curso Destino
               </h3>
               <p className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest leading-relaxed mb-6 max-w-[280px]">
@@ -102,8 +56,8 @@ export default function PreviewExcelDrawer({
           )}
 
           {/* Tabla de previsualización */}
-          <div className="flex flex-col gap-3 flex-1 overflow-hidden bg-white border border-uecg-line shadow-sm">
-            <div className="px-4 py-3 border-b border-uecg-line bg-gray-50 flex items-center justify-between shrink-0">
+          <div className="flex flex-col gap-3 flex-1 overflow-hidden bg-white dark:bg-zinc-900 border border-uecg-line shadow-sm">
+            <div className="px-4 py-3 border-b border-uecg-line bg-gray-50 dark:bg-zinc-900/80 flex items-center justify-between shrink-0">
               <span className="text-[9px] font-black uppercase tracking-widest text-uecg-gray">
                 Registros Detectados en Hoja ({previewData.length})
               </span>
@@ -112,7 +66,7 @@ export default function PreviewExcelDrawer({
             <div className="flex-1 overflow-y-auto custom-scrollbar">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-uecg-line text-[9px] font-black uppercase tracking-widest text-uecg-gray">
+                  <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line text-[9px] font-black uppercase tracking-widest text-uecg-gray">
                     <th className="px-3 py-2 border-r border-uecg-line">Nombres completo</th>
                     <th className="px-3 py-2 border-r border-uecg-line text-center w-24">C.I.</th>
                     <th className="px-3 py-2 border-r border-uecg-line text-center w-24">Género</th>
@@ -121,7 +75,7 @@ export default function PreviewExcelDrawer({
                 </thead>
                 <tbody className="divide-y divide-uecg-line">
                   {previewData.map((row, i) => (
-                    <tr key={`row-${i}`} className="text-[10px] font-bold uppercase tracking-wider text-uecg-dark hover:bg-gray-50/50">
+                    <tr key={`row-${i}`} className="text-[10px] font-bold uppercase tracking-wider text-uecg-dark dark:text-zinc-100 hover:bg-gray-50/50 dark:hover:bg-zinc-800/50">
                       <td className="px-3 py-2.5 border-r border-uecg-line">
                         {row.lastNamePaterno} {row.lastNameMaterno} {row.names}
                       </td>
@@ -129,7 +83,7 @@ export default function PreviewExcelDrawer({
                         {row.ci}
                       </td>
                       <td className="px-3 py-2.5 border-r border-uecg-line text-center text-[9px]">
-                        <span className={`px-1.5 py-0.5 border ${row.gender === 'MASCULINO' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-pink-50 text-pink-700 border-pink-100'}`}>
+                        <span className={`px-1.5 py-0.5 border ${row.gender === 'MASCULINO' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-900' : 'bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300 border-pink-100 dark:border-pink-900'}`}>
                           {row.gender.substring(0, 3)}
                         </span>
                       </td>
@@ -145,11 +99,11 @@ export default function PreviewExcelDrawer({
         </div>
 
         {/* Footer */}
-        <footer className="p-5 border-t border-uecg-line bg-gray-50 flex gap-3 shrink-0">
+        <footer className="p-5 border-t border-uecg-line bg-gray-50 dark:bg-zinc-900 flex gap-3 shrink-0">
           <button
             onClick={onClose}
             disabled={isUploading}
-            className="flex-1 py-3 text-[10px] font-bold uppercase tracking-widest border border-uecg-line bg-white hover:bg-gray-100 text-uecg-gray transition-colors shadow-sm outline-none cursor-pointer disabled:opacity-50"
+            className="flex-1 py-3 text-[10px] font-bold uppercase tracking-widest border border-uecg-line bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 text-uecg-gray dark:text-zinc-200 transition-colors shadow-sm outline-none cursor-pointer disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -168,8 +122,6 @@ export default function PreviewExcelDrawer({
           </button>
         </footer>
       </div>
-    </div>
+    </DrawerShell>
   );
-
-  return isClient ? createPortal(content, document.body) : null;
 }

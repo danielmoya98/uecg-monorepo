@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
-import { X, Trash2, AlertTriangle, Loader2, MapPin, UserCheck, Layers } from 'lucide-react'
+import { Trash2, AlertTriangle, Loader2, MapPin, UserCheck, Layers } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { AnimatePresence, motion } from 'framer-motion'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import { classroomFormSchema, type ClassroomFormValues } from '../schemas/classroom.schema'
 import { CustomSelect } from './custom-select'
 import { ClassroomsService } from '../api/classrooms.service'
@@ -12,6 +11,7 @@ import { UsersService } from '@/features/users/api/users.service'
 import { InstitutionsService } from '@/features/institutions/api/institutions.service'
 import { PhysicalSpacesService } from '@/features/physical-spaces'
 import type { Classroom, ClassroomPayload } from '../types/classrooms.types'
+
 
 interface ClassroomDrawerProps {
   isOpen: boolean
@@ -224,65 +224,19 @@ export const ClassroomDrawer = ({
     }
   }, [isOpen, onClose, isSubmitting])
 
-  const titles = { create: 'Nuevo Curso', edit: 'Editar Curso', delete: 'Eliminar Curso' }
-  const headerClasses =
-    mode === 'delete' ? 'bg-red-50 border-red-200 text-red-600' : 'bg-gray-50 border-uecg-line text-uecg-gray'
-
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex justify-end">
-          {/* Overlay interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={!isSubmitting ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-          />
-
-          {/* Panel Lateral Drawer */}
-          <motion.div
-            ref={drawerRef}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-[460px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* Header del Cajón */}
-            <div className={`flex items-center justify-between border-b p-6 relative overflow-hidden shrink-0 ${headerClasses}`}>
-              <div className="absolute -right-8 -top-8 w-24 h-24 border-[6px] border-current opacity-10 rounded-none rotate-45 pointer-events-none"></div>
-              <div className="absolute right-12 -bottom-4 w-12 h-12 bg-current opacity-10 -rotate-12 pointer-events-none"></div>
-              
-              <div className="relative z-10 flex items-center gap-4">
-                <div className={`w-10 h-10 flex items-center justify-center shadow-sm text-white font-black text-lg ${
-                  mode === 'delete' ? 'bg-red-600' : 'bg-uecg-blue'
-                }`}>
-                  {mode === 'delete' ? '!' : currentSection || 'A'}
-                </div>
-                <div>
-                  <span className="label-swiss !mb-0 !text-[9px] text-inherit">Estructura Académica</span>
-                  <h2 className={`text-xl font-black uppercase tracking-tighter mt-0.5 ${
-                    mode === 'delete' ? 'text-red-700' : 'text-uecg-dark'
-                  }`}>
-                    {titles[mode]}
-                  </h2>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isSubmitting}
-                className="p-1.5 relative z-10 hover:text-red-600 transition-colors focus:outline-none disabled:opacity-50 bg-white/50 rounded-full hover:bg-white cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Contenido / Cuerpo con Scroll */}
-            <div className="p-5 overflow-y-auto flex-1 custom-scrollbar pb-10">
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title={mode === 'create' ? 'Nueva Aula' : mode === 'edit' ? 'Editar Aula' : 'Eliminar Aula'}
+      kicker="Estructura Académica"
+      icon={mode === 'delete' ? '!' : currentSection || 'A'}
+      headerVariant={mode === 'delete' ? 'danger' : 'default'}
+      isSubmitting={isSubmitting}
+      maxWidth="max-w-[460px]"
+    >
+      {/* Contenido / Cuerpo con Scroll */}
+      <div className="p-5 overflow-y-auto flex-1 custom-scrollbar pb-10">
               {mode === 'delete' ? (
                 <div className="flex flex-col gap-4">
                   <div className="border border-red-200 bg-red-50 p-6 flex flex-col items-center text-center gap-3 shadow-sm">
@@ -505,11 +459,8 @@ export const ClassroomDrawer = ({
                 </form>
               )}
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+    </DrawerShell>
   )
 }
 export default ClassroomDrawer
+

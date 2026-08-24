@@ -1,9 +1,8 @@
-import { useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
-import { X, AlertTriangle, Info, Loader2 } from 'lucide-react'
+import { useEffect } from 'react'
+import { AlertTriangle, Info, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AnimatePresence, motion } from 'framer-motion'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import { academicYearFormSchema, type AcademicYearFormValues } from '../schemas/academic-years.schema'
 import type { AcademicYearData, AcademicYearPayload } from '../types/academic-years.types'
 
@@ -28,8 +27,6 @@ export default function AcademicYearDrawer({
   onDelete,
   isSubmitting,
 }: AcademicYearDrawerProps) {
-  const drawerRef = useRef<HTMLDivElement>(null)
-
   const {
     register,
     handleSubmit,
@@ -66,51 +63,6 @@ export default function AcademicYearDrawer({
     }
   }, [isOpen, data, mode, reset])
 
-  // Accesibilidad: Focus Trap & Escape key listener
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (!isSubmitting) onClose()
-      }
-      if (e.key === 'Tab') {
-        if (!drawerRef.current) return
-        const focusableElements = drawerRef.current.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
-        const firstElement = focusableElements[0] as HTMLElement
-        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
-
-        if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
-            lastElement.focus()
-            e.preventDefault()
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            firstElement.focus()
-            e.preventDefault()
-          }
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    const previousFocus = document.activeElement as HTMLElement
-
-    // Enfocar primer elemento interactivo del drawer
-    setTimeout(() => {
-      const firstInput = drawerRef.current?.querySelector('button:not([disabled]), input:not([disabled])') as HTMLElement
-      firstInput?.focus()
-    }, 100)
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      previousFocus?.focus()
-    }
-  }, [isOpen, onClose, isSubmitting])
-
   const handleFormSubmit = (formData: AcademicYearFormValues) => {
     const payload: AcademicYearPayload = {
       ...formData,
@@ -121,61 +73,20 @@ export default function AcademicYearDrawer({
   }
 
   const titles = { create: 'Nueva Gestión', edit: 'Editar Gestión', delete: 'Eliminar Gestión' }
-  const headerClasses =
-    mode === 'delete' ? 'bg-red-50 border-red-200 text-red-600' : 'bg-gray-50 border-uecg-line text-uecg-gray'
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="drawer-title"
-          className="fixed inset-0 z-[9999] flex justify-end"
-        >
-          {/* Overlay interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={!isSubmitting ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-          />
-
-          {/* Panel Lateral Drawer */}
-          <motion.div
-            ref={drawerRef}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-[400px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* Cabecera del Cajón */}
-            <div className={`flex items-center justify-between border-b p-5 shrink-0 ${headerClasses}`}>
-              <div>
-                <span className="label-swiss !mb-0 !text-[9px]">Calendario Escolar</span>
-                <h2
-                  id="drawer-title"
-                  className="text-xl font-black uppercase tracking-tighter mt-0.5"
-                >
-                  {titles[mode]}
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isSubmitting}
-                className="p-1.5 hover:text-red-600 transition-colors cursor-pointer focus:outline-none disabled:opacity-50"
-                aria-label="Cerrar ventana"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Contenido */}
-            <div className="p-5 overflow-y-auto flex-1 custom-scrollbar">
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title={titles[mode]}
+      kicker="Calendario Escolar"
+      icon={mode === 'delete' ? '!' : (data?.year ? String(data.year).slice(-2) : '+')}
+      headerVariant={mode === 'delete' ? 'danger' : 'default'}
+      isSubmitting={isSubmitting}
+      maxWidth="max-w-[420px]"
+    >
+      {/* Contenido */}
+      <div className="p-5 overflow-y-auto flex-1 custom-scrollbar">
               {mode === 'delete' ? (
                 <div className="flex flex-col gap-4">
                   <div className="border border-red-200 bg-red-50 p-5 flex flex-col items-center text-center gap-3">
@@ -343,10 +254,7 @@ export default function AcademicYearDrawer({
                 </form>
               )}
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+    </DrawerShell>
   )
 }
+

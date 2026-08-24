@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
-import { X, CheckCircle, Loader2, ShieldCheck, Key, FileCheck, FileText, Users } from "lucide-react";
+import { CheckCircle, Loader2, ShieldCheck, Key, FileCheck, FileText, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { DrawerShell } from "@/shared/ui/drawer-shell";
 import { EnrollmentsService } from "../api/enrollments.service";
+
 
 // DICCIONARIO OFICIAL (Intacto)
 const DOCUMENT_REQUIREMENTS: Record<string, { id: string; label: string; optional?: boolean }[]> = {
@@ -148,67 +148,21 @@ export default function ApproveEnrollmentDrawer({ isOpen, onClose, enrollment }:
     approveMutation.mutate();
   };
 
-  // Renderizado mediante Portal en document.body para evitar z-index solapados
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && enrollment && (
-        <div
-          className="fixed inset-0 z-[9999] flex justify-end"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="drawer-approve-title"
-        >
-          {/* Overlay interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-            onClick={!approveMutation.isPending && !isGeneratingPdf ? onClose : undefined}
-          />
+  if (!enrollment) return null
 
-          {/* Cajón lateral suizo */}
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-[400px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* HEADER GEOMÉTRICO (MODO ÉXITO/VERDE) */}
-            <div className="flex items-center justify-between border-b p-6 relative overflow-hidden bg-green-50 border-green-200 text-green-700 shrink-0">
-              <div className="absolute -right-8 -top-8 w-24 h-24 border-[6px] border-current opacity-10 rounded-none rotate-45 pointer-events-none"></div>
-              <div className="absolute right-12 -bottom-4 w-12 h-12 bg-current opacity-10 -rotate-12 pointer-events-none"></div>
-              <div className="absolute left-1/2 bottom-0 w-8 h-2 bg-current opacity-10 pointer-events-none"></div>
-
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-10 h-10 flex items-center justify-center shadow-sm text-white font-black text-lg bg-green-600">
-                  <CheckCircle className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="label-swiss !mb-0 !text-[9px] text-inherit">Consolidación SIE</span>
-                  <h2
-                    id="drawer-approve-title"
-                    className="text-xl font-black uppercase tracking-tighter mt-0.5 text-green-800"
-                  >
-                    Aprobar Inscripción
-                  </h2>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={approveMutation.isPending || isGeneratingPdf}
-                className="p-1.5 relative z-10 hover:text-green-900 transition-colors focus:outline-none disabled:opacity-50 bg-white/50 rounded-full hover:bg-white cursor-pointer"
-                aria-label="Cerrar panel"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Contenido scrollable con trampa de foco A11y */}
-            <div className="p-6 overflow-y-auto flex-1 custom-scrollbar" tabIndex={0}>
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Aprobar Inscripción"
+      kicker="Consolidación SIE"
+      icon={<CheckCircle className="w-5 h-5 text-white" />}
+      headerVariant="success"
+      isSubmitting={approveMutation.isPending || isGeneratingPdf}
+      maxWidth="max-w-md"
+    >
+      {/* Contenido scrollable */}
+      <div className="p-6 overflow-y-auto flex-1 custom-scrollbar" tabIndex={0}>
               {/* Tarjeta de Estudiante Geométrica */}
               <div className="border border-uecg-line p-4 bg-gray-50 mb-5 flex items-start gap-4 shadow-sm">
                 <div className="w-10 h-10 bg-uecg-dark text-white flex items-center justify-center shrink-0">
@@ -357,10 +311,7 @@ export default function ApproveEnrollmentDrawer({ isOpen, onClose, enrollment }:
                 </div>
               </form>
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+    </DrawerShell>
   );
 }
+

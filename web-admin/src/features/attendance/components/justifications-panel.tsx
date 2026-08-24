@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { Search, FileText, CheckCircle, AlertTriangle, Loader2, Calendar, UserCheck, X } from 'lucide-react'
+import { Search, FileText, CheckCircle, AlertTriangle, Loader2, Calendar, UserCheck } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useDebounce } from '@/shared/hooks/use-debounce'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import { AttendanceService } from '../api/attendance.service'
 import { EnrollmentsService } from '@/features/enrollments/api/enrollments.service'
 import type { AttendanceRecord } from '../types/attendance.types'
+
 
 interface Enrollment {
   id: string
@@ -274,127 +275,94 @@ export const JustificationsPanel = () => {
         )}
       </div>
 
-      {/* DRAWER DE JUSTIFICACIÓN (REACT PORTALS) */}
-      {recordToJustify &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-[9999] flex justify-end pointer-events-auto"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="drawer-title"
-          >
-            <div
-              className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
-              onClick={() => !justifyMutation.isPending && setRecordToJustify(null)}
-            />
-
-            <div className="relative h-full w-full max-w-[450px] border-l border-uecg-line bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 will-change-transform transform-gpu">
-              <div className="flex items-center justify-between border-b p-6 relative overflow-hidden bg-uecg-blue border-uecg-blue/20 text-white shrink-0">
-                <div className="absolute -left-8 -bottom-8 w-24 h-24 border-[4px] border-white opacity-10 rounded-none rotate-12 pointer-events-none" />
-
-                <div className="relative z-10 flex items-center gap-4">
-                  <div className="w-10 h-10 bg-white text-uecg-blue flex items-center justify-center shadow-sm select-none">
-                    <UserCheck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[9px] font-black text-blue-100 uppercase tracking-widest block leading-none">
-                      Tribunal Disciplinario
-                    </span>
-                    <h2
-                      id="drawer-title"
-                      className="text-xl font-black uppercase tracking-tighter mt-0.5 text-white"
-                    >
-                      Emitir Licencia
-                    </h2>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setRecordToJustify(null)}
-                  disabled={justifyMutation.isPending}
-                  className="p-1.5 relative z-10 text-white/50 hover:text-white transition-colors focus:outline-none bg-white/10 rounded-full hover:bg-white/20 cursor-pointer"
-                  aria-label="Cerrar Cajón"
+      {/* DRAWER DE JUSTIFICACIÓN */}
+      <DrawerShell
+        isOpen={!!recordToJustify}
+        onClose={() => setRecordToJustify(null)}
+        title="Emitir Licencia"
+        kicker="Control de Asistencia"
+        icon={<UserCheck className="w-5 h-5 text-white" />}
+        headerVariant="blue"
+        isSubmitting={justifyMutation.isPending}
+        maxWidth="max-w-[450px]"
+      >
+        {recordToJustify && (
+          <div className="flex flex-col h-full">
+            <div className="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar bg-gray-50 dark:bg-zinc-900/50 flex flex-col gap-6">
+              <div className="bg-white dark:bg-zinc-900 border border-uecg-line p-5 shadow-sm">
+                <span className="text-[9px] font-black text-uecg-gray uppercase tracking-widest block mb-2 border-b border-uecg-line pb-2 select-none">
+                  Información de la Infracción
+                </span>
+                <p className="text-sm font-black uppercase tracking-tight text-uecg-dark dark:text-zinc-100 mb-1">
+                  {new Date(recordToJustify.date).toLocaleDateString('es-BO', {
+                    weekday: 'long',
+                    day: '2-digit',
+                    month: 'long',
+                    timeZone: 'UTC',
+                  })}
+                </p>
+                <p className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest">
+                  {recordToJustify.classPeriod.name} ({recordToJustify.classPeriod.startTime})
+                </p>
+                <span
+                  className={`inline-block mt-3 px-2 py-1 text-[9px] font-black uppercase tracking-widest border select-none ${
+                    recordToJustify.status === 'ABSENT'
+                      ? 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/40'
+                      : 'text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900/40'
+                  }`}
                 >
-                  <X className="w-5 h-5" />
-                </button>
+                  {recordToJustify.status === 'ABSENT' ? 'Falta Reportada' : 'Atraso Reportado'}
+                </span>
               </div>
 
-              <div className="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar bg-gray-50 flex flex-col gap-6">
-                <div className="bg-white border border-uecg-line p-5 shadow-sm">
-                  <span className="text-[9px] font-black text-uecg-gray uppercase tracking-widest block mb-2 border-b border-uecg-line pb-2 select-none">
-                    Información de la Infracción
-                  </span>
-                  <p className="text-sm font-black uppercase tracking-tight text-uecg-dark mb-1">
-                    {new Date(recordToJustify.date).toLocaleDateString('es-BO', {
-                      weekday: 'long',
-                      day: '2-digit',
-                      month: 'long',
-                      timeZone: 'UTC',
-                    })}
-                  </p>
-                  <p className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest">
-                    {recordToJustify.classPeriod.name} ({recordToJustify.classPeriod.startTime})
-                  </p>
-                  <span
-                    className={`inline-block mt-3 px-2 py-1 text-[9px] font-black uppercase tracking-widest border select-none ${
-                      recordToJustify.status === 'ABSENT'
-                        ? 'text-red-700 bg-red-50 border-red-200'
-                        : 'text-yellow-700 bg-yellow-50 border-yellow-200'
-                    }`}
-                  >
-                    {recordToJustify.status === 'ABSENT' ? 'Falta Reportada' : 'Atraso Reportado'}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="justification-textarea"
-                    className="text-[10px] font-black uppercase tracking-widest text-uecg-gray flex items-center gap-1.5 select-none"
-                  >
-                    <FileText className="w-4 h-4 text-uecg-blue" /> Respaldo / Motivo (Obligatorio)
-                  </label>
-                  <textarea
-                    id="justification-textarea"
-                    rows={5}
-                    autoFocus
-                    value={justificationText}
-                    onChange={(e) => setJustificationText(e.target.value)}
-                    disabled={justifyMutation.isPending}
-                    className="w-full border-2 border-uecg-line bg-white p-4 text-[11px] font-black uppercase tracking-widest text-uecg-dark outline-none focus:border-uecg-blue transition-colors shadow-inner resize-none disabled:opacity-50"
-                    placeholder="EJ. CERTIFICADO MÉDICO CAJA NACIONAL #12345..."
-                  />
-                </div>
-              </div>
-
-              <div className="p-6 border-t border-uecg-line bg-white flex gap-4 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20">
-                <button
-                  type="button"
-                  onClick={() => setRecordToJustify(null)}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="justification-textarea"
+                  className="text-[10px] font-black uppercase tracking-widest text-uecg-gray flex items-center gap-1.5 select-none"
+                >
+                  <FileText className="w-4 h-4 text-uecg-blue" /> Respaldo / Motivo (Obligatorio)
+                </label>
+                <textarea
+                  id="justification-textarea"
+                  rows={5}
+                  autoFocus
+                  value={justificationText}
+                  onChange={(e) => setJustificationText(e.target.value)}
                   disabled={justifyMutation.isPending}
-                  className="flex-1 py-4 font-bold uppercase tracking-widest text-[11px] border border-uecg-line bg-gray-50 text-uecg-gray hover:bg-gray-100 transition-colors outline-none shadow-sm disabled:opacity-50 cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    justifyMutation.mutate({ id: recordToJustify.id, text: justificationText })
-                  }
-                  disabled={!justificationText.trim() || justifyMutation.isPending}
-                  className="flex-[2] py-4 font-black uppercase tracking-widest text-[11px] bg-uecg-dark text-white hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center justify-center gap-2 outline-none cursor-pointer"
-                >
-                  {justifyMutation.isPending ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <CheckCircle className="w-4 h-4" />
-                  )}
-                  {justifyMutation.isPending ? 'Procesando...' : 'Confirmar Licencia'}
-                </button>
+                  className="w-full border-2 border-uecg-line bg-white dark:bg-zinc-800 p-4 text-[11px] font-black uppercase tracking-widest text-uecg-dark dark:text-zinc-100 outline-none focus:border-uecg-blue transition-colors shadow-inner resize-none disabled:opacity-50"
+                  placeholder="EJ. CERTIFICADO MÉDICO CAJA NACIONAL #12345..."
+                />
               </div>
             </div>
-          </div>,
-          document.body,
+
+            <div className="p-6 border-t border-uecg-line bg-white dark:bg-zinc-900 flex gap-4 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20">
+              <button
+                type="button"
+                onClick={() => setRecordToJustify(null)}
+                disabled={justifyMutation.isPending}
+                className="flex-1 py-4 font-bold uppercase tracking-widest text-[11px] border border-uecg-line bg-gray-50 dark:bg-zinc-800 text-uecg-gray dark:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors outline-none shadow-sm disabled:opacity-50 cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  justifyMutation.mutate({ id: recordToJustify.id, text: justificationText })
+                }
+                disabled={!justificationText.trim() || justifyMutation.isPending}
+                className="flex-[2] py-4 font-black uppercase tracking-widest text-[11px] bg-uecg-dark text-white hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center justify-center gap-2 outline-none cursor-pointer"
+              >
+                {justifyMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <CheckCircle className="w-4 h-4" />
+                )}
+                {justifyMutation.isPending ? 'Procesando...' : 'Confirmar Licencia'}
+              </button>
+            </div>
+          </div>
         )}
+      </DrawerShell>
     </div>
   )
 }

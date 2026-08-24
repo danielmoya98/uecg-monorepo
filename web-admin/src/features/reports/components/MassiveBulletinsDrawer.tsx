@@ -1,8 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
-import { createPortal } from "react-dom";
-import { X, FileArchive, Layers, Users, Building, Loader2 } from "lucide-react";
+import { FileArchive, Layers, Users, Building, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { DrawerShell } from "@/shared/ui/drawer-shell";
 import { ReportsService } from "../api/reports.service";
+
 
 export interface DrawerClassroom {
   id: string;
@@ -125,43 +126,18 @@ export default function MassiveBulletinsDrawer({
     }
   };
 
-  const drawerContent = (
-    <div
-      className="fixed inset-0 z-[9999] flex justify-end"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="drawer-title"
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Exportación Masiva"
+      kicker="Libretas Electrónicas"
+      icon={<FileArchive className="w-5 h-5 text-white" />}
+      headerVariant="default"
+      isSubmitting={isSubmitting}
+      maxWidth="max-w-md"
     >
-      {/* Backdrop interactivo optimizado para GPU */}
-      <div
-        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
-        onClick={onClose}
-      />
-
-      {/* Panel del Drawer deslizable */}
-      <div
-        className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col z-10 border-l border-uecg-line animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
-      >
-        {/* Header */}
-        <div className="p-6 border-b border-uecg-line bg-gray-50 flex items-center justify-between shrink-0">
-          <div>
-            <h2 id="drawer-title" className="text-xl font-black uppercase tracking-tighter text-uecg-dark flex items-center gap-2">
-              <FileArchive className="w-5 h-5 text-uecg-blue" /> Exportación Masiva
-            </h2>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-uecg-gray mt-1">
-              Libretas Electrónicas (Ley 070)
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            type="button"
-            className="p-2 text-uecg-gray hover:text-red-500 hover:bg-red-50 transition-all rounded-full focus:outline-none cursor-pointer"
-            aria-label="Cerrar panel de exportación masiva"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
+      <div className="flex flex-col h-full">
         {/* Body */}
         <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 custom-scrollbar bg-white">
           {/* Selector de Alcance */}
@@ -356,8 +332,7 @@ export default function MassiveBulletinsDrawer({
           </p>
         </div>
       </div>
-    </div>
+    </DrawerShell>
   );
-
-  return createPortal(drawerContent, document.body);
 }
+
