@@ -1,7 +1,9 @@
 import { Loader2, FileText, User, Home, Phone, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { DrawerShell } from "@/shared/ui/drawer-shell";
+import { SwissCopyButton } from "@/shared/ui/swiss-copy-button";
 import { EnrollmentsService } from "@/features/enrollments/api/enrollments.service";
+
 
 
 interface StudentKardexDrawerProps {
@@ -65,15 +67,22 @@ export default function StudentKardexDrawer({ isOpen, onClose, enrollmentId }: S
                     <p className="text-xs font-black uppercase text-uecg-dark mt-0.5">{student.lastNameMaterno || "---"}</p>
                   </div>
                   <div>
-                    <span className="text-[9px] font-black uppercase text-uecg-gray tracking-widest">Cédula de Identidad</span>
-                    <p className="text-xs font-black uppercase text-uecg-dark mt-0.5">
-                      {student.ci} {student.complement ? `-${student.complement}` : ""} {student.expedition || ""}
-                    </p>
+                    <span className="text-[9px] font-black uppercase text-uecg-gray tracking-widest block">Cédula de Identidad</span>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-xs font-black uppercase text-uecg-dark">
+                        {student.ci} {student.complement ? `-${student.complement}` : ""} {student.expedition || ""}
+                      </p>
+                      {student.ci && <SwissCopyButton text={student.ci} size={11} successMessage="CI copiado" />}
+                    </div>
                   </div>
                   <div>
-                    <span className="text-[9px] font-black uppercase text-uecg-gray tracking-widest">Código RUDE</span>
-                    <p className="text-xs font-black uppercase text-uecg-blue mt-0.5">{student.rudeCode || "SIN ASIGNAR"}</p>
+                    <span className="text-[9px] font-black uppercase text-uecg-gray tracking-widest block">Código RUDE</span>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-xs font-black uppercase text-uecg-blue">{student.rudeCode || "SIN ASIGNAR"}</p>
+                      {student.rudeCode && <SwissCopyButton text={student.rudeCode} size={11} successMessage="RUDE copiado" />}
+                    </div>
                   </div>
+
                   <div>
                     <span className="text-[9px] font-black uppercase text-uecg-gray tracking-widest">Género</span>
                     <p className="text-xs font-black uppercase text-uecg-dark mt-0.5">{student.gender || "---"}</p>

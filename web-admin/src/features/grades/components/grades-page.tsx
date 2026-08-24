@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { BookOpen, Loader2, Save } from 'lucide-react'
+import { MorphIcon, SwissKbd } from '@/shared/ui'
+
+
 
 // Hooks SRP
 import { useGradesWorkspace } from '../hooks/use-grades-workspace'
@@ -135,17 +138,22 @@ export default function GradesPage() {
             type="button"
             onClick={workspace.handleBulkSave}
             disabled={workspace.isSaving || !workspace.isCurrentTrimesterOpen}
-            className="flex items-center gap-2 bg-uecg-dark text-white px-6 py-4 font-black uppercase tracking-widest text-xs hover:bg-uecg-blue transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] outline-none focus-visible:ring-2 focus-visible:ring-uecg-blue cursor-pointer"
+            className="flex items-center gap-3 bg-uecg-dark dark:bg-zinc-900 text-white px-6 py-4 font-black uppercase tracking-widest text-xs hover:bg-uecg-blue transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] outline-none focus-visible:ring-2 focus-visible:ring-uecg-blue cursor-pointer select-none"
           >
-            {workspace.isSaving ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Save className="w-5 h-5" />
+            <MorphIcon
+              icon={workspace.isSaving ? Loader2 : Save}
+              size={18}
+              strokeWidth={2}
+              className={workspace.isSaving ? 'animate-spin text-blue-300' : 'text-white'}
+            />
+            <span>{workspace.isSaving ? 'Guardando Planilla...' : 'Guardar Planilla Completa'}</span>
+            {!workspace.isSaving && (
+              <SwissKbd className="ml-1 opacity-80 border-white/20 bg-white/20 text-white">⌘S</SwissKbd>
             )}
-            {workspace.isSaving ? 'Guardando Planilla...' : 'Guardar Planilla Completa'}
           </button>
         </div>
       )}
+
 
       {/* TABLA PRINCIPAL */}
       <div className="bg-white border border-uecg-line shadow-sm overflow-hidden min-h-[400px] flex flex-col">

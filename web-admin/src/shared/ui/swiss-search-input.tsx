@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react'
 import { Search, X, List, LayoutGrid } from 'lucide-react'
+import { SwissMorphIcon as MorphIcon } from './morph-icon'
 import { SwissKbd } from './swiss-kbd'
+
 
 export interface SwissSearchInputProps {
   value: string
@@ -44,10 +46,13 @@ export function SwissSearchInput({
     <div className={`flex flex-1 gap-2 ${className}`}>
       {/* Input de Buscador */}
       <div className="relative flex-1 group">
-        <Search
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-uecg-gray group-focus-within:text-uecg-blue transition-colors pointer-events-none"
-          aria-hidden="true"
-        />
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none text-uecg-gray group-focus-within:text-uecg-blue transition-colors flex items-center justify-center">
+          <MorphIcon
+            icon={Search}
+            size={16}
+            strokeWidth={2}
+          />
+        </div>
         <input
           ref={inputRef}
           type="text"
@@ -61,10 +66,10 @@ export function SwissSearchInput({
           <button
             type="button"
             onClick={() => onChange('')}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 focus:outline-none p-1 transition-colors cursor-pointer"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 focus:outline-none p-1 transition-colors cursor-pointer flex items-center justify-center"
             aria-label="Limpiar búsqueda"
           >
-            <X className="w-4 h-4" />
+            <MorphIcon icon={X} size={16} strokeWidth={2} />
           </button>
         ) : hotkeyHint ? (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center pointer-events-none">
@@ -87,7 +92,7 @@ export function SwissSearchInput({
             title="Vista de Lista"
             aria-label="Vista de Lista"
           >
-            <List className="w-4 h-4" />
+            <MorphIcon icon={List} size={16} strokeWidth={2} />
           </button>
           <button
             type="button"
@@ -100,7 +105,7 @@ export function SwissSearchInput({
             title="Vista de Cuadrícula"
             aria-label="Vista de Cuadrícula"
           >
-            <LayoutGrid className="w-4 h-4" />
+            <MorphIcon icon={LayoutGrid} size={16} strokeWidth={2} />
           </button>
         </div>
       )}
