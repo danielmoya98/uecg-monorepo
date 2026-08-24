@@ -16,12 +16,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { EncryptionService } from '../common/services/encryption.service'; // 🔥 IMPORTADO
 import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
 import { SystemPermissions } from '../auth/constants/permissions.constant';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UsersService {
   constructor(
     private prisma: PrismaService,
     private encryptionService: EncryptionService, // 🔥 INYECTADO
+    private eventEmitter: EventEmitter2,
   ) {}
 
   // ==========================================
@@ -128,7 +130,7 @@ export class UsersService {
     });
 
     // 🔥 Desencriptamos la respuesta
-    return {
+    const result = {
       message: 'Perfil actualizado',
       user: {
         ...updatedUser,
@@ -138,6 +140,15 @@ export class UsersService {
         address: this.encryptionService.decrypt(updatedUser.address),
       },
     };
+
+    this.eventEmitter.emit('user.profile_updated', {
+      action: 'UPDATE_PROFILE',
+      userId,
+      targetUserId: userId,
+      description: 'Actualización de datos personales del perfil',
+    });
+
+    return result;
   }
 
   async changePassword(userId: string, data: ChangePasswordDto) {
@@ -157,6 +168,13 @@ export class UsersService {
     await this.prisma.user.update({
       where: { id: userId },
       data: { password: hashedNewPassword },
+    });
+
+    this.eventEmitter.emit('user.password_changed', {
+      action: 'CHANGE_PASSWORD',
+      userId,
+      targetUserId: userId,
+      description: 'Cambio voluntario de contraseña',
     });
 
     return { message: 'Contraseña actualizada correctamente' };
@@ -205,7 +223,18 @@ export class UsersService {
       });
 
       const { password: _password, ...result } = newUser;
-      return { ...result, role: result.role?.name };
+      const createdUser = { ...result, role: result.role?.name };
+
+      this.eventEmitter.emit('user.created', {
+        action: 'CREATE_USER',
+        performedById: requestingUser.userId,
+        targetUserId: createdUser.id,
+        email: data.email,
+        role: data.role,
+        description: `Creación de usuario ${data.fullName} con rol ${data.role}`,
+      });
+
+      return createdUser;
     });
   }
 
@@ -306,6 +335,14 @@ export class UsersService {
       },
     });
 
+    this.eventEmitter.emit('user.updated', {
+      action: 'UPDATE_USER',
+      performedById: requestingUser.userId,
+      targetUserId: id,
+      changes: { fullName: data.fullName, role: data.role },
+      description: `Actualización de usuario ${updatedUser.fullName}`,
+    });
+
     return {
       message: 'Usuario actualizado',
       user: { ...updatedUser, role: updatedUser.role?.name },
@@ -324,6 +361,14 @@ export class UsersService {
         where: { userId: id },
       }),
     ]);
+
+    this.eventEmitter.emit('user.deactivated', {
+      action: 'DEACTIVATE_USER',
+      performedById: requestingUser.userId,
+      targetUserId: id,
+      description: 'Desactivación de cuenta de usuario (soft delete) e invalidación de sesiones',
+    });
+
     return { message: 'Usuario desactivado exitosamente' };
   }
 
@@ -334,6 +379,14 @@ export class UsersService {
       where: { id },
       data: { status: 'ACTIVE' },
     });
+
+    this.eventEmitter.emit('user.reactivated', {
+      action: 'REACTIVATE_USER',
+      performedById: requestingUser.userId,
+      targetUserId: id,
+      description: 'Reactivación de cuenta de usuario',
+    });
+
     return { message: 'Usuario reactivado exitosamente' };
   }
 
@@ -353,6 +406,13 @@ export class UsersService {
         where: { userId: id },
       }),
     ]);
+
+    this.eventEmitter.emit('user.password_reset', {
+      action: 'RESET_PASSWORD',
+      performedById: requestingUser.userId,
+      targetUserId: id,
+      description: `Restablecimiento de credenciales para ${targetUser.fullName}`,
+    });
 
     return {
       message: 'Credenciales restauradas',
