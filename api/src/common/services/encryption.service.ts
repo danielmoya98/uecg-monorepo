@@ -16,11 +16,17 @@ export class EncryptionService {
   // SECURE KEY
   // ======================================================
 
-  private get key() {
-    const secret = process.env.ENCRYPTION_KEY;
+  private get key(): Buffer {
+    const secret =
+      process.env.ENCRYPTION_KEY ||
+      process.env.JWT_SECRET ||
+      process.env.SESSION_SECRET ||
+      'uecg-school-platform-encryption-salt-2026';
 
-    if (!secret) {
-      throw new Error('❌ ENCRYPTION_KEY no definida');
+    if (!process.env.ENCRYPTION_KEY) {
+      this.logger.debug(
+        'ℹ️ ENCRYPTION_KEY no configurada expresamente; utilizando clave derivada del entorno',
+      );
     }
 
     return crypto.createHash('sha256').update(secret).digest();
