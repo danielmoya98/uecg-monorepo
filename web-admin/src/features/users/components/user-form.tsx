@@ -75,7 +75,9 @@ export default function UserForm({
           aria-describedby={errors.role ? 'role-error' : undefined}
         >
           <option value="DOCENTE">Plantel Docente (Web & App)</option>
-          <option value="ADMIN">Administrador / Director</option>
+          <option value="DIRECTOR">Director General</option>
+          <option value="SUPER_ADMIN">Super Administrador (Root)</option>
+          <option value="PADRE">Padre de Familia / Tutor</option>
         </select>
         {errors.role && (
           <span

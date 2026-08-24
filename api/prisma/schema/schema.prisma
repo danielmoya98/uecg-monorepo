@@ -166,6 +166,9 @@ model User {
   lockoutUntil        DateTime? @map("lockout_until")
   sessions            UserSession[]
 
+  @@index([status, roleId])
+  @@index([institutionId, status])
+  @@index([createdAt(sort: Desc)])
   @@map("users")
 }
 

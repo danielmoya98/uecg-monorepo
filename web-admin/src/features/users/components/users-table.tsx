@@ -104,7 +104,8 @@ function UsersTableRow({ user, index, onAction }: UsersTableRowProps) {
 
   const getAvatarBg = (role: string, status: string) => {
     if (status === 'Inactivo') return 'bg-gray-300 text-gray-500'
-    if (role === 'ADMIN') return 'bg-uecg-dark text-white'
+    if (['SUPER_ADMIN', 'DIRECTOR', 'ADMIN'].includes(role)) return 'bg-uecg-dark text-white'
+    if (role === 'PADRE') return 'bg-yellow-500 text-white'
     return 'bg-uecg-blue text-white'
   }
 
@@ -175,8 +176,10 @@ function UsersTableRow({ user, index, onAction }: UsersTableRowProps) {
         <span
           className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 border inline-block ${
             isActive
-              ? user.role === 'ADMIN'
+              ? ['SUPER_ADMIN', 'DIRECTOR', 'ADMIN'].includes(user.role)
                 ? 'bg-uecg-dark text-white border-uecg-dark'
+                : user.role === 'PADRE'
+                ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
                 : 'bg-blue-50 text-uecg-blue border-blue-100'
               : 'bg-gray-200 text-gray-500 border-gray-300'
           }`}

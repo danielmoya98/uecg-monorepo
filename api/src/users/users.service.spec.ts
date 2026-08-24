@@ -24,10 +24,17 @@ describe('UsersService - Pruebas Unitarias y de Jerarquía ABAC', () => {
     user: {
       findUnique: jest.fn(),
       update: jest.fn(),
+      create: jest.fn(),
+    },
+    userSession: {
+      deleteMany: jest.fn(),
     },
     role: {
       findUnique: jest.fn(),
     },
+    $transaction: jest.fn((input) =>
+      typeof input === 'function' ? input(mockPrisma) : Promise.all(input),
+    ),
   };
 
   const mockEncryption = {
@@ -311,4 +318,78 @@ describe('UsersService - Pruebas Unitarias y de Jerarquía ABAC', () => {
       });
     });
   });
+
+  describe('Operaciones Administrativas con Invalidación de Sesiones', () => {
+    const adminUser: AuthenticatedUser = {
+      userId: 'admin-id',
+      email: 'admin@uecg.edu.bo',
+      role: 'SUPER_ADMIN',
+      permissions: ['manage:all:all'],
+    };
+
+    describe('remove', () => {
+      it('debe desactivar el usuario e invalidar todas sus sesiones activas', async () => {
+        const targetUser = {
+          id: 'user-to-disable',
+          fullName: 'Docente Inactivo',
+          role: { name: 'DOCENTE' },
+        };
+
+        mockPrisma.user.findUnique.mockResolvedValue(targetUser);
+
+        const result = await service.remove('user-to-disable', adminUser);
+
+        expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
+          where: { id: 'user-to-disable' },
+          include: { role: true },
+        });
+        expect(mockPrisma.$transaction).toHaveBeenCalled();
+        expect(mockPrisma.user.update).toHaveBeenCalledWith({
+          where: { id: 'user-to-disable' },
+          data: { status: 'INACTIVE' },
+        });
+        expect(mockPrisma.userSession.deleteMany).toHaveBeenCalledWith({
+          where: { userId: 'user-to-disable' },
+        });
+        expect(result.message).toBe('Usuario desactivado exitosamente');
+      });
+    });
+
+    describe('resetPassword', () => {
+      it('debe generar una clave temporal segura con crypto, hashearla e invalidar sesiones', async () => {
+        const targetUser = {
+          id: 'user-reset-id',
+          fullName: 'Profesor Carlos',
+          role: { name: 'DOCENTE' },
+        };
+
+        mockPrisma.user.findUnique.mockResolvedValue(targetUser);
+        (bcrypt.genSalt as jest.Mock).mockResolvedValue('random_salt');
+        (bcrypt.hash as jest.Mock).mockResolvedValue('hashed_temp_password');
+
+        const result = await service.resetPassword('user-reset-id', adminUser);
+
+        expect(result.message).toBe('Credenciales restauradas');
+        expect(result.fullName).toBe('Profesor Carlos');
+        expect(result.newPassword).toBeDefined();
+        expect(typeof result.newPassword).toBe('string');
+        expect(result.newPassword.length).toBe(12); // crypto.randomBytes(6).toString('hex') = 12 hex chars
+
+        expect(bcrypt.genSalt).toHaveBeenCalledWith(10);
+        expect(bcrypt.hash).toHaveBeenCalledWith(result.newPassword, 'random_salt');
+        expect(mockPrisma.$transaction).toHaveBeenCalled();
+        expect(mockPrisma.user.update).toHaveBeenCalledWith({
+          where: { id: 'user-reset-id' },
+          data: {
+            password: 'hashed_temp_password',
+            requiresPasswordChange: true,
+          },
+        });
+        expect(mockPrisma.userSession.deleteMany).toHaveBeenCalledWith({
+          where: { userId: 'user-reset-id' },
+        });
+      });
+    });
+  });
 });
+

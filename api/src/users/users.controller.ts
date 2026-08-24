@@ -10,7 +10,6 @@ import {
   Query,
   HttpCode,
   HttpStatus,
-  Req,
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -28,6 +27,8 @@ import {
 import { IdempotencyInterceptor } from '../common/interceptors/idempotency.interceptor';
 import { CacheTTL } from '@nestjs/cache-manager';
 import { UserProfileCacheInterceptor } from '../common/interceptors/user-profile-cache.interceptor';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
 
 // 🔥 IMPORTACIONES SEGURIDAD ABAC
 import { AuthGuard } from '@nestjs/passport';
@@ -58,8 +59,8 @@ export class UsersController {
   })
   @ApiResponse({ status: 401, description: 'No autenticado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  getProfile(@Req() req: any) {
-    return this.usersService.getProfile(req.user.userId);
+  getProfile(@CurrentUser() user: AuthenticatedUser) {
+    return this.usersService.getProfile(user.userId);
   }
 
   @Patch('profile')
@@ -71,8 +72,11 @@ export class UsersController {
   })
   @ApiResponse({ status: 400, description: 'Datos de entrada inválidos' })
   @ApiResponse({ status: 401, description: 'No autenticado' })
-  updateProfile(@Req() req: any, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.usersService.updateProfile(req.user.userId, updateProfileDto);
+  updateProfile(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return this.usersService.updateProfile(user.userId, updateProfileDto);
   }
 
   @Post('profile/change-password')
@@ -88,10 +92,10 @@ export class UsersController {
     description: 'La contraseña actual es incorrecta o no autenticado',
   })
   changePassword(
-    @Req() req: any,
+    @CurrentUser() user: AuthenticatedUser,
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
-    return this.usersService.changePassword(req.user.userId, changePasswordDto);
+    return this.usersService.changePassword(user.userId, changePasswordDto);
   }
 
   // =======================================================
@@ -110,8 +114,11 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'No autenticado' })
   @ApiResponse({ status: 403, description: 'Sin permisos suficientes' })
   @ApiResponse({ status: 409, description: 'El correo ya está registrado' })
-  create(@Body() createUserDto: CreateUserDto, @Req() req: any) {
-    return this.usersService.create(createUserDto, req.user);
+  create(
+    @Body() createUserDto: CreateUserDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.usersService.create(createUserDto, user);
   }
 
   @Get()
@@ -123,8 +130,11 @@ export class UsersController {
   })
   @ApiResponse({ status: 401, description: 'No autenticado' })
   @ApiResponse({ status: 403, description: 'Sin permisos suficientes' })
-  findAll(@Query() query: FindAllUsersDto, @Req() req: any) {
-    return this.usersService.findAll(query, req.user);
+  findAll(
+    @Query() query: FindAllUsersDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.usersService.findAll(query, user);
   }
 
   @Patch(':id')
@@ -145,9 +155,9 @@ export class UsersController {
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Req() req: any,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.usersService.update(id, updateUserDto, req.user);
+    return this.usersService.update(id, updateUserDto, user);
   }
 
   @Delete(':id')
@@ -164,8 +174,11 @@ export class UsersController {
     description: 'Sin permisos suficientes o jerarquía insuficiente',
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  remove(@Param('id') id: string, @Req() req: any) {
-    return this.usersService.remove(id, req.user);
+  remove(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.usersService.remove(id, user);
   }
 
   @Patch(':id/reactivate')
@@ -179,8 +192,11 @@ export class UsersController {
     description: 'Sin permisos suficientes o jerarquía insuficiente',
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  reactivate(@Param('id') id: string, @Req() req: any) {
-    return this.usersService.reactivate(id, req.user);
+  reactivate(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.usersService.reactivate(id, user);
   }
 
   @Post(':id/reset-password')
@@ -198,7 +214,10 @@ export class UsersController {
     description: 'Sin permisos suficientes o jerarquía insuficiente',
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  resetPassword(@Param('id') id: string, @Req() req: any) {
-    return this.usersService.resetPassword(id, req.user);
+  resetPassword(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.usersService.resetPassword(id, user);
   }
 }
