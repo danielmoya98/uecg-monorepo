@@ -16,6 +16,7 @@ import {
 import { AcademicYearsService } from "./academic-years.service";
 import { CreateAcademicYearDto } from "./dto/create-academic-year.dto";
 import { UpdateAcademicYearDto } from "./dto/update-academic-year.dto";
+import { CloneStructureDto } from "./dto/clone-structure.dto";
 import { ApiTags, ApiOperation, ApiCookieAuth } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import { PaginationDto } from "../common/dto/pagination.dto";
@@ -55,6 +56,16 @@ export class AcademicYearsController {
     return this.academicYearsService.getReadiness(academicYearId);
   }
 
+  @Get(":id/can-close")
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_ACADEMIC_YEAR)
+  @ApiOperation({
+    summary:
+      "Verifica si la gestión escolar cumple todos los requisitos para ser clausurada (CLOSED)",
+  })
+  checkCanClose(@Param("id", ParseUUIDPipe) id: string) {
+    return this.academicYearsService.checkCanClose(id);
+  }
+
   @Get()
   @ApiOperation({ summary: "Obtiene el listado de gestiones académicas" })
   findAll(@Query() query: PaginationDto) {
@@ -78,6 +89,21 @@ export class AcademicYearsController {
   @ApiOperation({ summary: "Crea una nueva gestión escolar" })
   create(@Body() createAcademicYearDto: CreateAcademicYearDto) {
     return this.academicYearsService.create(createAcademicYearDto);
+  }
+
+  @Post(":id/clone-structure")
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_ACADEMIC_YEAR)
+  @UseInterceptors(IdempotencyInterceptor)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary:
+      "Clona atómicamente la estructura de cursos y carga horaria desde otra gestión",
+  })
+  cloneStructure(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() cloneStructureDto: CloneStructureDto,
+  ) {
+    return this.academicYearsService.cloneStructure(id, cloneStructureDto);
   }
 
   @Patch(":id")
