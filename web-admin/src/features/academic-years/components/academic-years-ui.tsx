@@ -18,30 +18,31 @@ import {
   Trash2,
 } from 'lucide-react'
 import type { AcademicYearData } from '../types/academic-years.types'
+import { PageHeader, PageHeaderButton } from '@/shared/ui/page-header'
 
 export interface AcademicYearsHeaderProps {
   onOpenCreate: () => void
 }
 
 export const AcademicYearsHeader = ({ onOpenCreate }: AcademicYearsHeaderProps) => (
-  <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-uecg-line pb-4">
-    <div>
-      <span className="label-swiss text-[10px]">Estructura Académica</span>
-      <h1 className="text-4xl mt-1 font-black tracking-tighter uppercase text-uecg-text flex items-center gap-3">
-        <Calendar className="w-8 h-8 text-uecg-blue" /> Años Lectivos
-      </h1>
-    </div>
-    <button
-      type="button"
+  <PageHeader
+    kicker="ESTRUCTURA ACADÉMICA"
+    kickerIcon={Calendar}
+    title="Años Lectivos"
+    description="Configuración y administración de gestiones escolares y periodos trimestrales."
+  >
+    <PageHeaderButton
       id="btn-new-academic-year"
       data-tour="btn-new-academic-year"
       onClick={onOpenCreate}
-      className="px-5 py-3 font-bold uppercase tracking-widest text-[11px] bg-uecg-blue text-white hover:bg-uecg-dark transition-colors flex items-center gap-2 cursor-pointer"
+      icon={Plus}
+      variant="dark"
     >
-      <Plus className="w-4 h-4" /> Nueva Gestión
-    </button>
-  </header>
+      Nueva Gestión
+    </PageHeaderButton>
+  </PageHeader>
 )
+
 
 export interface AcademicYearsToolbarProps {
   searchTerm: string
