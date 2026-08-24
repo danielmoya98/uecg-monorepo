@@ -12,6 +12,44 @@ export const IdentityHeader = () => (
   />
 )
 
+export const IdentitySkeleton = () => (
+  <div className="flex flex-col gap-8 max-w-6xl mx-auto relative animate-in fade-in duration-300 w-full">
+    <IdentityHeader />
+
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-uecg-line shadow-sm bg-white animate-pulse">
+      {/* Columna Izquierda: Filtros Skeleton */}
+      <div className="lg:col-span-8 flex flex-col p-6 md:p-8 bg-white gap-8">
+        <div className="flex items-start gap-4 bg-gray-50 border border-uecg-line p-5">
+          <div className="w-10 h-10 bg-gray-200 shrink-0" />
+          <div className="flex flex-col gap-2 flex-1">
+            <div className="h-4 w-40 bg-gray-200" />
+            <div className="h-3 w-3/4 bg-gray-100" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-auto">
+          <div className="flex flex-col gap-2">
+            <div className="h-3 w-28 bg-gray-200" />
+            <div className="h-11 bg-gray-100 border border-uecg-line" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="h-3 w-28 bg-gray-200" />
+            <div className="h-11 bg-gray-100 border border-uecg-line" />
+          </div>
+        </div>
+      </div>
+
+      {/* Columna Derecha: Panel de Acción Skeleton */}
+      <div className="lg:col-span-4 bg-uecg-dark text-white p-6 md:p-8 flex flex-col justify-center items-center text-center border-t lg:border-t-0 lg:border-l border-uecg-line gap-4">
+        <div className="w-12 h-12 bg-white/20" />
+        <div className="h-4 w-36 bg-white/20 mt-2" />
+        <div className="h-3 w-48 bg-white/10" />
+        <div className="h-3 w-40 bg-white/10" />
+        <div className="w-full h-14 bg-white/20 mt-auto" />
+      </div>
+    </div>
+  </div>
+)
 
 interface FilterPanelProps {
   levelFilter: string

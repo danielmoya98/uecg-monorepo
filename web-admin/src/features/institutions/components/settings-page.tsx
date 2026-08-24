@@ -4,7 +4,7 @@ import {
   useCampaignSettings,
   useAttendanceSettings,
   SettingsHeader,
-  SettingsLoading,
+  SettingsSkeleton,
   InstitutionForm,
   CampaignSettingsPanel,
   AttendanceSettingsPanel,
@@ -33,8 +33,9 @@ export default function SettingsPage() {
   } = useAttendanceSettings();
 
   if (isInstLoading || isCampLoading || isAttLoading) {
-    return <SettingsLoading />;
+    return <SettingsSkeleton />;
   }
+
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto pb-20 animate-in fade-in duration-300">
