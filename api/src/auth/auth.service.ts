@@ -718,6 +718,9 @@ export class AuthService {
           shifts: dto.shifts,
           levels: dto.levels,
           schedulingMode: dto.schedulingMode || 'FIXED_BASE',
+          enableQrAttendance: dto.enableQrAttendance ?? true,
+          lateToleranceMinutes: dto.lateToleranceMinutes ?? 5,
+          absentToleranceMinutes: dto.absentToleranceMinutes ?? 15,
           directorId: user.id,
         },
       });

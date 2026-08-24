@@ -98,7 +98,21 @@ export default function SetupWizardPage() {
   const onSubmit = async (data: SetupWizardFormValues) => {
     setIsSubmitting(true);
     try {
-      const response = await AuthService.setupInitialDirector(data);
+      const payload = {
+        ...data,
+        ci: data.ci?.trim() || undefined,
+        phone: data.phone?.trim() || undefined,
+        institutionPhone: data.institutionPhone?.trim() || undefined,
+        institutionEmail: data.institutionEmail?.trim() || undefined,
+        foundedYear:
+          data.foundedYear !== '' && data.foundedYear !== undefined
+            ? Number(data.foundedYear)
+            : undefined,
+        lateToleranceMinutes: Number(data.lateToleranceMinutes ?? 5),
+        absentToleranceMinutes: Number(data.absentToleranceMinutes ?? 15),
+      };
+
+      const response = await AuthService.setupInitialDirector(payload);
       if (response?.user) {
         AuthService.saveSessionMetadata(response.user);
       }
