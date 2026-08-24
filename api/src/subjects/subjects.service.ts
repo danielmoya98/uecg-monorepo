@@ -37,6 +37,11 @@ export class SubjectsService {
           code: data.code?.trim() || null,
           level: data.level,
           area: data.area?.trim() || null,
+          requiresSpecialSpace:
+            data.requiresSpecialSpace !== undefined
+              ? data.requiresSpecialSpace
+              : false,
+          allowedSpaceType: data.allowedSpaceType || null,
           isActive: data.isActive !== undefined ? data.isActive : true,
         },
       });
@@ -152,6 +157,12 @@ export class SubjectsService {
           ...(data.level !== undefined && { level: data.level }),
           ...(data.area !== undefined && {
             area: data.area?.trim() || null,
+          }),
+          ...(data.requiresSpecialSpace !== undefined && {
+            requiresSpecialSpace: data.requiresSpecialSpace,
+          }),
+          ...(data.allowedSpaceType !== undefined && {
+            allowedSpaceType: data.allowedSpaceType,
           }),
           ...(data.isActive !== undefined && { isActive: data.isActive }),
         },

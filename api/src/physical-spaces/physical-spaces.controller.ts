@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { PhysicalSpacesService } from './physical-spaces.service';
 import { CreatePhysicalSpaceDto } from './dto/create-physical-space.dto';
@@ -62,7 +63,7 @@ export class PhysicalSpacesController {
   @Get(':id')
   // 🔓 Sin @RequirePermissions: Lectura abierta
   @ApiOperation({ summary: 'Obtiene el detalle de un espacio físico' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.physicalSpacesService.findOne(id);
   }
 
@@ -70,7 +71,7 @@ export class PhysicalSpacesController {
   @RequirePermissions(SystemPermissions.MANAGE_ALL_PHYSICAL_SPACE) // 🔥 ABAC
   @ApiOperation({ summary: 'Actualiza nombre, capacidad o estado' })
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePhysicalSpaceDto: UpdatePhysicalSpaceDto,
   ) {
     return this.physicalSpacesService.update(id, updatePhysicalSpaceDto);
@@ -79,7 +80,7 @@ export class PhysicalSpacesController {
   @Delete(':id')
   @RequirePermissions(SystemPermissions.MANAGE_ALL_PHYSICAL_SPACE) // 🔥 ABAC
   @ApiOperation({ summary: 'Elimina un espacio físico (Si no está en uso)' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.physicalSpacesService.remove(id);
   }
 }

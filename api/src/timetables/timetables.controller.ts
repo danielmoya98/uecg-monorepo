@@ -13,6 +13,7 @@ import {
   Res,
   Patch,
   Req,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { TimetablesService } from './timetables.service';
 import { CreateScheduleSlotDto } from './dto/create-schedule-slot.dto';
@@ -66,7 +67,7 @@ export class TimetablesController {
   @ApiOperation({
     summary: 'Obtiene todos los casilleros ocupados por un curso',
   })
-  getClassroomSchedule(@Param('id') classroomId: string) {
+  getClassroomSchedule(@Param('id', ParseUUIDPipe) classroomId: string) {
     return this.timetablesService.getClassroomSchedule(classroomId);
   }
 
@@ -83,7 +84,7 @@ export class TimetablesController {
   @RequirePermissions(SystemPermissions.MANAGE_ALL_TIMETABLE) // 🔥 ABAC: Solo Gestores
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Libera un casillero' })
-  removeSlot(@Param('id') id: string) {
+  removeSlot(@Param('id', ParseUUIDPipe) id: string) {
     return this.timetablesService.removeSlot(id);
   }
 
@@ -94,7 +95,10 @@ export class TimetablesController {
   @Get('export/pdf/:classroomId')
   // 🔓 Lectura abierta: Cualquiera puede descargar el PDF de un curso específico
   @ApiOperation({ summary: 'Descarga el horario de un curso en PDF' })
-  exportPdf(@Param('classroomId') classroomId: string, @Res() res: Response) {
+  exportPdf(
+    @Param('classroomId', ParseUUIDPipe) classroomId: string,
+    @Res() res: Response,
+  ) {
     return this.timetablesService.exportSinglePdf(classroomId, res);
   }
 
@@ -103,7 +107,7 @@ export class TimetablesController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Añade la generación de ZIP a la cola (Asíncrono)' })
   startZipExport(
-    @Param('academicYearId') academicYearId: string,
+    @Param('academicYearId', ParseUUIDPipe) academicYearId: string,
     @Req() req: any,
   ) {
     return this.timetablesService.requestMassiveZip(
@@ -125,7 +129,7 @@ export class TimetablesController {
     summary: 'Cambia el aula física de una materia específica en el horario',
   })
   async updateSlotSpace(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateSlotSpaceDto,
   ) {
     return this.timetablesService.updateSlotSpace(

@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseInterceptors,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
@@ -85,7 +86,7 @@ export class SubjectsController {
   @ApiNotFoundResponse({
     description: 'No se encontró la materia con el ID proporcionado.',
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.subjectsService.findOne(id);
   }
 
@@ -103,7 +104,10 @@ export class SubjectsController {
   @ApiConflictResponse({
     description: 'Ya existe otra materia con ese mismo nombre en este nivel.',
   })
-  update(@Param('id') id: string, @Body() updateSubjectDto: UpdateSubjectDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateSubjectDto: UpdateSubjectDto,
+  ) {
     return this.subjectsService.update(id, updateSubjectDto);
   }
 
@@ -121,7 +125,7 @@ export class SubjectsController {
     description: 'No se encontró la materia a modificar.',
   })
   toggleStatus(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body('isActive') isActive?: boolean,
   ) {
     return this.subjectsService.toggleStatus(id, isActive);
@@ -139,7 +143,7 @@ export class SubjectsController {
     description:
       'No se puede eliminar la materia porque se encuentra asignada en la carga horaria.',
   })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.subjectsService.remove(id);
   }
 }

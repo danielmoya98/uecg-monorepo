@@ -8,7 +8,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { EducationLevel } from '../../../prisma/generated/client';
+import { EducationLevel, SpaceType } from '../../../prisma/generated/client';
 
 export class CreateSubjectDto {
   @ApiProperty({
@@ -49,6 +49,23 @@ export class CreateSubjectDto {
   @MaxLength(120, { message: 'El área no puede exceder los 120 caracteres' })
   @IsOptional()
   area?: string;
+
+  @ApiPropertyOptional({
+    example: false,
+    description: 'Indica si la materia requiere un espacio físico especial (laboratorio, cancha, etc.)',
+    default: false,
+  })
+  @IsBoolean({ message: 'requiresSpecialSpace debe ser un valor booleano' })
+  @IsOptional()
+  requiresSpecialSpace?: boolean;
+
+  @ApiPropertyOptional({
+    enum: SpaceType,
+    description: 'Tipo de espacio físico requerido si requiresSpecialSpace es true (SALON, LABORATORIO, CANCHA, AUDITORIO, OTRO)',
+  })
+  @IsEnum(SpaceType, { message: 'Tipo de espacio físico inválido' })
+  @IsOptional()
+  allowedSpaceType?: SpaceType;
 
   @ApiPropertyOptional({
     example: true,
