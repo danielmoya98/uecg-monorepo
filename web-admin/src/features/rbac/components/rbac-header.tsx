@@ -1,4 +1,5 @@
 import { ShieldAlert, Plus, AlertTriangle, Loader2 } from 'lucide-react'
+import { PageHeader, PageHeaderButton } from '@/shared/ui/page-header'
 
 interface RbacHeaderProps {
   onOpenCreate: () => void
@@ -6,28 +7,25 @@ interface RbacHeaderProps {
 
 export const RbacHeader = ({ onOpenCreate }: RbacHeaderProps) => {
   return (
-    <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-uecg-line pb-5 mt-2">
-      <div>
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-uecg-blue">
-          Seguridad y Políticas Globales
-        </span>
-        <h1 className="text-4xl mt-1.5 font-black tracking-tighter uppercase text-uecg-dark flex items-center gap-3.5">
-          <ShieldAlert className="w-9 h-9 text-uecg-blue shrink-0" />
-          Gestión de Roles
-        </h1>
-      </div>
-
-      <button
-        type="button"
+    <PageHeader
+      kicker="SEGURIDAD Y POLÍTICAS GLOBALES"
+      kickerIcon={ShieldAlert}
+      title="Gestión de Roles"
+      description="Control de acceso basado en atributos (ABAC) y permisos de seguridad del sistema."
+    >
+      <PageHeaderButton
+        id="btn-new-role"
+        data-tour="btn-new-role"
         onClick={onOpenCreate}
-        className="px-5 py-3.5 font-black uppercase tracking-widest text-[10px] bg-uecg-blue text-white hover:bg-uecg-dark hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2.5 shadow-[4px_4px_0px_rgba(0,0,0,0.15)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.3)] outline-none focus:ring-2 focus:ring-uecg-blue focus:ring-offset-2 cursor-pointer"
-        aria-label="Crear nuevo perfil de acceso"
+        icon={Plus}
+        variant="dark"
       >
-        <Plus className="w-4 h-4 stroke-[3px]" /> Nuevo Rol
-      </button>
-    </header>
+        Nuevo Rol
+      </PageHeaderButton>
+    </PageHeader>
   )
 }
+
 
 export const RbacLoader = () => {
   return (
