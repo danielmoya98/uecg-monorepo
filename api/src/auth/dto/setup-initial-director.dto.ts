@@ -9,7 +9,12 @@ import {
   IsInt,
   IsArray,
   ArrayNotEmpty,
+  IsBoolean,
+  Min,
+  Max,
+  ValidateIf,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import {
   DependencyType,
   Department,
@@ -39,11 +44,13 @@ export class SetupInitialDirectorDto {
 
   @ApiPropertyOptional({ example: '1234567', description: 'Cédula de Identidad' })
   @IsOptional()
+  @Transform(({ value }) => (value === '' ? undefined : value))
   @IsString()
   ci?: string;
 
   @ApiPropertyOptional({ example: '78901234', description: 'Teléfono celular' })
   @IsOptional()
+  @Transform(({ value }) => (value === '' ? undefined : value))
   @IsString()
   phone?: string;
 
@@ -85,16 +92,22 @@ export class SetupInitialDirectorDto {
 
   @ApiPropertyOptional({ example: '46452311', description: 'Teléfono institucional' })
   @IsOptional()
+  @Transform(({ value }) => (value === '' ? undefined : value))
   @IsString()
   institutionPhone?: string;
 
   @ApiPropertyOptional({ example: 'contacto@uecg.edu.bo', description: 'Correo institucional' })
   @IsOptional()
+  @Transform(({ value }) => (value === '' ? undefined : value))
+  @ValidateIf((o) => !!o.institutionEmail)
   @IsEmail({}, { message: 'El correo institucional no es válido' })
   institutionEmail?: string;
 
   @ApiPropertyOptional({ example: 2005, description: 'Año de fundación' })
   @IsOptional()
+  @Transform(({ value }) =>
+    value === '' || value === null || value === undefined ? undefined : Number(value),
+  )
   @IsInt({ message: 'El año de fundación debe ser un número entero' })
   foundedYear?: number;
 
@@ -114,4 +127,26 @@ export class SetupInitialDirectorDto {
   @IsOptional()
   @IsEnum(SchedulingMode)
   schedulingMode?: SchedulingMode;
+
+  @ApiPropertyOptional({ default: true, description: 'Habilitar asistencia QR' })
+  @IsOptional()
+  @IsBoolean()
+  enableQrAttendance?: boolean;
+
+  @ApiPropertyOptional({ default: 5, description: 'Minutos de tolerancia para atraso' })
+  @IsOptional()
+  @Transform(({ value }) => (value !== undefined && value !== null ? Number(value) : undefined))
+  @IsInt()
+  @Min(0)
+  @Max(180)
+  lateToleranceMinutes?: number;
+
+  @ApiPropertyOptional({ default: 15, description: 'Minutos de tolerancia para falta' })
+  @IsOptional()
+  @Transform(({ value }) => (value !== undefined && value !== null ? Number(value) : undefined))
+  @IsInt()
+  @Min(0)
+  @Max(180)
+  absentToleranceMinutes?: number;
 }
+
