@@ -1,9 +1,13 @@
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { routeTree } from '../../routeTree.gen'
 import { useAuthStore, type AuthUser } from '@/features/auth'
+import { InitialSplashScreen } from '@/shared/ui/initial-splash-screen'
 
 export const router = createRouter({
   routeTree,
+  defaultPendingComponent: InitialSplashScreen,
+  defaultPendingMs: 0,
+  defaultPendingMinMs: 400,
   context: {
     isAuthenticated: false,
     user: null,
