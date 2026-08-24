@@ -70,6 +70,34 @@ export class AuditService {
     }
   }
 
+  @OnEvent('user.*', {
+    async: true,
+  })
+  async handleUserAuditEvent(payload: any) {
+    this.logger.log(
+      `🛡️ Auditoría de Dominio: Evento de usuario capturado [${payload?.action || 'EVENT'}]`,
+    );
+    const actorId = payload?.performedById || payload?.userId;
+    if (actorId) {
+      try {
+        await this.prisma.auditLog.create({
+          data: {
+            userId: actorId,
+            method: payload.action || 'USER_EVENT',
+            route: `/users/${payload.targetUserId || payload.userId || ''}`,
+            statusCode: 200,
+            userAgent: `DomainEvent: ${payload.action || 'user'} (${payload.description || ''})`,
+          },
+        });
+      } catch (err) {
+        this.logger.warn(
+          'No se pudo registrar log de auditoría del evento de usuario',
+          err,
+        );
+      }
+    }
+  }
+
   // ======================================================
   // PAGINATED LOGS
   // ======================================================

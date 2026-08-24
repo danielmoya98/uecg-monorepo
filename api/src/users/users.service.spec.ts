@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
 import * as bcrypt from 'bcrypt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 // Mock bcrypt for fast password validation tests
 jest.mock('bcrypt', () => ({
@@ -43,12 +44,17 @@ describe('UsersService - Pruebas Unitarias y de Jerarquía ABAC', () => {
     generateBlindIndex: jest.fn((val) => `hash_${val}`),
   };
 
+  const mockEventEmitter = {
+    emit: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: EncryptionService, useValue: mockEncryption },
+        { provide: EventEmitter2, useValue: mockEventEmitter },
       ],
     }).compile();
 
@@ -351,6 +357,14 @@ describe('UsersService - Pruebas Unitarias y de Jerarquía ABAC', () => {
         expect(mockPrisma.userSession.deleteMany).toHaveBeenCalledWith({
           where: { userId: 'user-to-disable' },
         });
+        expect(mockEventEmitter.emit).toHaveBeenCalledWith(
+          'user.deactivated',
+          expect.objectContaining({
+            action: 'DEACTIVATE_USER',
+            performedById: 'admin-id',
+            targetUserId: 'user-to-disable',
+          }),
+        );
         expect(result.message).toBe('Usuario desactivado exitosamente');
       });
     });
@@ -388,6 +402,14 @@ describe('UsersService - Pruebas Unitarias y de Jerarquía ABAC', () => {
         expect(mockPrisma.userSession.deleteMany).toHaveBeenCalledWith({
           where: { userId: 'user-reset-id' },
         });
+        expect(mockEventEmitter.emit).toHaveBeenCalledWith(
+          'user.password_reset',
+          expect.objectContaining({
+            action: 'RESET_PASSWORD',
+            performedById: 'admin-id',
+            targetUserId: 'user-reset-id',
+          }),
+        );
       });
     });
   });
