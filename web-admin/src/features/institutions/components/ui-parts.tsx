@@ -11,8 +11,9 @@ export const SettingsHeader = () => (
 );
 
 export const SettingsSkeleton = () => (
-  <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto pb-20 animate-in fade-in duration-300">
+  <div className="flex flex-col gap-8 w-full pb-20 animate-in fade-in duration-300">
     <SettingsHeader />
+
 
     {/* Formulario Institucional Skeleton */}
     <div className="border border-uecg-line bg-white shadow-sm flex flex-col animate-pulse">

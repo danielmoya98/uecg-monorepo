@@ -34,8 +34,9 @@ export default function DashboardPage() {
   })
 
   return (
-    <div className="flex flex-col gap-8 max-w-7xl mx-auto pb-10 transition-all duration-500">
+    <div className="flex flex-col gap-8 w-full pb-10 transition-all duration-500">
       <header className="mb-0">
+
         <h1 className="text-3xl font-black uppercase tracking-tighter text-uecg-text">
           Hola, <span className="text-uecg-blue">{user?.fullName?.split(' ')[0] || 'Usuario'}</span>
         </h1>

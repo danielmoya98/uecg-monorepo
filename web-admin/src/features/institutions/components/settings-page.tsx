@@ -38,8 +38,9 @@ export default function SettingsPage() {
 
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto pb-20 animate-in fade-in duration-300">
+    <div className="flex flex-col gap-8 w-full pb-20 animate-in fade-in duration-300">
       <SettingsHeader />
+
 
       <InstitutionForm
         initialData={currentInstitution || null}

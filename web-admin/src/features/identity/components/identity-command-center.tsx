@@ -46,8 +46,9 @@ function IdentityCommandCenterInner() {
 
   // 5. Renderizado Principal
   return (
-    <div className="flex flex-col gap-8 max-w-6xl mx-auto relative animate-in fade-in duration-300 w-full">
+    <div className="flex flex-col gap-8 w-full relative animate-in fade-in duration-300">
       <IdentityHeader />
+
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-uecg-line shadow-sm bg-white">
         <ExportFiltersPanel

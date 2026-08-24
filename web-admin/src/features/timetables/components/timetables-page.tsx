@@ -45,7 +45,7 @@ export function TimetablesPage() {
   // 6. Visualización de Cargando Gestión Escolar
   if (isLoadingYear) {
     return (
-      <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-20 animate-in fade-in duration-300 w-full">
+      <div className="flex flex-col gap-6 w-full pb-20 animate-in fade-in duration-300">
         <PageHeader
           kicker="HORARIOS Y ASIGNACIÓN DE AULAS"
           kickerIcon={LayoutGrid}
@@ -56,7 +56,6 @@ export function TimetablesPage() {
       </div>
     )
   }
-
 
   // 7. Visualización de Módulo Bloqueado si no hay año escolar activo
   if (!currentYear) {
@@ -78,7 +77,8 @@ export function TimetablesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8 max-w-7xl mx-auto pb-20 animate-in fade-in duration-300">
+    <div className="flex flex-col gap-8 w-full pb-20 animate-in fade-in duration-300">
+
       <PageHeader
         kicker={`GESTIÓN ${currentYear.year}`}
         kickerIcon={LayoutGrid}
