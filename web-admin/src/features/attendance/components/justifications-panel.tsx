@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Search, FileText, CheckCircle, AlertTriangle, Loader2, Calendar, UserCheck } from 'lucide-react'
+import {
+  FileText,
+
+  Calendar,
+  AlertTriangle,
+  CheckCircle,
+  Loader2,
+  UserCheck,
+} from 'lucide-react'
+
+import { SwissSearchInput, SwissEmptyState } from '@/shared/ui'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useDebounce } from '@/shared/hooks/use-debounce'
@@ -94,28 +104,21 @@ export const JustificationsPanel = () => {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* COLUMNA IZQUIERDA: BUSCADOR */}
       <div className="lg:col-span-4 flex flex-col gap-4">
-        <div className="bg-white border border-uecg-line p-6 shadow-sm">
+        <div className="bg-white dark:bg-[#121214] border border-uecg-line dark:border-zinc-800 p-6 shadow-sm">
           <label
             htmlFor="student-search"
-            className="text-[10px] font-black uppercase tracking-widest text-uecg-gray mb-3 flex items-center gap-2 select-none"
+            className="text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 mb-3 flex items-center gap-2 select-none"
           >
             <span className="w-4 h-4 bg-uecg-dark text-white flex items-center justify-center font-mono text-[8px]">
               1
             </span>
             Buscar Estudiante
           </label>
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-uecg-gray group-focus-within:text-uecg-blue transition-colors" />
-            <input
-              id="student-search"
-              type="text"
-              placeholder="NOMBRE O CI..."
-              autoComplete="off"
-              className="w-full pl-11 pr-4 py-3 border border-uecg-line bg-gray-50 text-[11px] font-black uppercase tracking-widest outline-none focus:border-uecg-blue focus:bg-white transition-all shadow-inner"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <SwissSearchInput
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="NOMBRE O CI... (CTRL+K)"
+          />
 
           <div className="mt-4 flex flex-col gap-2 max-h-[400px] overflow-y-auto custom-scrollbar">
             {isSearching && (
@@ -124,7 +127,7 @@ export const JustificationsPanel = () => {
               </div>
             )}
             {!isSearching && debouncedSearch.length > 2 && foundStudents.length === 0 && (
-              <p className="text-[10px] text-center font-bold uppercase tracking-widest text-uecg-gray p-4 border border-dashed border-uecg-line select-none">
+              <p className="text-[10px] text-center font-bold uppercase tracking-widest text-uecg-gray dark:text-zinc-400 p-4 border border-dashed border-uecg-line dark:border-zinc-800 select-none">
                 No se encontraron resultados.
               </p>
             )}
@@ -138,20 +141,20 @@ export const JustificationsPanel = () => {
                   className={`p-4 border text-left transition-all shadow-sm outline-none cursor-pointer ${
                     isSelected
                       ? 'border-uecg-blue bg-uecg-blue text-white'
-                      : 'border-uecg-line bg-white hover:border-uecg-blue hover:bg-blue-50/50'
+                      : 'border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] hover:border-uecg-blue hover:bg-blue-50/50 dark:hover:bg-blue-950/20'
                   }`}
                   aria-pressed={isSelected}
                 >
                   <p
                     className={`text-[11px] font-black uppercase tracking-tight leading-none ${
-                      isSelected ? 'text-white' : 'text-uecg-dark'
+                      isSelected ? 'text-white' : 'text-uecg-dark dark:text-zinc-100'
                     }`}
                   >
                     {enrollment.student.lastNamePaterno} {enrollment.student.names}
                   </p>
                   <p
                     className={`text-[9px] font-bold uppercase tracking-widest mt-1.5 ${
-                      isSelected ? 'text-blue-200' : 'text-uecg-gray'
+                      isSelected ? 'text-blue-200' : 'text-uecg-gray dark:text-zinc-400'
                     }`}
                   >
                     {enrollment.classroom.grade} "{enrollment.classroom.section}" •{' '}
@@ -167,15 +170,12 @@ export const JustificationsPanel = () => {
       {/* COLUMNA DERECHA: HISTORIAL DE INFRACCIONES */}
       <div className="lg:col-span-8">
         {!selectedEnrollment ? (
-          <div className="h-full border border-dashed border-uecg-line bg-white flex flex-col items-center justify-center text-uecg-gray min-h-[400px] shadow-sm select-none">
-            <FileText className="w-16 h-16 mb-4 opacity-30" />
-            <h3 className="text-lg font-black uppercase tracking-widest text-uecg-dark opacity-80">
-              Auditoría de Infracciones
-            </h3>
-            <p className="text-[10px] font-bold uppercase tracking-widest opacity-60 mt-2 text-center max-w-xs px-4">
-              Seleccione un estudiante de la lista lateral para revisar sus faltas y atrasos pendientes de
-              justificación.
-            </p>
+          <div className="h-full border border-dashed border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] flex flex-col items-center justify-center text-uecg-gray min-h-[400px] shadow-sm select-none">
+            <SwissEmptyState
+              icon={FileText}
+              title="Auditoría de Infracciones"
+              description="Seleccione un estudiante de la lista lateral para revisar sus faltas y atrasos pendientes de justificación."
+            />
           </div>
         ) : (
           <div className="flex flex-col h-full bg-white border border-uecg-line shadow-sm">
