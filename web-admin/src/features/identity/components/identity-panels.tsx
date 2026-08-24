@@ -1,23 +1,17 @@
 import { ScanFace, Users, ShieldCheck, Download, Loader2 } from 'lucide-react'
+import { PageHeader } from '@/shared/ui/page-header'
 import { CustomSelect } from './custom-select'
 import type { Option } from '../types/identity.types'
 
 export const IdentityHeader = () => (
-  <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-uecg-line pb-4 mt-2">
-    <div>
-      <span className="label-swiss !text-[10px] text-uecg-gray uppercase tracking-widest font-black">
-        Seguridad y Acceso
-      </span>
-      <h1 className="text-4xl mt-1 font-black tracking-tighter uppercase text-uecg-dark flex items-center gap-3">
-        <ScanFace className="w-8 h-8 text-uecg-blue" strokeWidth={3} />
-        Centro de Carnetización
-      </h1>
-      <p className="text-[11px] font-bold text-uecg-gray tracking-widest uppercase mt-2 border border-uecg-line bg-gray-50 px-3 py-1.5 inline-block">
-        Generación masiva de Identidades Digitales (QR) y credenciales impresas.
-      </p>
-    </div>
-  </header>
+  <PageHeader
+    kicker="SEGURIDAD Y ACCESO"
+    kickerIcon={ScanFace}
+    title="Centro de Carnetización"
+    description="Generación masiva de Identidades Digitales (QR) y credenciales impresas."
+  />
 )
+
 
 interface FilterPanelProps {
   levelFilter: string
