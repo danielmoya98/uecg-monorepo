@@ -1,9 +1,8 @@
-import React, { forwardRef } from 'react'
-import { MorphIcon as BaseMorphIcon, type MorphHandle } from 'morphicons/react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 
-export interface SwissMorphIconProps extends Omit<React.SVGProps<SVGSVGElement>, 'ref' | 'from' | 'to'> {
-  icon: LucideIcon | any
+export interface SwissMorphIconProps {
+  icon: LucideIcon
   size?: number | string
   strokeWidth?: number | string
   className?: string
@@ -11,26 +10,50 @@ export interface SwissMorphIconProps extends Omit<React.SVGProps<SVGSVGElement>,
 }
 
 /**
- * Componente Wrapper para Morphicons con compatibilidad total con Lucide Icons y TypeScript.
+ * Transición elástica de iconos basada en Framer Motion y física de resortes (Spring Physics).
+ * 100% compatible con React 19 y Lucide React sin dependencias externas inestables.
  */
-export const SwissMorphIcon = forwardRef<MorphHandle, SwissMorphIconProps>(function SwissMorphIcon(
-  { icon, size = 16, strokeWidth = 2, className = '', color = 'currentColor', ...props },
-  ref
-) {
-  const iconInput = (icon as any)?._iconNode || (icon as any)?.__iconNode || (icon as any)
+export function SwissMorphIcon({
+  icon: Icon,
+  size = 16,
+  strokeWidth = 2,
+  className = '',
+  color,
+}: SwissMorphIconProps) {
+  const iconKey = Icon?.displayName || Icon?.name || 'icon'
 
   return (
-    <BaseMorphIcon
-      ref={ref}
-      icon={iconInput}
-      size={size}
-      strokeWidth={strokeWidth}
-      color={color}
-      className={className}
-      {...props}
-    />
+    <span
+      className={`inline-flex items-center justify-center relative overflow-hidden select-none shrink-0 ${className}`}
+      style={{ width: size, height: size }}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={iconKey}
+          initial={{ opacity: 0, scale: 0.5, rotate: -30 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          exit={{ opacity: 0, scale: 0.5, rotate: 30 }}
+          transition={{
+            type: 'spring',
+            stiffness: 400,
+            damping: 24,
+            mass: 0.6,
+          }}
+          className="flex items-center justify-center w-full h-full"
+        >
+          {Icon && (
+            <Icon
+              size={size}
+              strokeWidth={strokeWidth}
+              color={color}
+              className="w-full h-full"
+            />
+          )}
+        </motion.span>
+      </AnimatePresence>
+    </span>
   )
-})
+}
 
 export { SwissMorphIcon as MorphIcon }
 export default SwissMorphIcon
