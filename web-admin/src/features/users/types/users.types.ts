@@ -2,7 +2,7 @@ export interface User {
   id: string
   fullName: string
   email: string
-  role: 'ADMIN' | 'DOCENTE' | 'PADRE'
+  role: 'SUPER_ADMIN' | 'DIRECTOR' | 'DOCENTE' | 'PADRE' | string
   status: 'ACTIVE' | 'INACTIVE'
   createdAt?: string
 }

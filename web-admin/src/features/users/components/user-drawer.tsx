@@ -62,9 +62,20 @@ export default function UserDrawer({
   useEffect(() => {
     if (isOpen) {
       if (userData && mode !== 'create') {
+        const validRoles: Array<'SUPER_ADMIN' | 'DIRECTOR' | 'DOCENTE' | 'PADRE'> = [
+          'SUPER_ADMIN',
+          'DIRECTOR',
+          'DOCENTE',
+          'PADRE',
+        ]
+        const matchedRole =
+          validRoles.find(
+            (r) => r === userData.role || (r === 'SUPER_ADMIN' && userData.role === 'ADMIN'),
+          ) || 'DOCENTE'
+
         reset({
           fullName: userData.fullName,
-          role: userData.role.toLowerCase().includes('admin') ? 'ADMIN' : 'DOCENTE',
+          role: matchedRole,
         })
         setGeneratedEmail(userData.email)
         setGeneratedPassword('')

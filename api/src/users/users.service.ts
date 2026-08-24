@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -284,7 +285,10 @@ export class UsersService {
       const roleRecord = await this.prisma.role.findUnique({
         where: { name: data.role },
       });
-      roleId = roleRecord?.id;
+      if (!roleRecord) {
+        throw new BadRequestException(`El rol '${data.role}' no existe.`);
+      }
+      roleId = roleRecord.id;
     }
 
     const updatedUser = await this.prisma.user.update({
@@ -311,10 +315,15 @@ export class UsersService {
   async remove(id: string, requestingUser: AuthenticatedUser) {
     await this.findUserOrFailAndValidate(id, requestingUser);
 
-    await this.prisma.user.update({
-      where: { id },
-      data: { status: 'INACTIVE' },
-    });
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id },
+        data: { status: 'INACTIVE' },
+      }),
+      this.prisma.userSession.deleteMany({
+        where: { userId: id },
+      }),
+    ]);
     return { message: 'Usuario desactivado exitosamente' };
   }
 
@@ -331,15 +340,19 @@ export class UsersService {
   async resetPassword(id: string, requestingUser: AuthenticatedUser) {
     const targetUser = await this.findUserOrFailAndValidate(id, requestingUser);
 
-    const newRawPassword =
-      Math.random().toString(36).slice(-8) + Math.floor(Math.random() * 100);
+    const newRawPassword = crypto.randomBytes(6).toString('hex');
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newRawPassword, salt);
 
-    await this.prisma.user.update({
-      where: { id },
-      data: { password: hashedPassword, requiresPasswordChange: true },
-    });
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id },
+        data: { password: hashedPassword, requiresPasswordChange: true },
+      }),
+      this.prisma.userSession.deleteMany({
+        where: { userId: id },
+      }),
+    ]);
 
     return {
       message: 'Credenciales restauradas',
