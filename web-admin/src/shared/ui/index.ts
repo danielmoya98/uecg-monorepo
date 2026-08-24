@@ -11,6 +11,8 @@ export * from './swiss-table-container'
 export * from './swiss-kbd'
 export * from './swiss-copy-button'
 export * from './morph-icon'
+export * from './swiss-batch-action-bar'
+
 
 
 

@@ -48,17 +48,18 @@ export const ClassroomsTable = ({
   return (
     <SwissTableContainer isFetching={isFetching} isPending={isPending}>
       <table className="w-full text-left border-collapse whitespace-nowrap">
-        <thead>
-          <tr className="bg-gray-50 border-b border-uecg-line text-uecg-gray font-black text-[9px] uppercase tracking-widest select-none">
-            <th className="px-6 py-4 border-r border-uecg-line">Código / Aula</th>
-            <th className="px-6 py-4 border-r border-uecg-line">Nivel Educativo</th>
-            <th className="px-6 py-4 border-r border-uecg-line">Turno</th>
-            <th className="px-6 py-4 border-r border-uecg-line text-center">Capacidad</th>
-            <th className="px-6 py-4 border-r border-uecg-line">Aula Física (Base)</th>
-            <th className="px-6 py-4 border-r border-uecg-line">Asesor / Tutor</th>
-            {canManage && <th className="px-6 py-4 text-center">Acciones</th>}
+        <thead className="sticky top-0 z-20 bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800 shadow-sm">
+          <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800 text-uecg-gray dark:text-zinc-400 font-black text-[9px] uppercase tracking-widest select-none">
+            <th className="px-6 py-3.5 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">Código / Aula</th>
+            <th className="px-6 py-3.5 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">Nivel Educativo</th>
+            <th className="px-6 py-3.5 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">Turno</th>
+            <th className="px-6 py-3.5 border-r border-uecg-line dark:border-zinc-800 text-center bg-gray-50 dark:bg-zinc-900">Capacidad</th>
+            <th className="px-6 py-3.5 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">Aula Física (Base)</th>
+            <th className="px-6 py-3.5 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">Asesor / Tutor</th>
+            {canManage && <th className="px-6 py-3.5 text-center bg-gray-50 dark:bg-zinc-900">Acciones</th>}
           </tr>
         </thead>
+
         <tbody>
           {isPending ? (
             Array.from({ length: 5 }).map((_, i) => (

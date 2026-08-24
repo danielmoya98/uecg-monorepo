@@ -1,9 +1,6 @@
-
-
 import { useState, useRef, useEffect } from "react";
 import { Loader2, MoreVertical, Check, X, Printer } from "lucide-react";
 import { SwissTableContainer, SwissEmptyState } from "@/shared/ui";
-
 
 // ==========================================
 // COMPONENTE VISUAL: Emblema de Estudiante
@@ -16,7 +13,7 @@ const StudentBadge = ({ type, name }: { type: string; name: string }) => {
 
     return (
         <div
-            className={`w-10 h-10 flex items-center justify-center ${bgColor} text-white font-black text-xl shadow-sm shrink-0`}
+            className={`w-9 h-9 flex items-center justify-center ${bgColor} text-white font-black text-sm shadow-sm shrink-0 select-none`}
         >
             {initial}
         </div>
@@ -33,7 +30,7 @@ interface EnrollmentsTableRowProps {
     onPrint: (id: string) => void;
     onApprove: (enrollment: any) => void;
     onReject: (id: string) => void;
-    canManage: boolean; // 🔥 Propiedad ABAC recibida
+    canManage: boolean;
 }
 
 const EnrollmentsTableRow = ({
@@ -63,50 +60,49 @@ const EnrollmentsTableRow = ({
 
     return (
         <tr
-            className="border-b border-uecg-line hover:bg-blue-50/30 transition-colors group animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
-            style={{ animationDelay: `${index * 50}ms` }}
+            className="border-b border-uecg-line dark:border-zinc-800 hover:bg-blue-50/20 dark:hover:bg-zinc-800/40 transition-colors group animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+            style={{ animationDelay: `${index * 25}ms` }}
         >
-            <td className="px-4 py-3 border-r border-uecg-line">
-                <div className="flex items-center gap-4">
+            <td className="px-4 py-3 border-r border-uecg-line dark:border-zinc-800">
+                <div className="flex items-center gap-3.5">
                     <StudentBadge type={req.type} name={req.studentName} />
                     <div className="flex flex-col">
-                        <p className="font-black uppercase tracking-tight text-xs text-uecg-text">{req.studentName}</p>
-                        <p className="text-[9px] font-bold text-uecg-gray uppercase tracking-widest mt-0.5">
-                            CI: {req.ci}
+                        <p className="font-black uppercase tracking-tight text-xs text-uecg-text dark:text-zinc-100">{req.studentName}</p>
+                        <p className="text-[9px] font-bold text-uecg-gray dark:text-zinc-400 uppercase tracking-widest mt-0.5">
+                            CI: {req.ci || "S/CI"}
                         </p>
-                        {/* 🔥 El curso es útil si el docente está viendo la lista */}
                         {req.classroom && (
-                            <p className="text-[9px] font-black text-uecg-blue uppercase tracking-widest mt-1">
+                            <p className="text-[9px] font-black text-uecg-blue dark:text-blue-400 uppercase tracking-widest mt-0.5">
                                 {req.classroom}
                             </p>
                         )}
                     </div>
                 </div>
             </td>
-            <td className="px-4 py-3 border-r border-uecg-line">
+            <td className="px-4 py-3 border-r border-uecg-line dark:border-zinc-800">
                 <span
-                    className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 shadow-sm border ${
+                    className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 shadow-sm border ${
                         req.type === "NUEVO"
                             ? "bg-uecg-dark text-white border-transparent"
                             : req.type === "TRASPASO"
-                              ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-                              : "bg-blue-50 text-uecg-blue border-blue-100"
+                              ? "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/40 dark:text-yellow-400 dark:border-yellow-800"
+                              : "bg-blue-50 text-uecg-blue border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800"
                     }`}
                 >
                     {req.type}
                 </span>
             </td>
-            <td className="px-4 py-3 border-r border-uecg-line text-[11px] font-bold text-uecg-gray text-center">
+            <td className="px-4 py-3 border-r border-uecg-line dark:border-zinc-800 text-[11px] font-bold text-uecg-gray dark:text-zinc-400 text-center">
                 {req.date}
             </td>
             
-            {/* 🔥 ESCUDO: Solo renderizamos la celda de acción si tiene permisos */}
             {canManage && (
                 <td className="px-4 py-3 text-center">
                     <div ref={menuRef} className="relative inline-block">
                         <button
+                            type="button"
                             onClick={() => setIsOpen(!isOpen)}
-                            className="text-uecg-gray hover:text-uecg-blue transition-colors focus:outline-none p-1.5 rounded-none bg-transparent hover:bg-white border border-transparent hover:border-uecg-line"
+                            className="text-uecg-gray dark:text-zinc-400 hover:text-uecg-blue dark:hover:text-white transition-colors focus:outline-none p-1.5 bg-transparent hover:bg-white dark:hover:bg-zinc-800 border border-transparent hover:border-uecg-line dark:hover:border-zinc-700 cursor-pointer"
                         >
                             {generatingPdfId === req.id ? (
                                 <Loader2 className="w-4 h-4 mx-auto animate-spin" />
@@ -116,35 +112,38 @@ const EnrollmentsTableRow = ({
                         </button>
 
                         {isOpen && (
-                            <div className="absolute right-0 top-8 w-48 bg-white border border-uecg-line shadow-2xl z-20 flex flex-col text-left animate-in fade-in zoom-in-95 duration-200">
-                                <div className="px-3 py-2 border-b border-uecg-line bg-gray-50 flex items-center justify-between">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-uecg-gray">
+                            <div className="absolute right-0 top-8 w-48 bg-white dark:bg-zinc-900 border border-uecg-line dark:border-zinc-700 shadow-2xl z-20 flex flex-col text-left animate-in fade-in zoom-in-95 duration-150">
+                                <div className="px-3 py-2 border-b border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/60 flex items-center justify-between">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400">
                                         Revisión RUDE
                                     </span>
                                     {req.rudeCode && (
-                                        <span className="text-[8px] bg-green-100 text-green-700 px-1 font-bold rounded-sm border border-green-200">
+                                        <span className="text-[8px] bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-400 px-1 font-bold rounded-sm border border-green-200 dark:border-green-800">
                                             CON SIE
                                         </span>
                                     )}
                                 </div>
                                 <button
+                                    type="button"
                                     onClick={() => handleAction(onPrint, req.id)}
                                     disabled={generatingPdfId !== null}
-                                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-gray-100 transition-colors text-uecg-text w-full text-left disabled:opacity-50"
+                                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-uecg-text dark:text-zinc-200 w-full text-left disabled:opacity-50 cursor-pointer"
                                 >
                                     <Printer className="w-3.5 h-3.5" /> Imprimir RUDE
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={() => handleAction(onApprove, req)}
                                     disabled={generatingPdfId !== null}
-                                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-black uppercase tracking-widest text-white bg-uecg-dark hover:bg-uecg-blue transition-colors border-t border-uecg-line w-full text-left disabled:opacity-50"
+                                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-black uppercase tracking-widest text-white bg-uecg-dark hover:bg-uecg-blue transition-colors border-t border-uecg-line dark:border-zinc-800 w-full text-left disabled:opacity-50 cursor-pointer"
                                 >
                                     <Check className="w-3.5 h-3.5" /> Aprobar
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={() => handleAction(onReject, req.id)}
                                     disabled={generatingPdfId !== null}
-                                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-red-600 hover:bg-red-600 hover:text-white transition-colors border-t border-uecg-line w-full text-left disabled:opacity-50"
+                                    className="flex items-center gap-2.5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-colors border-t border-uecg-line dark:border-zinc-800 w-full text-left disabled:opacity-50 cursor-pointer"
                                 >
                                     <X className="w-3.5 h-3.5" /> Rechazar
                                 </button>
@@ -168,7 +167,7 @@ interface EnrollmentsTableProps {
     onPrint: (id: string) => void;
     onApprove: (enrollment: any) => void;
     onReject: (id: string) => void;
-    canManage: boolean; // 🔥 Propiedad ABAC recibida
+    canManage: boolean;
 }
 
 export default function EnrollmentsTable({
@@ -186,19 +185,19 @@ export default function EnrollmentsTable({
     return (
         <SwissTableContainer isFetching={isFetching} isPending={isPending}>
             <table className="w-full text-left border-collapse">
-                <thead>
-                    <tr className="bg-gray-50 border-b border-uecg-line">
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
+                <thead className="sticky top-0 z-20 bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800 shadow-sm">
+                    <tr>
+                        <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
                             Estudiante Solicitante
                         </th>
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
+                        <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
                             Tipo Inscripción
                         </th>
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line text-center">
+                        <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 text-center bg-gray-50 dark:bg-zinc-900">
                             Fecha Solicitud
                         </th>
                         {canManage && (
-                            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-20">
+                            <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 text-center w-20 bg-gray-50 dark:bg-zinc-900">
                                 Acción
                             </th>
                         )}
@@ -207,23 +206,23 @@ export default function EnrollmentsTable({
                 <tbody>
                     {isPending ? (
                         Array.from({ length: 5 }).map((_, i) => (
-                            <tr key={`skeleton-${i}`} className="border-b border-uecg-line animate-pulse">
-                                <td className="px-4 py-4 border-r border-uecg-line flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-gray-200 shrink-0" />
+                            <tr key={`skeleton-${i}`} className="border-b border-uecg-line dark:border-zinc-800 animate-pulse">
+                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800 flex items-center gap-4">
+                                    <div className="w-9 h-9 bg-gray-200 dark:bg-zinc-800 shrink-0" />
                                     <div className="flex flex-col gap-2">
-                                        <div className="h-3 w-40 bg-gray-200" />
-                                        <div className="h-2 w-20 bg-gray-100" />
+                                        <div className="h-3 w-40 bg-gray-200 dark:bg-zinc-800" />
+                                        <div className="h-2 w-20 bg-gray-100 dark:bg-zinc-800/60" />
                                     </div>
                                 </td>
-                                <td className="px-4 py-4 border-r border-uecg-line">
-                                    <div className="h-5 w-20 bg-gray-200" />
+                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800">
+                                    <div className="h-5 w-20 bg-gray-200 dark:bg-zinc-800" />
                                 </td>
-                                <td className="px-4 py-4 border-r border-uecg-line">
-                                    <div className="h-3 w-24 bg-gray-100 mx-auto" />
+                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800">
+                                    <div className="h-4 w-24 bg-gray-200 dark:bg-zinc-800 mx-auto" />
                                 </td>
                                 {canManage && (
                                     <td className="px-4 py-4">
-                                        <div className="h-4 w-4 bg-gray-200 mx-auto" />
+                                        <div className="h-4 w-4 bg-gray-200 dark:bg-zinc-800 mx-auto" />
                                     </td>
                                 )}
                             </tr>
@@ -232,13 +231,12 @@ export default function EnrollmentsTable({
                         <tr>
                             <td colSpan={columnCount} className="p-0">
                                 <SwissEmptyState
-                                    title="Bandeja Vacía"
-                                    description="No hay solicitudes pendientes de revisión."
+                                    title="Sin Solicitudes"
+                                    description="No se encontraron trámites de inscripción registrados."
                                 />
                             </td>
                         </tr>
                     ) : (
-
                         enrollments.map((req: any, index: number) => (
                             <EnrollmentsTableRow
                                 key={req.id}
