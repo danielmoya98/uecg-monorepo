@@ -45,6 +45,31 @@ export class AuditService {
     }
   }
 
+  @OnEvent('institution.*', {
+    async: true,
+  })
+  async handleInstitutionAuditEvent(payload: any) {
+    this.logger.log('🛡️ Auditoría de Dominio: Evento de institución capturado');
+    if (payload?.userId) {
+      try {
+        await this.prisma.auditLog.create({
+          data: {
+            userId: payload.userId,
+            method: 'EVENT',
+            route: `/institutions/${payload.institutionId || ''}`,
+            statusCode: 200,
+            userAgent: 'EventEmitter2 (Domain Event)',
+          },
+        });
+      } catch (err) {
+        this.logger.warn(
+          'No se pudo registrar log de auditoría del evento institucional',
+          err,
+        );
+      }
+    }
+  }
+
   // ======================================================
   // PAGINATED LOGS
   // ======================================================

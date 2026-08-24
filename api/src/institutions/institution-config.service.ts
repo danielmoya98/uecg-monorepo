@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '../prisma/prisma.service';
 import { Institution } from '../../prisma/generated/client';
 
 @Injectable()
 export class InstitutionConfigService {
+  private readonly logger = new Logger(InstitutionConfigService.name);
   private cache: Institution | null = null;
   private cacheExpiry = 0;
   private readonly TTL = 5 * 60 * 1000; // 5 minutos
@@ -57,8 +59,15 @@ export class InstitutionConfigService {
     };
   }
 
+  @OnEvent('institution.*')
+  handleInstitutionEvent() {
+    this.logger.log('🔄 Evento de institución recibido: Purgando caché en memoria');
+    this.invalidate();
+  }
+
   invalidate() {
     this.cache = null;
     this.cacheExpiry = 0;
   }
 }
+
