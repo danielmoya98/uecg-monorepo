@@ -1,4 +1,4 @@
-import { Users, GraduationCap, Library, Loader2 } from "lucide-react";
+import { Users, GraduationCap, Library } from "lucide-react";
 import { motion } from "framer-motion";
 import type { GlobalStats } from "../types/dashboard.types";
 
@@ -53,7 +53,10 @@ export default function GlobalMetricsWidget({ stats, isLoading }: GlobalMetricsW
           </div>
           <div className="mt-auto" aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin text-uecg-gray" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="h-8 w-20 bg-gray-200 animate-pulse" />
+                <div className="h-2.5 w-16 bg-gray-100 animate-pulse mt-1" />
+              </div>
             ) : (
               <>
                 <span className="text-4xl font-black text-uecg-blue tracking-tighter block leading-none">
@@ -82,7 +85,10 @@ export default function GlobalMetricsWidget({ stats, isLoading }: GlobalMetricsW
           </div>
           <div className="mt-auto" aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin text-uecg-gray" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="h-8 w-20 bg-gray-200 animate-pulse" />
+                <div className="h-2.5 w-16 bg-gray-100 animate-pulse mt-1" />
+              </div>
             ) : (
               <>
                 <span className="text-4xl font-black text-uecg-blue tracking-tighter block leading-none">
@@ -111,7 +117,10 @@ export default function GlobalMetricsWidget({ stats, isLoading }: GlobalMetricsW
           </div>
           <div className="mt-auto" aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin text-uecg-gray" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="h-8 w-20 bg-gray-200 animate-pulse" />
+                <div className="h-2.5 w-16 bg-gray-100 animate-pulse mt-1" />
+              </div>
             ) : (
               <>
                 <span className="text-4xl font-black text-uecg-text tracking-tighter block leading-none">
@@ -137,7 +146,10 @@ export default function GlobalMetricsWidget({ stats, isLoading }: GlobalMetricsW
           </span>
           <div className="mt-auto relative z-10" aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin text-white/50" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="h-6 w-28 bg-white/20 animate-pulse" />
+                <div className="h-2.5 w-24 bg-white/10 animate-pulse mt-1" />
+              </div>
             ) : (
               <>
                 <span className="text-2xl font-black text-[#00FF88] uppercase tracking-tighter block leading-none">

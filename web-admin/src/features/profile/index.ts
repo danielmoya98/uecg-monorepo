@@ -3,7 +3,8 @@ export { default as SecurityPanel } from "./components/security-panel";
 export { default as ChangePasswordDrawer } from "./components/change-password-drawer";
 export { SessionsPanel } from "./components/sessions-panel";
 export { SecurityLogsTable } from "./components/security-logs-table";
-export { ProfileHeader, ProfileLoader } from "./components/ui-parts";
+export { ProfileHeader, ProfileLoader, ProfileSkeleton } from "./components/ui-parts";
+
 
 export { useProfileData } from "./hooks/use-profile-data";
 export { useProfileDrawers } from "./hooks/use-profile-drawers";

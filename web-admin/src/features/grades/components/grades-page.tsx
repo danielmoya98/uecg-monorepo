@@ -11,17 +11,79 @@ import { ClosedTrimesterWarning } from './closed-trimester-warning'
 import { GradeRow } from './grade-row'
 import ChangeRequestsDrawer from './change-requests-drawer'
 
+const GradesTableSkeleton = () => (
+  <div className="overflow-x-auto custom-scrollbar flex-1">
+    <table className="w-full text-left border-collapse min-w-[800px]">
+      <thead>
+        <tr className="bg-uecg-dark text-white text-[10px] font-black uppercase tracking-widest leading-none">
+          <th className="p-3 border-r border-white/20">Estudiante</th>
+          <th className="p-3 text-center border-r border-white/20 w-16">SER</th>
+          <th className="p-3 text-center border-r border-white/20 w-16">SAB</th>
+          <th className="p-3 text-center border-r border-white/20 w-16">HAC</th>
+          <th className="p-3 text-center border-r border-white/20 w-16">AUT</th>
+          <th className="p-2 text-center border-r border-white/20 w-16">SUMA</th>
+          <th className="p-2 text-center border-r border-white/20 w-20">RECUP.</th>
+          <th className="p-3 text-center bg-blue-600 w-20">FINAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <tr key={`grades-sk-${i}`} className="border-b border-uecg-line animate-pulse">
+            <td className="p-3 border-r border-uecg-line">
+              <div className="h-3.5 w-44 bg-gray-200" />
+            </td>
+            <td className="p-2 border-r border-uecg-line">
+              <div className="h-8 w-12 bg-gray-100 mx-auto" />
+            </td>
+            <td className="p-2 border-r border-uecg-line">
+              <div className="h-8 w-12 bg-gray-100 mx-auto" />
+            </td>
+            <td className="p-2 border-r border-uecg-line">
+              <div className="h-8 w-12 bg-gray-100 mx-auto" />
+            </td>
+            <td className="p-2 border-r border-uecg-line">
+              <div className="h-8 w-12 bg-gray-100 mx-auto" />
+            </td>
+            <td className="p-2 border-r border-uecg-line">
+              <div className="h-4 w-8 bg-gray-200 mx-auto" />
+            </td>
+            <td className="p-2 border-r border-uecg-line">
+              <div className="h-8 w-14 bg-gray-100 mx-auto" />
+            </td>
+            <td className="p-3 text-center bg-blue-50/30">
+              <div className="h-5 w-10 bg-blue-200 mx-auto" />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)
+
 export default function GradesPage() {
   const [isRequestsDrawerOpen, setIsRequestsDrawerOpen] = useState(false)
 
   // Inyectamos todo el cerebro de operaciones
   const workspace = useGradesWorkspace()
 
-  // Si no tiene acceso, el useEffect del hook lo redirecciona
+  // Si no tiene acceso, el useEffect del hook lo redirecciona mientras muestra skeleton
   if (!workspace.hasAccess) {
     return (
-      <div className="flex h-[50vh] items-center justify-center" aria-live="polite">
-        <Loader2 className="w-8 h-8 animate-spin text-uecg-blue" />
+      <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-20 relative animate-in fade-in duration-300 w-full">
+        <div className="flex justify-between items-center border-b border-uecg-line pb-4 animate-pulse">
+          <div className="flex flex-col gap-2">
+            <div className="h-3 w-32 bg-gray-100" />
+            <div className="h-6 w-56 bg-gray-200" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border border-uecg-line bg-white p-4 animate-pulse">
+          <div className="h-10 bg-gray-100" />
+          <div className="h-10 bg-gray-100" />
+          <div className="h-10 bg-gray-100" />
+        </div>
+        <div className="border border-uecg-line bg-white shadow-sm min-h-[400px]">
+          <GradesTableSkeleton />
+        </div>
       </div>
     )
   }
@@ -94,9 +156,7 @@ export default function GradesPage() {
             </h3>
           </div>
         ) : workspace.isGradesLoading ? (
-          <div className="flex-1 flex items-center justify-center p-20" aria-live="polite">
-            <Loader2 className="w-8 h-8 animate-spin text-uecg-blue" />
-          </div>
+          <GradesTableSkeleton />
         ) : (
           <div className="overflow-x-auto custom-scrollbar flex-1">
             <table className="w-full text-left border-collapse min-w-[800px]">

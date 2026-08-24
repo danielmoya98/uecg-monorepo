@@ -3,7 +3,8 @@ import { useRouteContext } from '@tanstack/react-router'
 import { ShieldCheck, Layers } from 'lucide-react'
 
 import { useRbacData } from '../hooks/use-rbac-data'
-import { RbacHeader, RbacLoader, RbacRestrictedAlert } from './rbac-header'
+import { RbacHeader, RbacRestrictedAlert } from './rbac-header'
+
 import RbacFilters from './rbac-filters'
 import { RoleTable } from './role-table'
 import { RoleGrid } from './role-grid'
@@ -106,13 +107,12 @@ export default function RbacPage() {
                 onViewModeChange={setViewMode}
               />
 
-              {isLoading ? (
-                <RbacLoader />
-              ) : viewMode === 'table' ? (
-                <RoleTable roles={filteredRoles} onAction={handleAction} />
+              {viewMode === 'table' ? (
+                <RoleTable roles={filteredRoles} isPending={isLoading} onAction={handleAction} />
               ) : (
-                <RoleGrid roles={filteredRoles} onAction={handleAction} />
+                <RoleGrid roles={filteredRoles} isPending={isLoading} onAction={handleAction} />
               )}
+
             </div>
           ) : (
             <div

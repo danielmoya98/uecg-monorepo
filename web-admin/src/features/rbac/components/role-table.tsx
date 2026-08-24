@@ -8,12 +8,13 @@ const PROTECTED_ROLES = ['SUPER_ADMIN', 'DIRECTOR', 'DOCENTE', 'PADRE', 'ESTUDIA
 
 interface RoleTableProps {
   roles: Role[]
+  isPending?: boolean
   onAction: (mode: RoleDrawerMode, role: Role) => void
 }
 
-export const RoleTable = ({ roles, onAction }: RoleTableProps) => {
+export const RoleTable = ({ roles, isPending = false, onAction }: RoleTableProps) => {
   return (
-    <SwissTableContainer>
+    <SwissTableContainer isPending={isPending}>
       <table className="w-full text-left border-collapse min-w-[700px]">
         <thead>
           <tr className="bg-gray-50 border-b border-uecg-line">
@@ -35,7 +36,28 @@ export const RoleTable = ({ roles, onAction }: RoleTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {roles.length === 0 ? (
+          {isPending ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <tr key={`role-sk-${i}`} className="border-b border-uecg-line animate-pulse">
+                <td className="px-5 py-4 border-r border-uecg-line flex items-center gap-3.5">
+                  <div className="w-8 h-8 bg-gray-200 shrink-0" />
+                  <div className="h-4 w-32 bg-gray-200" />
+                </td>
+                <td className="px-5 py-4 border-r border-uecg-line">
+                  <div className="h-3 w-56 bg-gray-100" />
+                </td>
+                <td className="px-5 py-4 border-r border-uecg-line text-center">
+                  <div className="h-4 w-6 bg-gray-200 mx-auto" />
+                </td>
+                <td className="px-5 py-4 border-r border-uecg-line text-center">
+                  <div className="h-4 w-6 bg-gray-200 mx-auto" />
+                </td>
+                <td className="px-5 py-4 text-center">
+                  <div className="h-4 w-4 bg-gray-200 mx-auto" />
+                </td>
+              </tr>
+            ))
+          ) : roles.length === 0 ? (
             <tr>
               <td colSpan={5} className="p-0">
                 <SwissEmptyState
@@ -45,6 +67,7 @@ export const RoleTable = ({ roles, onAction }: RoleTableProps) => {
               </td>
             </tr>
           ) : (
+
             roles.map((role, index) => (
               <RoleTableRow
                 key={role.id}
