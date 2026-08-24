@@ -184,12 +184,12 @@ export function ClassroomScheduleDrawer({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-uecg-dark/85 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"
+        className="absolute inset-0 bg-uecg-dark/85 will-change-[opacity] transform-gpu transition-opacity duration-200 animate-in fade-in cursor-pointer"
         onClick={onClose}
       />
 
       {/* Contenedor del Drawer */}
-      <div className="relative w-full md:w-[98vw] h-full bg-gray-50 flex flex-col shadow-[-20px_0_50px_rgba(0,0,0,0.5)] animate-in slide-in-from-right duration-300">
+      <div className="relative w-full md:w-[98vw] h-full bg-gray-50 flex flex-col shadow-[-20px_0_50px_rgba(0,0,0,0.5)] animate-in slide-in-from-right duration-300 will-change-transform transform-gpu">
         <header className="bg-uecg-dark text-white px-6 py-4 md:px-8 md:py-5 border-b border-white/10 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-4 md:gap-6">
             <div
@@ -264,7 +264,7 @@ export function ClassroomScheduleDrawer({
               <div className="flex-1 overflow-y-auto custom-scrollbar bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:20px_20px] p-4 md:p-6 relative">
                 {/* Overlay visual durante mutaciones */}
                 {(isCreating || isDeleting) && (
-                  <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/45 backdrop-blur-xs">
+                  <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/75">
                     <div className="bg-uecg-dark text-white px-6 py-4 flex items-center gap-3 shadow-2xl">
                       <Loader2 className="w-5 h-5 animate-spin" />
                       <span className="text-[10px] font-black uppercase tracking-widest">
@@ -307,11 +307,11 @@ export function ClassroomScheduleDrawer({
         >
           {/* Sub-backdrop */}
           <div
-            className="absolute inset-0 bg-uecg-dark/45 backdrop-blur-xs transition-opacity duration-300"
+            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
             onClick={!isUpdatingSpace ? () => setEditingSlot(null) : undefined}
           />
 
-          <div className="relative h-full w-full max-w-[400px] border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 flex flex-col animate-in slide-in-from-right">
+          <div className="relative h-full w-full max-w-[400px] border-l border-uecg-line bg-white shadow-2xl flex flex-col animate-in slide-in-from-right will-change-transform transform-gpu">
             <div className="bg-uecg-blue text-white border-b border-uecg-blue/20 p-6 relative overflow-hidden shrink-0">
               <div
                 className="absolute -left-4 -bottom-4 w-16 h-16 border-[4px] border-white opacity-10 rounded-none rotate-12 pointer-events-none"

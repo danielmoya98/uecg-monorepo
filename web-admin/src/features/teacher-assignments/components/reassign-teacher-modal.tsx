@@ -79,15 +79,17 @@ export const ReassignTeacherModal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
           onClick={!isSubmitting ? onClose : undefined}
-          className="absolute inset-0 bg-uecg-dark/50 backdrop-blur-sm cursor-pointer"
+          className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
         />
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-lg border border-uecg-line bg-white shadow-2xl z-10 overflow-hidden flex flex-col"
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="relative w-full max-w-lg border border-uecg-line bg-white shadow-2xl z-10 overflow-hidden flex flex-col will-change-transform transform-gpu"
         >
           {/* HEADER SUIZO */}
           <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark text-white p-5">

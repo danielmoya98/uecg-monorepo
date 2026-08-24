@@ -73,15 +73,15 @@ export const StudentCarnetDrawer = ({
       aria-modal="true"
       aria-labelledby="drawer-title"
     >
-      {/* Fondo difuminado interactivo */}
+      {/* Fondo interactivo optimizado para GPU */}
       <div
-        className="absolute inset-0 bg-uecg-dark/40 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
         onClick={onClose}
       />
 
       {/* Cajón suizo brutalista */}
       <div
-        className="relative h-full w-full max-w-lg border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 flex flex-col z-10"
+        className="relative h-full w-full max-w-lg border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 flex flex-col z-10 will-change-transform transform-gpu"
         style={{ transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
       >
         {/* Cabecera geométrica del drawer */}
@@ -115,7 +115,7 @@ export const StudentCarnetDrawer = ({
         {/* Contenido principal */}
         <div className="flex-1 p-6 overflow-hidden bg-gray-50 flex flex-col relative" tabIndex={0}>
           {isLoadingQr ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-uecg-gray gap-4 z-10 bg-white/80 backdrop-blur-sm">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-uecg-gray gap-4 z-10 bg-white/90">
               <Loader2 className="w-10 h-10 animate-spin text-uecg-blue" />
               <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">
                 Consultando registro de identidad...

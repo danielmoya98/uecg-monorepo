@@ -49,13 +49,13 @@ export default function PreviewExcelDrawer({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-uecg-dark/40 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
-        className="relative h-full w-full max-w-2xl border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 flex flex-col z-10 animate-in slide-in-from-right duration-300"
+        className="relative h-full w-full max-w-2xl border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark p-6 text-white shrink-0">
@@ -82,7 +82,7 @@ export default function PreviewExcelDrawer({
         <div className="flex-1 p-6 overflow-hidden bg-gray-50 flex flex-col gap-6 relative">
           {/* Bloqueador de Validación */}
           {isBlockActive && (
-            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-30 flex flex-col items-center justify-center text-center p-8">
+            <div className="absolute inset-0 bg-white/95 z-30 flex flex-col items-center justify-center text-center p-8">
               <div className="w-16 h-16 bg-yellow-50 border border-yellow-200 rounded-none flex items-center justify-center mb-5 rotate-12">
                 <AlertTriangle className="w-8 h-8 text-yellow-600 -rotate-12" />
               </div>

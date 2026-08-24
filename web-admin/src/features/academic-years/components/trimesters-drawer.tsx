@@ -206,8 +206,9 @@ export default function TrimestersDrawer({ isOpen, onClose, academicYear }: Trim
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
             onClick={!isUpdating ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/40 backdrop-blur-sm transition-opacity cursor-pointer"
+            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
           />
 
           {/* Panel Lateral Drawer */}
@@ -216,8 +217,8 @@ export default function TrimestersDrawer({ isOpen, onClose, academicYear }: Trim
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-            className="relative h-full w-full max-w-[420px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10"
+            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
+            className="relative h-full w-full max-w-[420px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
           >
             {/* Cabecera */}
             <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark text-white p-5 gap-4 shrink-0">
