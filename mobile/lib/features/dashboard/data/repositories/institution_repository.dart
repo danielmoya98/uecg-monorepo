@@ -5,6 +5,23 @@ import '../models/institution_model.dart';
 class InstitutionRepository {
   final Dio _dio;
 
+  // 🛡️ BLINDAJE OFFLINE: Caché en memoria para contingencia escolar
+  static AttendanceSettingsModel _cachedAttendanceSettings =
+      const AttendanceSettingsModel(
+    enableQrAttendance: true,
+    enableBiometricAttendance: false,
+    lateToleranceMinutes: 5,
+    absentToleranceMinutes: 15,
+    notificationFrequency: 'ALERTS_ONLY',
+  );
+
+  static CampaignSettingsModel _cachedCampaignSettings =
+      const CampaignSettingsModel(
+    enableDigitalRudeUpdates: false,
+    maxRudeUpdatesPerYear: 2,
+    activeNotificationChannels: ['PUSH_APP'],
+  );
+
   InstitutionRepository({Dio? dio}) : _dio = dio ?? ApiClient.dio;
 
   /// Obtiene los parámetros de control de asistencia de la institución
@@ -15,12 +32,21 @@ class InstitutionRepository {
       final map = data is Map<String, dynamic> && data.containsKey('data')
           ? data['data'] as Map<String, dynamic>
           : data as Map<String, dynamic>;
-      return AttendanceSettingsModel.fromJson(map);
+      final model = AttendanceSettingsModel.fromJson(map);
+      _cachedAttendanceSettings = model;
+      return model;
     } on DioException catch (e) {
-      final message = e.response?.data?['message'] ?? 'Error al obtener configuración de asistencia';
+      // Si la red falla o hay timeout, usamos la última configuración válida guardada
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        return _cachedAttendanceSettings;
+      }
+      final message = e.response?.data?['message'] ??
+          'Error al obtener configuración de asistencia';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Error inesperado: $e');
+      return _cachedAttendanceSettings;
     }
   }
 
@@ -32,12 +58,20 @@ class InstitutionRepository {
       final map = data is Map<String, dynamic> && data.containsKey('data')
           ? data['data'] as Map<String, dynamic>
           : data as Map<String, dynamic>;
-      return CampaignSettingsModel.fromJson(map);
+      final model = CampaignSettingsModel.fromJson(map);
+      _cachedCampaignSettings = model;
+      return model;
     } on DioException catch (e) {
-      final message = e.response?.data?['message'] ?? 'Error al obtener configuración de campaña';
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        return _cachedCampaignSettings;
+      }
+      final message = e.response?.data?['message'] ??
+          'Error al obtener configuración de campaña';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Error inesperado: $e');
+      return _cachedCampaignSettings;
     }
   }
 
