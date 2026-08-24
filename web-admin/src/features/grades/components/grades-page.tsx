@@ -69,7 +69,7 @@ export default function GradesPage() {
   // Si no tiene acceso, el useEffect del hook lo redirecciona mientras muestra skeleton
   if (!workspace.hasAccess) {
     return (
-      <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-20 relative animate-in fade-in duration-300 w-full">
+      <div className="flex flex-col gap-6 w-full pb-20 relative animate-in fade-in duration-300">
         <div className="flex justify-between items-center border-b border-uecg-line pb-4 animate-pulse">
           <div className="flex flex-col gap-2">
             <div className="h-3 w-32 bg-gray-100" />
@@ -94,7 +94,8 @@ export default function GradesPage() {
     (workspace.studentsGrades?.length ?? 0) > 0
 
   return (
-    <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-20 relative animate-in fade-in duration-300 w-full min-h-[calc(100vh-140px)]">
+    <div className="flex flex-col gap-6 w-full pb-20 relative animate-in fade-in duration-300 min-h-[calc(100vh-140px)]">
+
       {workspace.canManageGrades && (
         <ChangeRequestsDrawer
           isOpen={isRequestsDrawerOpen}

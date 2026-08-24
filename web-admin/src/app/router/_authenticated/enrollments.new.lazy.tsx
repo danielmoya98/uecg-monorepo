@@ -10,8 +10,9 @@ export const Route = createLazyFileRoute('/_authenticated/enrollments/new')({
 
 function NewEnrollmentPage() {
   return (
-    <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto animate-in fade-in duration-300 min-h-[calc(100vh-140px)]">
+    <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300 min-h-[calc(100vh-140px)]">
       <NewEnrollmentHeader />
+
       <AdminEnrollmentForm />
     </div>
   )

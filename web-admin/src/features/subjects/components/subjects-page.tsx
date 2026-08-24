@@ -63,8 +63,9 @@ export default function SubjectsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-7xl relative animate-in fade-in duration-300 w-full min-h-[calc(100vh-140px)] justify-between pb-8">
+    <div className="flex flex-col gap-6 w-full relative animate-in fade-in duration-300 min-h-[calc(100vh-140px)] justify-between pb-8">
       <div className="flex flex-col gap-6 w-full relative">
+
         {/* Indicador de carga sutil para actualizaciones en segundo plano */}
         {isFetching && !isPending && (
           <div className="absolute top-0 right-0 flex items-center gap-2 text-uecg-blue text-[10px] font-bold uppercase tracking-widest bg-blue-50 px-3 py-1.5 animate-pulse rounded-sm z-10 border border-blue-100 shadow-sm">

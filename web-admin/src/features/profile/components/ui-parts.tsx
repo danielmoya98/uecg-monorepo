@@ -11,8 +11,9 @@ export const ProfileHeader = () => (
 );
 
 export const ProfileSkeleton = () => (
-  <div className="flex flex-col gap-6 w-full max-w-7xl animate-in fade-in duration-300">
+  <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">
     <ProfileHeader />
+
 
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20">
       {/* Columna Izquierda: Formulario y Logs */}

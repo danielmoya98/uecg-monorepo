@@ -51,8 +51,9 @@ export const AssignmentsHeader = ({
 
 export const TeacherAssignmentsSkeleton = () => {
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] w-full animate-in fade-in duration-300">
+    <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">
       <PageHeader
+
         kicker="GESTIÓN ESCOLAR"
         kickerIcon={CalendarRange}
         title="Carga Horaria"

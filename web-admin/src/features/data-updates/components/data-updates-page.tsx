@@ -24,8 +24,9 @@ export const DataUpdatesPage = () => {
 
   // 4. Renderizado Orquestado con Skeletons Suizos
   return (
-    <div className="flex flex-col gap-6 max-w-7xl mx-auto relative animate-in fade-in duration-300">
+    <div className="flex flex-col gap-6 w-full relative animate-in fade-in duration-300">
       <DataUpdatesHeader />
+
 
       {/* Solo los que pueden escribir ven el Centro de Mando Omnicanal (Push/WhatsApp) */}
       {canManageRude && <BroadcastCommandCenter />}

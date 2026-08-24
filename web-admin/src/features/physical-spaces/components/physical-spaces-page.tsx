@@ -50,8 +50,9 @@ export default function PhysicalSpacesPage() {
   } = usePhysicalSpacesDrawers(canManageSpaces)
 
   return (
-    <div className="flex flex-col gap-6 max-w-7xl relative animate-in fade-in duration-300">
+    <div className="flex flex-col gap-6 w-full relative animate-in fade-in duration-300">
       {/* Cabecera */}
+
       <PhysicalSpacesHeader canManageSpaces={canManageSpaces} onOpenCreate={openCreate} />
 
       {/* Barra de Filtros */}

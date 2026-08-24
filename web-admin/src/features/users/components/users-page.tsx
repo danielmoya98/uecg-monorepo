@@ -66,8 +66,9 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-7xl relative animate-in fade-in duration-300 w-full min-h-[calc(100vh-140px)] justify-between pb-8">
+    <div className="flex flex-col gap-6 w-full relative animate-in fade-in duration-300 min-h-[calc(100vh-140px)] justify-between pb-8">
       <div className="flex flex-col gap-6 w-full relative">
+
         {/* CABECERA (Brutalismo Suizo) */}
         <UsersHeader
           onOpenCreate={() => handleAction('create')}

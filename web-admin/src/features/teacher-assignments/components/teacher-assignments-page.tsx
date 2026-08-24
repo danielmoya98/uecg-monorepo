@@ -109,8 +109,9 @@ export const TeacherAssignmentsPage = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] w-full animate-in fade-in duration-300">
+    <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">
       <AssignmentsHeader
+
         year={currentYear.year}
         canManage={canManageAssignments}
         onOpenClone={() => handleOpenClone(assignments)}

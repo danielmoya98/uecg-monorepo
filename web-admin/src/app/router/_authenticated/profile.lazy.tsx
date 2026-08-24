@@ -26,8 +26,9 @@ function ProfilePage() {
 
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-7xl animate-in fade-in duration-300">
+    <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">
       <ProfileHeader />
+
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20">
         <div className="lg:col-span-7 flex flex-col gap-6">
