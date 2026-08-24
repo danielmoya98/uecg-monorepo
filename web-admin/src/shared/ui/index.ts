@@ -3,5 +3,8 @@ export * from './swiss-input'
 export * from './initial-splash-screen'
 export * from './drawer-shell'
 export * from './route-pending-indicator'
-
-
+export * from './swiss-search-input'
+export * from './swiss-select'
+export * from './swiss-pagination'
+export * from './swiss-empty-state'
+export * from './swiss-table-container'

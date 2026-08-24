@@ -1,7 +1,9 @@
 
 
 import { useState, useRef, useEffect } from "react";
-import { Loader2, MoreVertical, Check, X, Printer, FileText } from "lucide-react";
+import { Loader2, MoreVertical, Check, X, Printer } from "lucide-react";
+import { SwissTableContainer, SwissEmptyState } from "@/shared/ui";
+
 
 // ==========================================
 // COMPONENTE VISUAL: Emblema de Estudiante
@@ -179,53 +181,49 @@ export default function EnrollmentsTable({
     onReject,
     canManage,
 }: EnrollmentsTableProps) {
-    // Calculamos columnas dinámicamente para los mensajes que ocupan toda la fila
     const columnCount = canManage ? 4 : 3;
 
     return (
-        <div className="border border-uecg-line bg-white pb-16 shadow-sm overflow-hidden">
+        <SwissTableContainer isFetching={isFetching} isPending={isPending}>
             <table className="w-full text-left border-collapse">
                 <thead>
-                    <tr className="bg-gray-50 border-b border-uecg-line">
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
+                    <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800">
+                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">
                             Estudiante Solicitante
                         </th>
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
+                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">
                             Tipo Inscripción
                         </th>
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line text-center">
+                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 text-center">
                             Fecha Solicitud
                         </th>
-                        {/* 🔥 ESCUDO: Ocultamos cabecera si no tiene permisos */}
                         {canManage && (
-                            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-20">
+                            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 text-center w-20">
                                 Acción
                             </th>
                         )}
                     </tr>
                 </thead>
-                <tbody
-                    className={`transition-opacity duration-200 ${isFetching && !isPending ? "opacity-50 pointer-events-none" : "opacity-100"}`}
-                >
+                <tbody>
                     {isPending ? (
                         Array.from({ length: 5 }).map((_, i) => (
-                            <tr key={`skeleton-${i}`} className="border-b border-uecg-line animate-pulse">
-                                <td className="px-4 py-4 border-r border-uecg-line flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-gray-200 shrink-0"></div>
+                            <tr key={`skeleton-${i}`} className="border-b border-uecg-line dark:border-zinc-800 animate-pulse">
+                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800 flex items-center gap-4">
+                                    <div className="w-10 h-10 bg-gray-200 dark:bg-zinc-800 shrink-0" />
                                     <div className="flex flex-col gap-2">
-                                        <div className="h-3 w-40 bg-gray-200"></div>
-                                        <div className="h-2 w-20 bg-gray-100"></div>
+                                        <div className="h-3 w-40 bg-gray-200 dark:bg-zinc-800" />
+                                        <div className="h-2 w-20 bg-gray-100 dark:bg-zinc-800/60" />
                                     </div>
                                 </td>
-                                <td className="px-4 py-4 border-r border-uecg-line">
-                                    <div className="h-5 w-20 bg-gray-200"></div>
+                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800">
+                                    <div className="h-5 w-20 bg-gray-200 dark:bg-zinc-800" />
                                 </td>
-                                <td className="px-4 py-4 border-r border-uecg-line">
-                                    <div className="h-3 w-24 bg-gray-100 mx-auto"></div>
+                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800">
+                                    <div className="h-3 w-24 bg-gray-100 dark:bg-zinc-800 mx-auto" />
                                 </td>
                                 {canManage && (
                                     <td className="px-4 py-4">
-                                        <div className="h-4 w-4 bg-gray-200 mx-auto"></div>
+                                        <div className="h-4 w-4 bg-gray-200 dark:bg-zinc-800 mx-auto" />
                                     </td>
                                 )}
                             </tr>
@@ -233,21 +231,10 @@ export default function EnrollmentsTable({
                     ) : enrollments.length === 0 ? (
                         <tr>
                             <td colSpan={columnCount} className="p-0">
-                                <div className="flex flex-col items-center justify-center py-20 opacity-80 animate-in fade-in zoom-in-95">
-                                    <div className="relative w-24 h-24 mb-6">
-                                        <div className="absolute top-0 left-0 w-16 h-16 border-4 border-uecg-line rounded-none rotate-12"></div>
-                                        <div className="absolute bottom-0 right-0 w-12 h-12 bg-gray-100 -rotate-12"></div>
-                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-3 shadow-sm border border-uecg-line">
-                                            <FileText className="w-6 h-6 text-uecg-gray" strokeWidth={1.5} />
-                                        </div>
-                                    </div>
-                                    <h3 className="font-black uppercase tracking-widest text-xs text-uecg-dark mb-1">
-                                        Bandeja Vacía
-                                    </h3>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-uecg-gray">
-                                        No hay solicitudes pendientes de revisión.
-                                    </p>
-                                </div>
+                                <SwissEmptyState
+                                    title="Bandeja Vacía"
+                                    description="No hay solicitudes pendientes de revisión."
+                                />
                             </td>
                         </tr>
                     ) : (
@@ -260,12 +247,12 @@ export default function EnrollmentsTable({
                                 onPrint={onPrint}
                                 onApprove={onApprove}
                                 onReject={onReject}
-                                canManage={canManage} // 🔥 Pasado al componente hijo
+                                canManage={canManage}
                             />
                         ))
                     )}
                 </tbody>
             </table>
-        </div>
+        </SwissTableContainer>
     );
 }

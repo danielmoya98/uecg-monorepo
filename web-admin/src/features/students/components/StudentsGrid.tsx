@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Loader2, Eye, Printer, QrCode, Bell, FolderCheck, Trash2, FileText } from "lucide-react";
+import { Loader2, Eye, Printer, QrCode, Bell, FolderCheck, Trash2 } from "lucide-react";
+import { SwissEmptyState } from "@/shared/ui";
+
 
 interface StudentCardProps {
   student: any;
@@ -167,25 +169,16 @@ export default function StudentsGrid({
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={`skeleton-grid-${i}`}
-              className="border border-uecg-line bg-white h-[180px] animate-pulse shadow-sm"
-            ></div>
+              className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] h-[180px] animate-pulse shadow-sm"
+            />
           ))}
         </div>
       ) : enrollments.length === 0 ? (
-        <div className="border border-uecg-line bg-white flex flex-col items-center justify-center py-20 opacity-80 animate-in fade-in zoom-in-95 shadow-sm">
-          <div className="relative w-24 h-24 mb-6">
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-uecg-line rounded-none rotate-12"></div>
-            <div className="absolute bottom-0 right-0 w-12 h-12 bg-gray-100 -rotate-12"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-3 shadow-sm border border-uecg-line">
-              <FileText className="w-6 h-6 text-uecg-gray" strokeWidth={1.5} />
-            </div>
-          </div>
-          <h3 className="font-black uppercase tracking-widest text-xs text-uecg-dark mb-1">
-            Búsqueda sin resultados
-          </h3>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-uecg-gray">
-            No se encontraron estudiantes para los filtros actuales.
-          </p>
+        <div className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] shadow-sm">
+          <SwissEmptyState
+            title="Búsqueda sin resultados"
+            description="No se encontraron estudiantes para los filtros actuales."
+          />
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

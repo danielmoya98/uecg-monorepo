@@ -1,179 +1,147 @@
-
-
-import { Check, FileText, Loader2, Printer, X } from "lucide-react";
+import { Check, Loader2, Printer, X } from "lucide-react";
+import { SwissEmptyState } from "@/shared/ui";
 
 interface EnrollmentsGridProps {
-    enrollments: any[];
-    isPending: boolean;
-    isFetching: boolean;
-    generatingPdfId: string | null;
-    onPrint: (id: string) => void;
-    onApprove: (enrollment: any) => void;
-    onReject: (id: string) => void;
-    canManage: boolean;
+  enrollments: any[];
+  isPending: boolean;
+  isFetching: boolean;
+  generatingPdfId: string | null;
+  onPrint: (id: string) => void;
+  onApprove: (enrollment: any) => void;
+  onReject: (id: string) => void;
+  canManage: boolean;
 }
 
 const getBadgeStyles = (type: string) => {
-    if (type === "NUEVO") return "bg-uecg-dark text-white border-uecg-dark";
-    if (type === "TRASPASO") return "bg-yellow-500 text-white border-yellow-500";
-    return "bg-uecg-blue text-white border-uecg-blue"; // ANTIGUO
+  if (type === "NUEVO") return "bg-uecg-dark text-white border-uecg-dark dark:bg-zinc-800 dark:border-zinc-700";
+  if (type === "TRASPASO") return "bg-yellow-500 text-white border-yellow-500";
+  return "bg-uecg-blue text-white border-uecg-blue dark:bg-blue-600";
 };
 
 const getLabelStyles = (type: string) => {
-    if (type === "NUEVO") return "bg-gray-100 text-uecg-dark border-gray-200";
-    if (type === "TRASPASO") return "bg-yellow-50 text-yellow-700 border-yellow-200";
-    return "bg-blue-50 text-uecg-blue border-blue-100"; // ANTIGUO
+  if (type === "NUEVO") return "bg-gray-100 dark:bg-zinc-800 text-uecg-dark dark:text-zinc-200 border-gray-200 dark:border-zinc-700";
+  if (type === "TRASPASO") return "bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-900/40";
+  return "bg-blue-50 dark:bg-blue-950/20 text-uecg-blue dark:text-blue-400 border-blue-100 dark:border-blue-900/40";
 };
 
 export default function EnrollmentsGrid({
-    enrollments,
-    isPending,
-    isFetching,
-    generatingPdfId,
-    onPrint,
-    onApprove,
-    onReject,
-    canManage,
+  enrollments,
+  isPending,
+  isFetching,
+  generatingPdfId,
+  onPrint,
+  onApprove,
+  onReject,
+  canManage,
 }: EnrollmentsGridProps) {
-    return (
-        <div
-            className={`transition-opacity duration-200 pb-16 ${isFetching && !isPending ? "opacity-50 pointer-events-none" : "opacity-100"}`}
-        >
-            {isPending ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                        <div
-                            key={`skeleton-${i}`}
-                            className="border border-uecg-line bg-white h-[200px] animate-pulse shadow-sm"
-                        ></div>
-                    ))}
-                </div>
-            ) : enrollments.length === 0 ? (
-                <div className="border border-uecg-line bg-white flex flex-col items-center justify-center py-20 opacity-80 animate-in fade-in zoom-in-95 shadow-sm">
-                    <div className="relative w-24 h-24 mb-6">
-                        <div className="absolute top-0 left-0 w-16 h-16 border-4 border-uecg-line rounded-none rotate-12"></div>
-                        <div className="absolute bottom-0 right-0 w-12 h-12 bg-gray-100 -rotate-12"></div>
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-3 shadow-sm border border-uecg-line">
-                            <FileText className="w-6 h-6 text-uecg-gray" strokeWidth={1.5} />
-                        </div>
-                    </div>
-                    <h3 className="font-black uppercase tracking-widest text-xs text-uecg-dark mb-1">Bandeja Vacía</h3>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-uecg-gray">
-                        No hay solicitudes pendientes de revisión.
-                    </p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in duration-300">
-                    {enrollments.map((req) => {
-                        const initial = req.studentName.charAt(0).toUpperCase();
-
-                        return (
-                            <div
-                                key={req.id}
-                                className={`group flex flex-col text-left border border-uecg-line bg-white h-[210px] relative overflow-hidden transition-all duration-300 ${
-                                    canManage ? "hover:border-uecg-blue hover:shadow-lg" : "opacity-90"
-                                }`}
-                            >
-                                {/* Fondo Abstracto Geométrico */}
-                                {canManage && (
-                                    <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-uecg-blue/5 rounded-none rotate-45 pointer-events-none group-hover:scale-150 group-hover:bg-uecg-blue/10 transition-transform duration-500"></div>
-                                )}
-
-                                <div className="p-5 flex-1 w-full relative z-10 flex flex-col">
-                                    <div className="flex justify-between items-start w-full mb-3">
-                                        <div
-                                            className={`w-10 h-10 flex items-center justify-center font-black text-xl shadow-sm shrink-0 border ${getBadgeStyles(req.type)}`}
-                                        >
-                                            {initial}
-                                        </div>
-                                        <div className="flex flex-col items-end gap-1">
-                                            <span
-                                                className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 border shadow-sm ${getLabelStyles(req.type)}`}
-                                            >
-                                                {req.type}
-                                            </span>
-                                            <span className="text-[9px] font-bold text-uecg-gray uppercase tracking-widest mt-1">
-                                                {req.date}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <h3
-                                        className={`text-[15px] font-black uppercase tracking-tighter text-uecg-dark mt-1 leading-tight transition-colors line-clamp-2 ${canManage ? "group-hover:text-uecg-blue" : ""}`}
-                                        title={req.studentName}
-                                    >
-                                        {req.studentName}
-                                    </h3>
-
-                                    <div className="mt-auto w-full flex flex-col gap-1">
-                                        <span className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest">
-                                            CI: {req.ci}
-                                        </span>
-                                        {req.classroom && (
-                                            <span className="text-[10px] font-black text-uecg-blue uppercase tracking-widest truncate block w-fit max-w-full">
-                                                {req.classroom}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* 🔥 BARRA INFERIOR DIVIDIDA: Acciones Administrativas */}
-                                <div className="w-full border-t border-uecg-line bg-gray-50 flex h-12 relative z-10 divide-x divide-uecg-line">
-                                    {/* Imprimir RUDE */}
-                                    <button
-                                        onClick={() => onPrint(req.id)}
-                                        disabled={generatingPdfId !== null || !canManage}
-                                        className={`flex-1 flex items-center justify-center transition-colors outline-none h-full ${
-                                            canManage
-                                                ? "hover:bg-gray-100 text-uecg-dark"
-                                                : "bg-gray-100 text-gray-300 cursor-not-allowed"
-                                        }`}
-                                        title="Imprimir RUDE"
-                                    >
-                                        {generatingPdfId === req.id ? (
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                        ) : (
-                                            <Printer className="w-4 h-4" />
-                                        )}
-                                    </button>
-
-                                    {/* Aprobar */}
-                                    {canManage ? (
-                                        <button
-                                            onClick={() => onApprove(req)}
-                                            disabled={generatingPdfId !== null}
-                                            className="flex-1 flex items-center justify-center bg-uecg-dark text-white hover:bg-uecg-blue transition-colors outline-none h-full disabled:opacity-50"
-                                            title="Aprobar Inscripción"
-                                        >
-                                            <Check className="w-4 h-4" />
-                                        </button>
-                                    ) : (
-                                        <div className="flex-1 flex items-center justify-center bg-gray-100 text-gray-300 cursor-not-allowed h-full">
-                                            <Check className="w-4 h-4" />
-                                        </div>
-                                    )}
-
-                                    {/* Rechazar */}
-                                    {canManage ? (
-                                        <button
-                                            onClick={() => onReject(req.id)}
-                                            disabled={generatingPdfId !== null}
-                                            className="flex-1 flex items-center justify-center bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors outline-none h-full disabled:opacity-50"
-                                            title="Rechazar Inscripción"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
-                                    ) : (
-                                        <div className="flex-1 flex items-center justify-center bg-gray-100 text-gray-300 cursor-not-allowed h-full">
-                                            <X className="w-4 h-4" />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
+  return (
+    <div
+      className={`transition-opacity duration-200 pb-16 ${
+        isFetching && !isPending ? "opacity-50 pointer-events-none" : "opacity-100"
+      }`}
+    >
+      {isPending ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={`skeleton-enrollment-${i}`}
+              className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] h-[200px] animate-pulse shadow-sm"
+            />
+          ))}
         </div>
-    );
+      ) : enrollments.length === 0 ? (
+        <div className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] shadow-sm">
+          <SwissEmptyState
+            title="Bandeja Vacía"
+            description="No hay solicitudes pendientes de revisión."
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {enrollments.map((req: any, index: number) => {
+            const initial = req.studentName.charAt(0).toUpperCase();
+
+            return (
+              <div
+                key={req.id}
+                className="border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] shadow-sm flex flex-col justify-between hover:border-uecg-blue dark:hover:border-blue-500 hover:shadow-md transition-all duration-300 animate-in fade-in zoom-in-95 group fill-mode-both"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {/* Cabecera del Card */}
+                <div className="p-5 flex items-start gap-4">
+                  <div
+                    className={`w-12 h-12 flex items-center justify-center font-black text-xl shadow-inner shrink-0 ${getBadgeStyles(
+                      req.type
+                    )}`}
+                  >
+                    {initial}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-black uppercase tracking-tight text-xs text-uecg-dark dark:text-zinc-100 truncate group-hover:text-uecg-blue dark:group-hover:text-blue-400 transition-colors">
+                      {req.studentName}
+                    </p>
+                    <p className="text-[9px] font-bold text-uecg-gray dark:text-zinc-400 uppercase tracking-widest mt-0.5 truncate">
+                      CI: {req.ci}
+                    </p>
+                    <p className="text-[10px] font-black text-uecg-text dark:text-zinc-300 uppercase tracking-widest mt-1.5 truncate">
+                      {req.grade}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Subheader / Metadata */}
+                <div className="px-5 py-3 bg-gray-50/50 dark:bg-zinc-900/50 border-t border-b border-uecg-line dark:border-zinc-800 flex items-center justify-between">
+                  <span
+                    className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 border ${getLabelStyles(
+                      req.type
+                    )}`}
+                  >
+                    {req.type}
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-uecg-gray dark:text-zinc-400">
+                    {req.date}
+                  </span>
+                </div>
+
+                {/* Botones de acción */}
+                <div className="p-3 bg-white dark:bg-[#121214] flex items-center justify-between gap-2">
+                  <button
+                    onClick={() => onPrint(req.id)}
+                    disabled={generatingPdfId === req.id}
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-uecg-gray dark:text-zinc-400 hover:text-uecg-dark dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-uecg-line dark:hover:border-zinc-700 disabled:opacity-50"
+                    title="Imprimir RUDE"
+                  >
+                    {generatingPdfId === req.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-uecg-blue" />
+                    ) : (
+                      <Printer className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  {canManage && (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => onReject(req.id)}
+                        className="px-3 py-1.5 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 text-[9px] font-black uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1"
+                        title="Rechazar Inscripción"
+                      >
+                        <X className="w-3.5 h-3.5" /> Rechazar
+                      </button>
+                      <button
+                        onClick={() => onApprove(req)}
+                        className="px-3 py-1.5 bg-uecg-dark dark:bg-zinc-800 hover:bg-uecg-blue dark:hover:bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1"
+                        title="Aprobar Inscripción"
+                      >
+                        <Check className="w-3.5 h-3.5" /> Aprobar
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
