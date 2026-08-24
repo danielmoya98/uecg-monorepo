@@ -66,4 +66,41 @@ export const AcademicYearsService = {
     const response = await api.delete(`/academic-years/${id}`)
     return response.data
   },
+
+  /**
+   * 🛡️ Pre-validación de Integridad: Verifica si la gestión cumple condiciones para ser clausurada.
+   */
+  checkCanClose: async (id: string): Promise<{
+    canClose: boolean
+    openTrimesters: string[]
+    pendingDataUpdatesCount: number
+    reasons: string[]
+  }> => {
+    const response = await api.get(`/academic-years/${id}/can-close`)
+    return response.data
+  },
+
+  /**
+   * 🔄 Clonación Atómica de Estructura: Copia cursos y carga horaria desde un año origen.
+   */
+  cloneStructure: async (
+    targetYearId: string,
+    payload: {
+      sourceYearId: string
+      cloneAssignments?: boolean
+      cloneBaseRooms?: boolean
+    }
+  ): Promise<{
+    message: string
+    sourceYear: number
+    targetYear: number
+    clonedClassroomsCount: number
+    clonedAssignmentsCount: number
+  }> => {
+    const response = await api.post(
+      `/academic-years/${targetYearId}/clone-structure`,
+      payload
+    )
+    return response.data
+  },
 }
