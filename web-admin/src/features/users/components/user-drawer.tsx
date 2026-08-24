@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { X, FileText } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AnimatePresence, motion } from 'framer-motion'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import { userSchema } from '../schemas/user.schema'
 import type { UserFormValues } from '../schemas/user.schema'
+
 import type { DrawerMode } from '../hooks/use-users-data'
 import type { User } from '../types/users.types'
 
@@ -237,103 +237,63 @@ export default function UserDrawer({
     reactivate: 'Reactivar Usuario',
   }
 
-  const headerClasses =
+  const headerVariant: 'default' | 'danger' | 'success' | 'warning' =
     mode === 'delete'
-      ? 'bg-red-50 border-red-200 text-red-600'
+      ? 'danger'
       : mode === 'reactivate'
-        ? 'bg-green-50 border-green-200 text-green-700'
+        ? 'success'
         : mode === 'reset'
-          ? 'bg-yellow-50 border-yellow-200 text-yellow-700'
-          : 'bg-gray-50 border-uecg-line text-uecg-gray'
+          ? 'warning'
+          : 'default'
 
-  // Renderizado inyectado mediante Portal en el body
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-[9999] flex justify-end"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="drawer-title"
-        >
-          {/* Fondo interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-            onClick={!isSubmitting ? onClose : undefined}
+  const iconDisplay =
+    mode === 'delete'
+      ? '!'
+      : mode === 'reactivate'
+        ? '✓'
+        : mode === 'reset'
+          ? '🔑'
+          : mode === 'create'
+            ? '+'
+            : userData?.fullName?.charAt(0).toUpperCase() || 'U'
+
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title={titles[mode]}
+      kicker="Gestión de Accesos"
+      icon={iconDisplay}
+      headerVariant={headerVariant}
+      isSubmitting={isSubmitting}
+      maxWidth="max-w-[420px]"
+    >
+      {/* Contenedor scrollable */}
+      <div className="p-5 overflow-y-auto flex-1 custom-scrollbar" tabIndex={0}>
+        {mode === 'delete' || mode === 'reactivate' || mode === 'reset' ? (
+          <UserActionConfirm
+            mode={mode}
+            fullName={userData?.fullName || ''}
+            onCancel={onClose}
+            onConfirm={handleConfirmAction}
+            isSubmitting={isSubmitting}
+            isGeneratingPDF={isGeneratingPDF}
           />
-
-          {/* Cajón suizo brutalista */}
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-[400px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* Cabecera geométrica del drawer */}
-            <div
-              className={`flex items-center justify-between border-b p-6 relative overflow-hidden ${headerClasses}`}
-            >
-              {/* Elementos Bauhaus estáticos de baja opacidad */}
-              <div className="absolute -right-8 -top-8 w-24 h-24 border-[6px] border-current opacity-10 rounded-full pointer-events-none" />
-              <div className="absolute right-12 -bottom-4 w-12 h-12 bg-current opacity-10 rotate-45 pointer-events-none" />
-              <div className="absolute left-1/2 bottom-0 w-8 h-2 bg-current opacity-10 pointer-events-none" />
-
-              <div className="relative z-10">
-                <span className="label-swiss !mb-0 !text-[9px] text-inherit">
-                  Gestión de Accesos
-                </span>
-                <h2
-                  id="drawer-title"
-                  className="text-xl font-black uppercase tracking-tighter text-uecg-dark mt-0.5"
-                >
-                  {titles[mode]}
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isSubmitting}
-                className="p-1.5 relative z-10 text-uecg-gray hover:text-red-600 transition-colors focus:outline-none disabled:opacity-50 bg-white/50 rounded-full hover:bg-red-50 cursor-pointer"
-                aria-label="Cerrar cajón"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Contenedor scrollable */}
-            <div className="p-5 overflow-y-auto flex-1 custom-scrollbar" tabIndex={0}>
-              {mode === 'delete' || mode === 'reactivate' || mode === 'reset' ? (
-                <UserActionConfirm
-                  mode={mode}
-                  fullName={userData?.fullName || ''}
-                  onCancel={onClose}
-                  onConfirm={handleConfirmAction}
-                  isSubmitting={isSubmitting}
-                  isGeneratingPDF={isGeneratingPDF}
-                />
-              ) : (
-                <UserForm
-                  mode={mode}
-                  register={register}
-                  errors={errors}
-                  fullNameValue={fullNameValue}
-                  generatedEmail={generatedEmail}
-                  generatedPassword={generatedPassword}
-                  onSubmit={handleSubmit(handleFormSubmit)}
-                  isSubmitting={isSubmitting}
-                  isGeneratingPDF={isGeneratingPDF}
-                />
-              )}
-            </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+        ) : (
+          <UserForm
+            mode={mode}
+            register={register}
+            errors={errors}
+            fullNameValue={fullNameValue}
+            generatedEmail={generatedEmail}
+            generatedPassword={generatedPassword}
+            onSubmit={handleSubmit(handleFormSubmit)}
+            isSubmitting={isSubmitting}
+            isGeneratingPDF={isGeneratingPDF}
+          />
+        )}
+      </div>
+    </DrawerShell>
   )
 }
+

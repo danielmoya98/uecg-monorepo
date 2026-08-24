@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { X, Loader2, FolderCheck, Bell, AlertCircle } from "lucide-react";
+import { Loader2, FolderCheck, Bell, AlertCircle } from "lucide-react";
+import { DrawerShell } from "@/shared/ui/drawer-shell";
 
 interface StudentActionDrawerProps {
   isOpen: boolean;
@@ -19,31 +18,14 @@ export default function StudentActionDrawer({
   isPending,
   onConfirm,
 }: StudentActionDrawerProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Escape key support
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen || !actionType) return null;
+  if (!actionType) return null;
 
   const getActionDetails = () => {
     if (actionType === "MARK_PHYSICAL") {
       return {
         title: "Entregar Expediente Físico",
         icon: <FolderCheck className="w-5 h-5 text-white" />,
-        headerBg: "bg-green-600 border-green-500",
+        headerVariant: "success" as const,
         message: `Confirmar entrega del folder con toda la documentación oficial (Certificado de Nacimiento, CI, vacunas) de:`,
         warning: "Esta acción marcará al estudiante con 'Expediente Físico Completo' en el sistema, habilitando trámites del SIE.",
         confirmBtn: "Registrar Entrega",
@@ -52,7 +34,7 @@ export default function StudentActionDrawer({
       return {
         title: "Enviar Notificación",
         icon: <Bell className="w-5 h-5 text-white" />,
-        headerBg: "bg-uecg-blue border-blue-500",
+        headerVariant: "blue" as const,
         message: `Está a punto de enviar una notificación de alerta RUDE al apoderado registrado de:`,
         warning: "Se enviará una alerta automática (SMS / Correo / WhatsApp) solicitando la actualización urgente de datos socioeconómicos.",
         confirmBtn: "Enviar Notificación",
@@ -62,59 +44,33 @@ export default function StudentActionDrawer({
 
   const details = getActionDetails();
 
-  const content = (
-    <div
-      className="fixed inset-0 z-[9999] flex justify-end"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="action-title"
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title={details.title}
+      kicker="Secretaría Académica"
+      icon={details.icon}
+      headerVariant={details.headerVariant}
+      isSubmitting={isPending}
+      maxWidth="max-w-md"
     >
-      {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
-        onClick={onClose}
-      />
-
-      {/* Panel */}
-      <div
-        className="relative h-full w-full max-w-sm border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
-      >
-        {/* Cabecera */}
-        <div className={`flex items-center justify-between border-b-4 ${details.headerBg} bg-uecg-dark p-6 text-white shrink-0`}>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-black/25 flex items-center justify-center">
-              {details.icon}
-            </div>
-            <div>
-              <span className="text-[9px] font-black uppercase tracking-widest text-gray-300">Secretaría Académica</span>
-              <h2 id="action-title" className="text-lg font-black uppercase tracking-tighter mt-0.5">
-                {details.title}
-              </h2>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-white/50 hover:text-white transition-colors bg-white/10 rounded-full hover:bg-white/20 cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
+      <div className="flex flex-col h-full">
         {/* Cuerpo */}
-        <div className="flex-1 p-6 overflow-y-auto bg-gray-50 flex flex-col gap-6">
-          <div className="bg-white p-5 border border-uecg-line shadow-sm flex flex-col gap-4">
+        <div className="flex-1 p-6 overflow-y-auto bg-gray-50 dark:bg-zinc-900/50 flex flex-col gap-6">
+          <div className="bg-white dark:bg-zinc-900 p-5 border border-uecg-line shadow-sm flex flex-col gap-4">
             <p className="text-[10px] font-bold text-uecg-gray uppercase tracking-widest leading-relaxed">
               {details.message}
             </p>
-            <p className="text-xs font-black text-uecg-dark uppercase tracking-tight">
+            <p className="text-xs font-black text-uecg-dark dark:text-zinc-100 uppercase tracking-tight">
               {studentName}
             </p>
           </div>
 
-          <div className="border border-yellow-200 bg-yellow-50 p-4 flex gap-2.5">
-            <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
+          <div className="border border-yellow-200 dark:border-yellow-900/40 bg-yellow-50 dark:bg-yellow-950/20 p-4 flex gap-2.5">
+            <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5" />
             <div>
-              <span className="text-[9px] font-black uppercase tracking-tight text-yellow-700 block mb-0.5">Nota Importante</span>
+              <span className="text-[9px] font-black uppercase tracking-tight text-yellow-700 dark:text-yellow-400 block mb-0.5">Nota Importante</span>
               <p className="text-[9px] font-bold text-uecg-gray uppercase tracking-widest leading-relaxed">
                 {details.warning}
               </p>
@@ -123,10 +79,11 @@ export default function StudentActionDrawer({
         </div>
 
         {/* Footer */}
-        <footer className="p-5 border-t border-uecg-line bg-gray-50 flex gap-3 shrink-0">
+        <footer className="p-5 border-t border-uecg-line bg-gray-50 dark:bg-zinc-900 flex gap-3 shrink-0">
           <button
             onClick={onClose}
-            className="flex-1 py-3 text-[10px] font-bold uppercase tracking-widest border border-uecg-line bg-white hover:bg-gray-100 text-uecg-gray transition-colors shadow-sm outline-none cursor-pointer"
+            disabled={isPending}
+            className="flex-1 py-3 text-[10px] font-bold uppercase tracking-widest border border-uecg-line bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 text-uecg-gray dark:text-zinc-200 transition-colors shadow-sm outline-none cursor-pointer disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -143,8 +100,6 @@ export default function StudentActionDrawer({
           </button>
         </footer>
       </div>
-    </div>
+    </DrawerShell>
   );
-
-  return isClient ? createPortal(content, document.body) : null;
 }

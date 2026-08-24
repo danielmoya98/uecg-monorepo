@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
-import { X, Layers, Loader2, MapPin } from 'lucide-react'
+import { Layers, Loader2, MapPin } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { AnimatePresence, motion } from 'framer-motion'
 import { toast } from 'sonner'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import { CustomSelect } from './custom-select'
 import { ClassroomsService } from '../api/classrooms.service'
 import { InstitutionsService } from '@/features/institutions/api/institutions.service'
 import { PhysicalSpacesService } from '@/features/physical-spaces'
 import type { BulkClassroomPayload } from '../types/classrooms.types'
+
 
 interface BulkClassroomDrawerProps {
   isOpen: boolean
@@ -215,57 +215,19 @@ export const BulkClassroomDrawer = ({
     }
   }, [isOpen, onClose, isProcessing])
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex justify-end">
-          {/* Overlay interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={!isProcessing ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-          />
-
-          {/* Panel Lateral Drawer */}
-          <motion.div
-            ref={drawerRef}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-[460px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* Header del Cajón */}
-            <div className="flex items-center justify-between border-b border-uecg-line bg-gray-50 p-6 relative overflow-hidden text-uecg-gray shrink-0">
-              <div className="absolute -right-6 -top-6 w-24 h-24 border-[8px] border-current opacity-10 rounded-none rotate-12 pointer-events-none"></div>
-              <div className="absolute right-10 -bottom-4 w-12 h-12 border-[4px] border-current opacity-10 -rotate-12 pointer-events-none"></div>
-              
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-10 h-10 bg-uecg-blue text-white flex items-center justify-center shadow-sm">
-                  <Layers className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="label-swiss !mb-0 !text-[9px] text-inherit">Estructura Académica</span>
-                  <h2 className="text-xl font-black uppercase tracking-tighter text-uecg-dark mt-0.5">
-                    Creación Masiva
-                  </h2>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isProcessing}
-                className="p-1.5 relative z-10 text-uecg-gray hover:text-red-600 transition-colors disabled:opacity-50 outline-none bg-white/50 rounded-full hover:bg-red-50 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Contenido / Cuerpo con Scroll */}
-            <div className="p-5 overflow-y-auto flex-1 flex flex-col gap-5 custom-scrollbar">
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Creación Masiva"
+      kicker="Estructura Académica"
+      icon={<Layers className="w-5 h-5 text-white" />}
+      headerVariant="default"
+      isSubmitting={isProcessing}
+      maxWidth="max-w-[460px]"
+    >
+      {/* Contenido / Cuerpo con Scroll */}
+      <div className="p-5 overflow-y-auto flex-1 flex flex-col gap-5 custom-scrollbar">
               {isLoadingInst && (
                 <div className="flex items-center gap-2 text-uecg-blue bg-blue-50 p-3 text-[10px] font-bold uppercase tracking-widest border border-blue-100">
                   <Loader2 className="w-4 h-4 animate-spin" /> Cargando configuración del RUE...
@@ -432,11 +394,8 @@ export const BulkClassroomDrawer = ({
                 {isProcessing ? 'Procesando...' : `Crear ${selectedGrades.length} Cursos`}
               </button>
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+    </DrawerShell>
   )
 }
 export default BulkClassroomDrawer
+

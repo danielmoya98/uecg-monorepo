@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
-import { X, Copy, Loader2, BookOpen, CheckSquare, UserCircle, ChevronDown } from 'lucide-react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { Copy, Loader2, BookOpen, CheckSquare, UserCircle, ChevronDown } from 'lucide-react'
+import { DrawerShell } from '@/shared/ui/drawer-shell'
 import type { Classroom } from '@/features/classrooms/types/classrooms.types'
 import type { TeacherAssignment } from '../types/teacher-assignments.types'
+
 
 // ==========================================
 // COMPONENTE VISUAL: Combobox Suizo Accesible (para Listas)
@@ -218,63 +218,18 @@ export const CloneAssignmentsDrawer = ({
 
   if (!sourceClassroom) return null
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="clone-dialog-title"
-          className="fixed inset-0 z-[9999] flex justify-end"
-        >
-          {/* Overlay interactivo optimizado para GPU */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={!isSubmitting ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
-          />
-
-          {/* Panel Lateral */}
-          <motion.div
-            ref={drawerRef}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-            className="relative h-full w-full max-w-[500px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
-          >
-            {/* HEADER GEOMÉTRICO */}
-            <div className="flex items-center justify-between border-b border-uecg-line bg-uecg-dark p-6 relative overflow-hidden text-white shrink-0">
-              <div className="absolute -right-8 -top-8 w-24 h-24 border-[6px] border-white opacity-5 rounded-none rotate-45 pointer-events-none"></div>
-              <div className="absolute right-12 -bottom-4 w-12 h-12 bg-white opacity-5 -rotate-12 pointer-events-none"></div>
-
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-10 h-10 bg-uecg-blue text-white flex items-center justify-center shadow-sm">
-                  <Copy className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="label-swiss !mb-0 !text-[9px] text-blue-200">Clonación Inteligente</span>
-                  <h2
-                    id="clone-dialog-title"
-                    className="text-xl font-black uppercase tracking-tighter mt-0.5 text-white"
-                  >
-                    Malla Curricular
-                  </h2>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isSubmitting}
-                className="p-1.5 relative z-10 text-white/50 hover:text-white transition-colors disabled:opacity-50 outline-none cursor-pointer"
-                aria-label="Cerrar ventana"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+  return (
+    <DrawerShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Malla Curricular"
+      kicker="Clonación Inteligente"
+      icon={<Copy className="w-5 h-5 text-white" />}
+      headerVariant="dark"
+      isSubmitting={isSubmitting}
+      maxWidth="max-w-[500px]"
+    >
+      <div className="flex flex-col h-full relative">
 
             <div className="p-5 overflow-y-auto flex-1 custom-scrollbar flex flex-col gap-6 pb-20">
               {/* Materias a clonar */}
@@ -417,12 +372,10 @@ export const CloneAssignmentsDrawer = ({
                 Clonar Carga
               </button>
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+          </div>
+    </DrawerShell>
   )
 }
 
 export default CloneAssignmentsDrawer
+
