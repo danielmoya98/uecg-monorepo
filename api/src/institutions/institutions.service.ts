@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateInstitutionDto } from './dto/create-institution.dto';
@@ -26,12 +27,42 @@ export class InstitutionsService {
     private eventEmitter: EventEmitter2,
   ) {}
 
+  private async validateDirectorRole(directorId?: string) {
+    if (!directorId) return;
+    const user = await this.prisma.user.findUnique({
+      where: { id: directorId },
+      include: { role: true },
+    });
+    if (!user) {
+      throw new NotFoundException(
+        'El usuario especificado como Director no existe.',
+      );
+    }
+    const allowedRoles = ['DIRECTOR', 'SUPER_ADMIN', 'ADMIN'];
+    if (!allowedRoles.includes(user.role.name)) {
+      throw new BadRequestException(
+        `El usuario asignado como Director debe tener un rol administrativo (Actual: ${user.role.name}).`,
+      );
+    }
+  }
+
   async create(data: CreateInstitutionDto, userId?: string) {
+    // 🛡️ BLINDAJE 1: Singleton Enforcement
+    const count = await this.prisma.institution.count();
+    if (count > 0) {
+      throw new ConflictException(
+        'Ya existe una institución registrada en el sistema. Utilice el endpoint de actualización para modificar sus datos.',
+      );
+    }
+
     const existing = await this.prisma.institution.findUnique({
       where: { rueCode: data.rueCode },
     });
     if (existing)
       throw new ConflictException('El Código RUE ya está registrado');
+
+    // 🛡️ BLINDAJE 2: Validación de Rol Administrativo del Director
+    await this.validateDirectorRole(data.directorId);
 
     const institution = await this.prisma.institution.create({ data });
     this.institutionConfig.invalidate();
@@ -110,6 +141,11 @@ export class InstitutionsService {
       where: { id },
     });
     if (!institution) throw new NotFoundException('Institución no encontrada');
+
+    // 🛡️ BLINDAJE 2: Validación de Rol Administrativo del Director si se actualiza
+    if (updateData.directorId) {
+      await this.validateDirectorRole(updateData.directorId);
+    }
 
     const updated = await this.prisma.institution.update({
       where: { id },
@@ -214,6 +250,18 @@ export class InstitutionsService {
     userId?: string,
   ) {
     const institution = await this.institutionConfig.get();
+
+    // 🛡️ BLINDAJE 3: Validación Cruzada de Tolerancias de Asistencia
+    const lateTolerance =
+      data.lateToleranceMinutes ?? institution.lateToleranceMinutes;
+    const absentTolerance =
+      data.absentToleranceMinutes ?? institution.absentToleranceMinutes;
+
+    if (absentTolerance < lateTolerance) {
+      throw new BadRequestException(
+        `La tolerancia para Falta Injustificada (${absentTolerance} min) no puede ser menor a la tolerancia de Atraso (${lateTolerance} min).`,
+      );
+    }
 
     const updated = await this.prisma.institution.update({
       where: { id: institution.id },

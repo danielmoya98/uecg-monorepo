@@ -3,7 +3,11 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InstitutionsService } from './institutions.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { InstitutionConfigService } from './institution-config.service';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import {
   Shift,
   EducationLevel,
@@ -50,6 +54,9 @@ describe('InstitutionsService', () => {
       count: jest.fn(),
       update: jest.fn(),
     },
+    user: {
+      findUnique: jest.fn(),
+    },
   };
 
   const mockConfigService = {
@@ -77,6 +84,7 @@ describe('InstitutionsService', () => {
 
   describe('create', () => {
     it('debe registrar una nueva institución exitosamente', async () => {
+      mockPrisma.institution.count.mockResolvedValue(0);
       mockPrisma.institution.findUnique.mockResolvedValue(null);
       mockPrisma.institution.create.mockResolvedValue(mockInstitution);
 
@@ -94,6 +102,7 @@ describe('InstitutionsService', () => {
 
       const result = await service.create(dto);
 
+      expect(mockPrisma.institution.count).toHaveBeenCalled();
       expect(mockPrisma.institution.findUnique).toHaveBeenCalledWith({
         where: { rueCode: dto.rueCode },
       });
@@ -102,7 +111,27 @@ describe('InstitutionsService', () => {
       expect(result.data).toEqual(mockInstitution);
     });
 
+    it('debe lanzar ConflictException si ya existe una institución configurada', async () => {
+      mockPrisma.institution.count.mockResolvedValue(1);
+
+      const dto = {
+        rueCode: '80730145',
+        name: 'Otra Escuela',
+        dependencyType: DependencyType.FISCAL,
+        department: Department.CHUQUISACA,
+        municipality: 'Sucre',
+        district: 'Sucre 1',
+        address: 'Calle Falsa 123',
+        shifts: [Shift.MANANA],
+        levels: [EducationLevel.PRIMARIA],
+      };
+
+      await expect(service.create(dto)).rejects.toThrow(ConflictException);
+      expect(mockPrisma.institution.create).not.toHaveBeenCalled();
+    });
+
     it('debe lanzar ConflictException si el RUE ya está registrado', async () => {
+      mockPrisma.institution.count.mockResolvedValue(0);
       mockPrisma.institution.findUnique.mockResolvedValue(mockInstitution);
 
       const dto = {
@@ -274,6 +303,20 @@ describe('InstitutionsService', () => {
       expect(mockPrisma.institution.update).toHaveBeenCalled();
       expect(mockConfigService.invalidate).toHaveBeenCalled();
       expect(result.data.lateToleranceMinutes).toBe(10);
+    });
+
+    it('debe rechazar con BadRequestException si absentToleranceMinutes < lateToleranceMinutes', async () => {
+      mockConfigService.get.mockResolvedValue(mockInstitution);
+
+      const invalidPayload = {
+        lateToleranceMinutes: 20,
+        absentToleranceMinutes: 10,
+      };
+
+      await expect(
+        service.updateAttendanceSettings(invalidPayload),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockPrisma.institution.update).not.toHaveBeenCalled();
     });
   });
 });

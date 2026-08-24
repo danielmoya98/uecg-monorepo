@@ -5,31 +5,31 @@ import {
   BadRequestException,
   Logger,
   Inject,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
 
-import type { Cache } from 'cache-manager';
+import type { Cache } from "cache-manager";
 
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from "../prisma/prisma.service";
 
-import { CreateAcademicYearDto } from './dto/create-academic-year.dto';
+import { CreateAcademicYearDto } from "./dto/create-academic-year.dto";
 
-import { UpdateAcademicYearDto } from './dto/update-academic-year.dto';
+import { UpdateAcademicYearDto } from "./dto/update-academic-year.dto";
 
-import { TrimestersService } from '../trimesters/trimesters.service';
+import { TrimestersService } from "../trimesters/trimesters.service";
 
-import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginationDto } from "../common/dto/pagination.dto";
 
-import { AcademicStatus } from '../../prisma/generated/client';
+import { AcademicStatus } from "../../prisma/generated/client";
 
 @Injectable()
 export class AcademicYearsService {
   private readonly logger = new Logger(AcademicYearsService.name);
 
-  private readonly CURRENT_ACTIVE_CACHE_KEY = 'academic-year:current-active';
+  private readonly CURRENT_ACTIVE_CACHE_KEY = "academic-year:current-active";
 
   constructor(
     private readonly prisma: PrismaService,
@@ -73,7 +73,7 @@ export class AcademicYearsService {
   private async invalidateCurrentAcademicYearCache() {
     await this.cacheManager.del(this.CURRENT_ACTIVE_CACHE_KEY);
 
-    this.logger.log('🧹 Cache invalidado: Current Academic Year');
+    this.logger.log("🧹 Cache invalidado: Current Academic Year");
   }
 
   // ======================================================
@@ -95,7 +95,7 @@ export class AcademicYearsService {
 
     if (data.startDate >= data.endDate) {
       throw new BadRequestException(
-        'La fecha de inicio debe ser menor a la fecha de fin.',
+        "La fecha de inicio debe ser menor a la fecha de fin.",
       );
     }
 
@@ -140,7 +140,7 @@ export class AcademicYearsService {
     // EVENTS
     // ======================================================
 
-    this.eventEmitter.emit('academic-year.created', {
+    this.eventEmitter.emit("academic-year.created", {
       academicYearId: result.id,
 
       year: result.year,
@@ -165,7 +165,7 @@ export class AcademicYearsService {
           name: {
             contains: search,
 
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         }
       : {};
@@ -173,16 +173,16 @@ export class AcademicYearsService {
     let orderBy = {};
 
     if (sort) {
-      const isDesc = sort.startsWith('-');
+      const isDesc = sort.startsWith("-");
 
       const field = isDesc ? sort.substring(1) : sort;
 
       orderBy = {
-        [field]: isDesc ? 'desc' : 'asc',
+        [field]: isDesc ? "desc" : "asc",
       };
     } else {
       orderBy = {
-        year: 'desc',
+        year: "desc",
       };
     }
 
@@ -236,7 +236,7 @@ export class AcademicYearsService {
       include: {
         trimesters: {
           orderBy: {
-            name: 'asc',
+            name: "asc",
           },
         },
 
@@ -249,7 +249,7 @@ export class AcademicYearsService {
     });
 
     if (!academicYear) {
-      throw new NotFoundException('Gestión académica no encontrada');
+      throw new NotFoundException("Gestión académica no encontrada");
     }
 
     return academicYear;
@@ -267,7 +267,7 @@ export class AcademicYearsService {
     const cached = await this.cacheManager.get(this.CURRENT_ACTIVE_CACHE_KEY);
 
     if (cached) {
-      this.logger.log('⚡ Current Academic Year desde cache');
+      this.logger.log("⚡ Current Academic Year desde cache");
 
       return cached;
     }
@@ -284,7 +284,7 @@ export class AcademicYearsService {
       include: {
         trimesters: {
           orderBy: {
-            name: 'asc',
+            name: "asc",
           },
         },
       },
@@ -319,7 +319,7 @@ export class AcademicYearsService {
       });
 
       if (!currentYear) {
-        throw new NotFoundException('Gestión académica no encontrada');
+        throw new NotFoundException("Gestión académica no encontrada");
       }
 
       // Validación robusta de fechas (incluso si solo se pasa startDate o endDate)
@@ -332,7 +332,7 @@ export class AcademicYearsService {
 
       if (effectiveStart >= effectiveEnd) {
         throw new BadRequestException(
-          'La fecha de inicio debe ser menor a la fecha de fin.',
+          "La fecha de inicio debe ser menor a la fecha de fin.",
         );
       }
 
@@ -387,7 +387,7 @@ export class AcademicYearsService {
     // EVENTS
     // ======================================================
 
-    this.eventEmitter.emit('academic-year.updated', {
+    this.eventEmitter.emit("academic-year.updated", {
       academicYearId: updatedYear.id,
 
       year: updatedYear.year,
@@ -414,7 +414,7 @@ export class AcademicYearsService {
 
       if (classroomsCount > 0) {
         throw new ConflictException(
-          'No se puede eliminar la gestión porque tiene cursos y paralelos asignados. Cámbiela a estado CLOSED.',
+          "No se puede eliminar la gestión porque tiene cursos y paralelos asignados. Cámbiela a estado CLOSED.",
         );
       }
 
@@ -426,7 +426,7 @@ export class AcademicYearsService {
 
       if (enrollmentsCount > 0) {
         throw new ConflictException(
-          'No se puede eliminar la gestión porque tiene inscripciones registradas. Cámbiela a estado CLOSED.',
+          "No se puede eliminar la gestión porque tiene inscripciones registradas. Cámbiela a estado CLOSED.",
         );
       }
 
@@ -451,7 +451,7 @@ export class AcademicYearsService {
     // EVENTS
     // ======================================================
 
-    this.eventEmitter.emit('academic-year.deleted', {
+    this.eventEmitter.emit("academic-year.deleted", {
       academicYearId: id,
 
       year: year.year,
@@ -476,7 +476,7 @@ export class AcademicYearsService {
         where: { id: academicYearId },
         include: {
           trimesters: {
-            orderBy: { name: 'asc' },
+            orderBy: { name: "asc" },
           },
         },
       });
@@ -485,7 +485,7 @@ export class AcademicYearsService {
         where: { status: AcademicStatus.ACTIVE },
         include: {
           trimesters: {
-            orderBy: { name: 'asc' },
+            orderBy: { name: "asc" },
           },
         },
       });
@@ -500,74 +500,81 @@ export class AcademicYearsService {
         totalSteps: 7,
         steps: [
           {
-            id: 'academic_year',
+            id: "academic_year",
             stepNumber: 1,
-            title: 'Ciclo Lectivo y Trimestres',
-            description: 'Crear y activar la gestión escolar del año en curso con sus 3 trimestres.',
-            status: 'PENDING',
-            progressLabel: 'Sin gestión activa creada',
-            actionUrl: '/academic-years',
-            actionLabel: 'Crear Gestión',
+            title: "Ciclo Lectivo y Trimestres",
+            description:
+              "Crear y activar la gestión escolar del año en curso con sus 3 trimestres.",
+            status: "PENDING",
+            progressLabel: "Sin gestión activa creada",
+            actionUrl: "/academic-years",
+            actionLabel: "Crear Gestión",
           },
           {
-            id: 'catalog_spaces',
+            id: "catalog_spaces",
             stepNumber: 2,
-            title: 'Materias y Espacios Físicos',
-            description: 'Registrar el catálogo de asignaturas y las aulas/laboratorios físicos.',
-            status: 'PENDING',
-            progressLabel: 'Pendiente de configuración',
-            actionUrl: '/subjects',
-            actionLabel: 'Configurar Materias',
+            title: "Materias y Espacios Físicos",
+            description:
+              "Registrar el catálogo de asignaturas y las aulas/laboratorios físicos.",
+            status: "PENDING",
+            progressLabel: "Pendiente de configuración",
+            actionUrl: "/subjects",
+            actionLabel: "Configurar Materias",
           },
           {
-            id: 'classrooms',
+            id: "classrooms",
             stepNumber: 3,
-            title: 'Cursos y Paralelos',
-            description: 'Crear las aulas de Inicial, Primaria y Secundaria para el año.',
-            status: 'PENDING',
-            progressLabel: '0 aulas creadas',
-            actionUrl: '/classrooms',
-            actionLabel: 'Crear Cursos',
+            title: "Cursos y Paralelos",
+            description:
+              "Crear las aulas de Inicial, Primaria y Secundaria para el año.",
+            status: "PENDING",
+            progressLabel: "0 aulas creadas",
+            actionUrl: "/classrooms",
+            actionLabel: "Crear Cursos",
           },
           {
-            id: 'teacher_assignments',
+            id: "teacher_assignments",
             stepNumber: 4,
-            title: 'Carga Horaria Docente',
-            description: 'Asignar a los profesores responsables de cada materia por aula.',
-            status: 'PENDING',
-            progressLabel: '0 asignaciones realizadas',
-            actionUrl: '/teacher-assignments',
-            actionLabel: 'Asignar Docentes',
+            title: "Carga Horaria Docente",
+            description:
+              "Asignar a los profesores responsables de cada materia por aula.",
+            status: "PENDING",
+            progressLabel: "0 asignaciones realizadas",
+            actionUrl: "/teacher-assignments",
+            actionLabel: "Asignar Docentes",
           },
           {
-            id: 'timetables',
+            id: "timetables",
             stepNumber: 5,
-            title: 'Horarios Semanales',
-            description: 'Distribuir los periodos de clase en la grilla semanal sin cruces.',
-            status: 'PENDING',
-            progressLabel: '0 horarios armados',
-            actionUrl: '/timetables',
-            actionLabel: 'Armar Horarios',
+            title: "Horarios Semanales",
+            description:
+              "Distribuir los periodos de clase en la grilla semanal sin cruces.",
+            status: "PENDING",
+            progressLabel: "0 horarios armados",
+            actionUrl: "/timetables",
+            actionLabel: "Armar Horarios",
           },
           {
-            id: 'enrollments',
+            id: "enrollments",
             stepNumber: 6,
-            title: 'Matriculación de Estudiantes',
-            description: 'Inscribir a la población escolar en sus respectivos cursos.',
-            status: 'PENDING',
-            progressLabel: '0 estudiantes inscritos',
-            actionUrl: '/enrollments',
-            actionLabel: 'Inscribir Alumnos',
+            title: "Matriculación de Estudiantes",
+            description:
+              "Inscribir a la población escolar en sus respectivos cursos.",
+            status: "PENDING",
+            progressLabel: "0 estudiantes inscritos",
+            actionUrl: "/enrollments",
+            actionLabel: "Inscribir Alumnos",
           },
           {
-            id: 'first_trimester',
+            id: "first_trimester",
             stepNumber: 7,
-            title: 'Apertura del 1er Trimestre',
-            description: 'Habilitar la recepción de calificaciones y pase de lista del periodo inicial.',
-            status: 'PENDING',
-            progressLabel: 'Trimestre cerrado',
-            actionUrl: '/academic-years',
-            actionLabel: 'Abrir Trimestre',
+            title: "Apertura del 1er Trimestre",
+            description:
+              "Habilitar la recepción de calificaciones y pase de lista del periodo inicial.",
+            status: "PENDING",
+            progressLabel: "Trimestre cerrado",
+            actionUrl: "/academic-years",
+            actionLabel: "Abrir Trimestre",
           },
         ],
       };
@@ -593,7 +600,9 @@ export class AcademicYearsService {
       this.prisma.scheduleSlot.count({
         where: { classroom: { academicYearId: targetYear.id } },
       }),
-      this.prisma.enrollment.count({ where: { academicYearId: targetYear.id } }),
+      this.prisma.enrollment.count({
+        where: { academicYearId: targetYear.id },
+      }),
     ]);
 
     const trimestersCount = targetYear.trimesters?.length ?? 0;
@@ -603,114 +612,119 @@ export class AcademicYearsService {
     const steps = [
       // Hito 1: Gestión y Trimestres
       {
-        id: 'academic_year',
+        id: "academic_year",
         stepNumber: 1,
-        title: 'Ciclo Lectivo y Trimestres',
-        description: 'Crear y activar la gestión escolar con sus 3 trimestres.',
+        title: "Ciclo Lectivo y Trimestres",
+        description: "Crear y activar la gestión escolar con sus 3 trimestres.",
         status:
           targetYear.status === AcademicStatus.ACTIVE && trimestersCount >= 3
-            ? 'COMPLETED'
-            : 'IN_PROGRESS',
+            ? "COMPLETED"
+            : "IN_PROGRESS",
         progressLabel: `Gestión ${targetYear.year} (${trimestersCount} trimestres definidos - Estado ${targetYear.status})`,
-        actionUrl: '/academic-years',
-        actionLabel: 'Ver Gestión',
+        actionUrl: "/academic-years",
+        actionLabel: "Ver Gestión",
       },
       // Hito 2: Materias y Espacios Físicos
       {
-        id: 'catalog_spaces',
+        id: "catalog_spaces",
         stepNumber: 2,
-        title: 'Materias y Espacios Físicos',
-        description: 'Registrar el catálogo de materias, periodos y ambientes físicos.',
+        title: "Materias y Espacios Físicos",
+        description:
+          "Registrar el catálogo de materias, periodos y ambientes físicos.",
         status:
           subjectsCount > 0 && spacesCount > 0
-            ? 'COMPLETED'
+            ? "COMPLETED"
             : subjectsCount > 0 || spacesCount > 0
-              ? 'IN_PROGRESS'
-              : 'PENDING',
+              ? "IN_PROGRESS"
+              : "PENDING",
         progressLabel: `${subjectsCount} materias, ${spacesCount} espacios físicos, ${periodsCount} periodos`,
-        actionUrl: '/subjects',
-        actionLabel: 'Gestionar Materias',
+        actionUrl: "/subjects",
+        actionLabel: "Gestionar Materias",
       },
       // Hito 3: Aulas y Cursos
       {
-        id: 'classrooms',
+        id: "classrooms",
         stepNumber: 3,
-        title: 'Cursos y Paralelos',
-        description: 'Definir las aulas de Inicial, Primaria y Secundaria para esta gestión.',
+        title: "Cursos y Paralelos",
+        description:
+          "Definir las aulas de Inicial, Primaria y Secundaria para esta gestión.",
         status:
           classroomsCount >= 4
-            ? 'COMPLETED'
+            ? "COMPLETED"
             : classroomsCount > 0
-              ? 'IN_PROGRESS'
-              : 'PENDING',
+              ? "IN_PROGRESS"
+              : "PENDING",
         progressLabel: `${classroomsCount} aulas/paralelos configurados`,
-        actionUrl: '/classrooms',
-        actionLabel: 'Gestionar Cursos',
+        actionUrl: "/classrooms",
+        actionLabel: "Gestionar Cursos",
       },
       // Hito 4: Carga Horaria Docente
       {
-        id: 'teacher_assignments',
+        id: "teacher_assignments",
         stepNumber: 4,
-        title: 'Carga Horaria Docente',
-        description: 'Asignar profesores a cada materia de cada curso.',
+        title: "Carga Horaria Docente",
+        description: "Asignar profesores a cada materia de cada curso.",
         status:
           assignmentsCount >= classroomsCount * 2 && classroomsCount > 0
-            ? 'COMPLETED'
+            ? "COMPLETED"
             : assignmentsCount > 0
-              ? 'IN_PROGRESS'
-              : 'PENDING',
+              ? "IN_PROGRESS"
+              : "PENDING",
         progressLabel: `${assignmentsCount} asignaciones docentes realizadas`,
-        actionUrl: '/teacher-assignments',
-        actionLabel: 'Asignar Docentes',
+        actionUrl: "/teacher-assignments",
+        actionLabel: "Asignar Docentes",
       },
       // Hito 5: Horarios Semanales
       {
-        id: 'timetables',
+        id: "timetables",
         stepNumber: 5,
-        title: 'Horarios Semanales',
-        description: 'Completar la grilla de horarios semanales por curso.',
+        title: "Horarios Semanales",
+        description: "Completar la grilla de horarios semanales por curso.",
         status:
           slotsCount >= classroomsCount * 4 && classroomsCount > 0
-            ? 'COMPLETED'
+            ? "COMPLETED"
             : slotsCount > 0
-              ? 'IN_PROGRESS'
-              : 'PENDING',
+              ? "IN_PROGRESS"
+              : "PENDING",
         progressLabel: `${slotsCount} bloques de horario programados`,
-        actionUrl: '/timetables',
-        actionLabel: 'Armar Horarios',
+        actionUrl: "/timetables",
+        actionLabel: "Armar Horarios",
       },
       // Hito 6: Matriculación Escolar
       {
-        id: 'enrollments',
+        id: "enrollments",
         stepNumber: 6,
-        title: 'Matriculación de Estudiantes',
-        description: 'Inscribir estudiantes en sus respectivos paralelos.',
+        title: "Matriculación de Estudiantes",
+        description: "Inscribir estudiantes en sus respectivos paralelos.",
         status:
           enrollmentsCount >= 10
-            ? 'COMPLETED'
+            ? "COMPLETED"
             : enrollmentsCount > 0
-              ? 'IN_PROGRESS'
-              : 'PENDING',
+              ? "IN_PROGRESS"
+              : "PENDING",
         progressLabel: `${enrollmentsCount} estudiantes inscritos`,
-        actionUrl: '/enrollments',
-        actionLabel: 'Inscribir Alumnos',
+        actionUrl: "/enrollments",
+        actionLabel: "Inscribir Alumnos",
       },
       // Hito 7: Lanzamiento del 1er Trimestre
       {
-        id: 'first_trimester',
+        id: "first_trimester",
         stepNumber: 7,
-        title: 'Apertura del 1er Trimestre',
-        description: 'Habilitar el periodo académico para recepción de notas y asistencia.',
-        status: isFirstTrimesterOpen ? 'COMPLETED' : 'PENDING',
+        title: "Apertura del 1er Trimestre",
+        description:
+          "Habilitar el periodo académico para recepción de notas y asistencia.",
+        status: isFirstTrimesterOpen ? "COMPLETED" : "PENDING",
         progressLabel: isFirstTrimesterOpen
-          ? '1er Trimestre Abierto (Recepción activa de notas)'
-          : '1er Trimestre cerrado',
-        actionUrl: '/academic-years',
-        actionLabel: isFirstTrimesterOpen ? 'Ver Trimestres' : 'Abrir 1er Trimestre',
+          ? "1er Trimestre Abierto (Recepción activa de notas)"
+          : "1er Trimestre cerrado",
+        actionUrl: "/academic-years",
+        actionLabel: isFirstTrimesterOpen
+          ? "Ver Trimestres"
+          : "Abrir 1er Trimestre",
       },
     ];
 
-    const completedSteps = steps.filter((s) => s.status === 'COMPLETED').length;
+    const completedSteps = steps.filter((s) => s.status === "COMPLETED").length;
     const percentage = Math.round((completedSteps / steps.length) * 100);
 
     return {

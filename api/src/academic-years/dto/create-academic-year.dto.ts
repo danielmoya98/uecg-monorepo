@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 import {
   IsString,
@@ -10,31 +10,31 @@ import {
   IsDate,
   IsOptional,
   MaxLength,
-} from 'class-validator';
+} from "class-validator";
 
-import { Transform, Type } from 'class-transformer';
+import { Transform, Type } from "class-transformer";
 
-import { AcademicStatus } from '../../../prisma/generated/client';
+import { AcademicStatus } from "../../../prisma/generated/client";
 
 export class CreateAcademicYearDto {
   @ApiProperty({
     example: 2026,
 
-    description: 'Año de la gestión académica',
+    description: "Año de la gestión académica",
   })
   @IsInt()
   @Min(2020, {
-    message: 'El año no puede ser menor a 2020',
+    message: "El año no puede ser menor a 2020",
   })
   @Max(2100, {
-    message: 'El año no puede ser mayor a 2100',
+    message: "El año no puede ser mayor a 2100",
   })
   year: number;
 
   @ApiProperty({
-    example: 'Gestión Académica 2026',
+    example: "Gestión Académica 2026",
 
-    description: 'Nombre oficial de la gestión',
+    description: "Nombre oficial de la gestión",
   })
   @IsString()
   @IsNotEmpty()
@@ -43,24 +43,24 @@ export class CreateAcademicYearDto {
   name: string;
 
   @ApiProperty({
-    example: '2026-02-01T00:00:00.000Z',
+    example: "2026-02-01T00:00:00.000Z",
 
-    description: 'Fecha inicio clases',
+    description: "Fecha inicio clases",
   })
   @Type(() => Date)
   @IsDate({
-    message: 'Debe ser una fecha válida',
+    message: "Debe ser una fecha válida",
   })
   startDate: Date;
 
   @ApiProperty({
-    example: '2026-11-30T00:00:00.000Z',
+    example: "2026-11-30T00:00:00.000Z",
 
-    description: 'Fecha finalización',
+    description: "Fecha finalización",
   })
   @Type(() => Date)
   @IsDate({
-    message: 'Debe ser una fecha válida',
+    message: "Debe ser una fecha válida",
   })
   endDate: Date;
 
@@ -73,7 +73,7 @@ export class CreateAcademicYearDto {
   })
   @IsOptional()
   @IsEnum(AcademicStatus, {
-    message: 'Estado académico inválido',
+    message: "Estado académico inválido",
   })
   status?: AcademicStatus;
 }
