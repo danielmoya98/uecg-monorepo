@@ -394,7 +394,7 @@ export default function RoleDrawer({
     >
       {/* Fondo Traslúcido con Clic de Cierre */}
       <div
-        className={`absolute inset-0 bg-uecg-dark/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
+        className={`absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 ease-out cursor-pointer ${
           isOpen ? 'opacity-100' : 'opacity-0'
         }`}
         onClick={!isSubmitting ? onClose : undefined}
@@ -403,7 +403,7 @@ export default function RoleDrawer({
 
       {/* Cajón de Desplazamiento */}
       <div
-        className={`relative h-full w-full max-w-[480px] border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`relative h-full w-full max-w-[480px] border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 ease-in-out flex flex-col will-change-transform transform-gpu ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

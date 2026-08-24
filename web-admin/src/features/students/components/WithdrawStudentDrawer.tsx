@@ -79,13 +79,13 @@ export default function WithdrawStudentDrawer({ isOpen, onClose, enrollment }: W
     >
       {/* Background overlay */}
       <div
-        className="absolute inset-0 bg-uecg-dark/50 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu transition-opacity duration-200 cursor-pointer"
         onClick={onClose}
       />
 
       {/* Drawer panel */}
       <div
-        className="relative h-full w-full max-w-md border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 flex flex-col z-10 animate-in slide-in-from-right duration-300"
+        className="relative h-full w-full max-w-md border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 will-change-transform transform-gpu"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b-4 border-red-500 bg-uecg-dark p-6 text-white shrink-0">

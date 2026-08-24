@@ -70,13 +70,14 @@ export default function DeletePhysicalSpaceDrawer({
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex justify-end">
-          {/* Overlay difuminado */}
+          {/* Overlay interactivo optimizado para GPU */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
             onClick={!isDeleting ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/40 backdrop-blur-sm transition-opacity cursor-pointer"
+            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
           />
 
           {/* Panel Lateral Drawer */}
@@ -85,8 +86,8 @@ export default function DeletePhysicalSpaceDrawer({
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-            className="relative h-full w-full max-w-[400px] border-l border-uecg-line bg-white shadow-2xl transition-transform duration-300 flex flex-col z-10"
+            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
+            className="relative h-full w-full max-w-[400px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
           >
             {/* HEADER GEOMÉTRICO SUIZO (ROJO) */}
             <div className="flex items-center justify-between border-b p-6 relative overflow-hidden bg-red-50 border-red-200 text-red-600 shrink-0">

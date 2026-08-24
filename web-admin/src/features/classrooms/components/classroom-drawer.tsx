@@ -232,13 +232,14 @@ export const ClassroomDrawer = ({
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex justify-end">
-          {/* Overlay difuminado */}
+          {/* Overlay interactivo optimizado para GPU */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
             onClick={!isSubmitting ? onClose : undefined}
-            className="absolute inset-0 bg-uecg-dark/40 backdrop-blur-sm transition-opacity cursor-pointer"
+            className="absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer"
           />
 
           {/* Panel Lateral Drawer */}
@@ -247,8 +248,8 @@ export const ClassroomDrawer = ({
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-            className="relative h-full w-full max-w-[460px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10"
+            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
+            className="relative h-full w-full max-w-[460px] border-l border-uecg-line bg-white shadow-2xl flex flex-col z-10 will-change-transform transform-gpu"
           >
             {/* Header del Cajón */}
             <div className={`flex items-center justify-between border-b p-6 relative overflow-hidden shrink-0 ${headerClasses}`}>
