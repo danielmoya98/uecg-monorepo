@@ -12,37 +12,37 @@ import {
   Inject,
   HttpCode,
   HttpStatus,
-} from '@nestjs/common';
-import { Request } from 'express';
-import { InstitutionsService } from './institutions.service';
-import { CreateInstitutionDto } from './dto/create-institution.dto';
-import { UpdateInstitutionDto } from './dto/update-institution.dto';
-import { UpdateCampaignSettingsDto } from './dto/update-campaign-settings.dto';
-import { UpdateAttendanceSettingsDto } from './dto/update-attendance-settings.dto';
-import { ApiTags, ApiOperation, ApiCookieAuth } from '@nestjs/swagger';
-import { PaginationDto } from '../common/dto/pagination.dto';
-import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
+} from "@nestjs/common";
+import { Request } from "express";
+import { InstitutionsService } from "./institutions.service";
+import { CreateInstitutionDto } from "./dto/create-institution.dto";
+import { UpdateInstitutionDto } from "./dto/update-institution.dto";
+import { UpdateCampaignSettingsDto } from "./dto/update-campaign-settings.dto";
+import { UpdateAttendanceSettingsDto } from "./dto/update-attendance-settings.dto";
+import { ApiTags, ApiOperation, ApiCookieAuth } from "@nestjs/swagger";
+import { PaginationDto } from "../common/dto/pagination.dto";
+import { AuthenticatedUser } from "../auth/interfaces/authenticated-user.interface";
 import {
   CacheInterceptor,
   CacheTTL,
   CACHE_MANAGER,
-} from '@nestjs/cache-manager';
-import type { Cache } from 'cache-manager';
+} from "@nestjs/cache-manager";
+import type { Cache } from "cache-manager";
 
 // 🔥 IMPORTACIONES ABAC
-import { AuthGuard } from '@nestjs/passport';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
-import { RequirePermissions } from '../auth/decorators/permissions.decorator';
-import { SystemPermissions } from '../auth/constants/permissions.constant';
+import { AuthGuard } from "@nestjs/passport";
+import { PermissionsGuard } from "../auth/guards/permissions.guard";
+import { RequirePermissions } from "../auth/decorators/permissions.decorator";
+import { SystemPermissions } from "../auth/constants/permissions.constant";
 
 interface RequestWithUser extends Request {
   user: AuthenticatedUser;
 }
 
-@ApiTags('Institución (RUE)')
-@ApiCookieAuth('uecg_access_token')
-@UseGuards(AuthGuard('jwt'), PermissionsGuard) // 🔥 Escudo Activado
-@Controller('institutions')
+@ApiTags("Institución (RUE)")
+@ApiCookieAuth("uecg_access_token")
+@UseGuards(AuthGuard("jwt"), PermissionsGuard) // 🔥 Escudo Activado
+@Controller("institutions")
 export class InstitutionsController {
   constructor(
     private readonly institutionsService: InstitutionsService,
@@ -54,17 +54,17 @@ export class InstitutionsController {
   // ==========================================
 
   // --- PANEL DE CAMPAÑA RUDE ---
-  @Get('campaign-settings')
+  @Get("campaign-settings")
   // 🔓 Lectura abierta para que el Frontend sepa si la campaña está activa
-  @ApiOperation({ summary: 'Obtiene el estado actual de la campaña RUDE' })
+  @ApiOperation({ summary: "Obtiene el estado actual de la campaña RUDE" })
   getCampaignSettings() {
     return this.institutionsService.getCampaignSettings();
   }
 
-  @Patch('campaign-settings')
+  @Patch("campaign-settings")
   @RequirePermissions(SystemPermissions.MANAGE_ALL_INSTITUTION) // 🔥 ABAC
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Actualiza la configuración de la campaña RUDE' })
+  @ApiOperation({ summary: "Actualiza la configuración de la campaña RUDE" })
   async updateCampaignSettings(
     @Body() body: UpdateCampaignSettingsDto,
     @Req() req: RequestWithUser,
@@ -78,17 +78,17 @@ export class InstitutionsController {
   }
 
   // --- REGLAS DE ASISTENCIA ---
-  @Get('attendance-settings')
+  @Get("attendance-settings")
   // 🔓 Lectura abierta (Profesores necesitan saber las tolerancias)
-  @ApiOperation({ summary: 'Obtiene las reglas de asistencia' })
+  @ApiOperation({ summary: "Obtiene las reglas de asistencia" })
   getAttendanceSettings() {
     return this.institutionsService.getAttendanceSettings();
   }
 
-  @Patch('attendance-settings')
+  @Patch("attendance-settings")
   @RequirePermissions(SystemPermissions.MANAGE_ALL_INSTITUTION) // 🔥 ABAC
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Actualiza las reglas de asistencia' })
+  @ApiOperation({ summary: "Actualiza las reglas de asistencia" })
   async updateAttendanceSettings(
     @Body() body: UpdateAttendanceSettingsDto,
     @Req() req: RequestWithUser,
@@ -102,8 +102,8 @@ export class InstitutionsController {
   }
 
   // --- INSTITUCIÓN ACTUAL (SINGLE-TENANT / CORE) ---
-  @Get('current')
-  @ApiOperation({ summary: 'Obtiene los datos de la institución actual' })
+  @Get("current")
+  @ApiOperation({ summary: "Obtiene los datos de la institución actual" })
   getCurrent() {
     return this.institutionsService.getCurrent();
   }
@@ -115,7 +115,7 @@ export class InstitutionsController {
   @Post()
   @RequirePermissions(SystemPermissions.MANAGE_ALL_INSTITUTION) // 🔥 ABAC
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Registra una nueva unidad educativa' })
+  @ApiOperation({ summary: "Registra una nueva unidad educativa" })
   async create(
     @Body() createInstitutionDto: CreateInstitutionDto,
     @Req() req: RequestWithUser,
@@ -136,26 +136,26 @@ export class InstitutionsController {
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(300000) // 5 minutos de caché
   @ApiOperation({
-    summary: 'Obtiene instituciones con paginación, filtros y ordenamiento',
+    summary: "Obtiene instituciones con paginación, filtros y ordenamiento",
   })
   findAll(@Query() query: PaginationDto) {
     return this.institutionsService.findAll(query);
   }
 
-  @Get(':id')
+  @Get(":id")
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(300000)
-  @ApiOperation({ summary: 'Obtiene una institución por su ID' })
-  findOne(@Param('id') id: string) {
+  @ApiOperation({ summary: "Obtiene una institución por su ID" })
+  findOne(@Param("id") id: string) {
     return this.institutionsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   @RequirePermissions(SystemPermissions.MANAGE_ALL_INSTITUTION) // 🔥 ABAC
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Actualiza los datos del RUE' })
+  @ApiOperation({ summary: "Actualiza los datos del RUE" })
   async update(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() updateInstitutionDto: UpdateInstitutionDto,
     @Req() req: RequestWithUser,
   ) {

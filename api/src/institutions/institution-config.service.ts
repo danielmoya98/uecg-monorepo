@@ -28,6 +28,7 @@ export class InstitutionConfigService {
     }
 
     const institution = await this.prisma.institution.findFirst({
+      orderBy: { createdAt: 'asc' },
       include: { director: { select: { fullName: true, email: true } } },
     });
 

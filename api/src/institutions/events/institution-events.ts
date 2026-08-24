@@ -1,8 +1,8 @@
 export const INSTITUTION_EVENTS = {
-  CREATED: 'institution.created',
-  UPDATED: 'institution.updated',
-  CAMPAIGN_UPDATED: 'institution.campaign_settings.updated',
-  ATTENDANCE_UPDATED: 'institution.attendance_settings.updated',
+  CREATED: "institution.created",
+  UPDATED: "institution.updated",
+  CAMPAIGN_UPDATED: "institution.campaign_settings.updated",
+  ATTENDANCE_UPDATED: "institution.attendance_settings.updated",
 } as const;
 
 export class InstitutionCreatedEvent {
