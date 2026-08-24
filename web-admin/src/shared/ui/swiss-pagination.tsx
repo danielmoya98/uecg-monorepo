@@ -1,3 +1,5 @@
+import { SwissKbd } from './swiss-kbd'
+
 export interface SwissPaginationProps {
   page: number
   totalPages: number
@@ -25,14 +27,15 @@ export function SwissPagination({
         Mostrando página {page} de {currentTotalPages}
         {totalItems !== undefined && ` • Total: ${totalItems} ${itemLabel}`}
       </span>
-      <div className="flex shrink-0">
+      <div className="flex shrink-0 items-center">
         <button
           type="button"
           onClick={() => onPageChange(Math.max(1, page - 1))}
           disabled={page <= 1}
-          className="px-3 py-1.5 border border-uecg-line bg-white text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          className="px-3 py-1.5 border border-uecg-line bg-white text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5"
         >
-          Anterior
+          <SwissKbd className="text-[8px] px-1 py-0 opacity-60">←</SwissKbd>
+          <span>Anterior</span>
         </button>
         <span className="px-3 py-1.5 bg-uecg-blue text-white border border-uecg-blue text-[10px] font-bold uppercase tracking-widest select-none flex items-center justify-center min-w-[60px]">
           {page} / {currentTotalPages}
@@ -41,9 +44,10 @@ export function SwissPagination({
           type="button"
           onClick={() => onPageChange(Math.min(currentTotalPages, page + 1))}
           disabled={page >= currentTotalPages}
-          className="px-3 py-1.5 border border-uecg-line border-l-0 bg-white text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          className="px-3 py-1.5 border border-uecg-line border-l-0 bg-white text-[10px] font-bold uppercase tracking-widest text-uecg-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5"
         >
-          Siguiente
+          <span>Siguiente</span>
+          <SwissKbd className="text-[8px] px-1 py-0 opacity-60">→</SwissKbd>
         </button>
       </div>
     </div>

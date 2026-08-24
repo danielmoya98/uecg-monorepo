@@ -3,12 +3,16 @@ import { PageHeader } from "@/shared/ui/page-header";
 
 export const ProfileHeader = () => (
   <PageHeader
-    kicker="CUENTA DE USUARIO"
-    kickerIcon={User}
+    breadcrumbs={[
+      { label: 'SISTEMA' },
+      { label: 'USUARIO', href: '/profile' },
+      { label: 'MI PERFIL', icon: User },
+    ]}
     title="Mi Perfil"
     description="Gestione su información personal, contacto y credenciales de acceso institucional."
   />
 );
+
 
 export const ProfileSkeleton = () => (
   <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">

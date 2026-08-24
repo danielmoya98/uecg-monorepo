@@ -8,3 +8,5 @@ export * from './swiss-select'
 export * from './swiss-pagination'
 export * from './swiss-empty-state'
 export * from './swiss-table-container'
+export * from './swiss-kbd'
+

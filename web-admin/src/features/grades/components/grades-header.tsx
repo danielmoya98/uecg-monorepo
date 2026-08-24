@@ -13,8 +13,11 @@ export const GradesHeader = ({
   onOpenRequests,
 }: GradesHeaderProps) => (
   <PageHeader
-    kicker={canManageGrades ? 'SUPERVISIÓN ACADÉMICA' : 'PANEL DOCENTE'}
-    kickerIcon={GraduationCap}
+    breadcrumbs={[
+      { label: 'EVALUACIÓN' },
+      { label: 'CALIFICACIONES', href: '/grades' },
+      { label: 'PLANILLAS TRIMESTRALES', icon: GraduationCap },
+    ]}
     title="Planillas de Calificación"
     description="Registro y centralización de calificaciones trimestrales y promedios anuales."
   >
@@ -26,6 +29,7 @@ export const GradesHeader = ({
           onClick={onOpenRequests}
           icon={BellDot}
           variant="dark"
+          hotkey="S"
         >
           Solicitudes de Cambio
         </PageHeaderButton>
@@ -38,4 +42,3 @@ export const GradesHeader = ({
     )}
   </PageHeader>
 )
-

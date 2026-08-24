@@ -21,8 +21,11 @@ export function UsersHeader({
       )}
 
       <PageHeader
-        kicker="ADMINISTRACIÓN CENTRAL"
-        kickerIcon={UserCog}
+        breadcrumbs={[
+          { label: 'SEGURIDAD' },
+          { label: 'CONTROL DE ACCESO', href: '/users' },
+          { label: 'USUARIOS DEL SISTEMA', icon: UserCog },
+        ]}
         title="Usuarios del Sistema"
         description="Gestión de cuentas, roles de acceso y credenciales de docentes y personal."
       >
@@ -32,6 +35,7 @@ export function UsersHeader({
           onClick={onOpenCreate}
           icon={Plus}
           variant="dark"
+          hotkey="N"
         >
           Nuevo Usuario
         </PageHeaderButton>

@@ -8,8 +8,11 @@ interface RbacHeaderProps {
 export const RbacHeader = ({ onOpenCreate }: RbacHeaderProps) => {
   return (
     <PageHeader
-      kicker="SEGURIDAD Y POLÍTICAS GLOBALES"
-      kickerIcon={ShieldAlert}
+      breadcrumbs={[
+        { label: 'SEGURIDAD' },
+        { label: 'CONTROL DE ACCESO', href: '/rbac' },
+        { label: 'GESTIÓN DE ROLES', icon: ShieldAlert },
+      ]}
       title="Gestión de Roles"
       description="Control de acceso basado en atributos (ABAC) y permisos de seguridad del sistema."
     >
@@ -19,13 +22,13 @@ export const RbacHeader = ({ onOpenCreate }: RbacHeaderProps) => {
         onClick={onOpenCreate}
         icon={Plus}
         variant="dark"
+        hotkey="N"
       >
         Nuevo Rol
       </PageHeaderButton>
     </PageHeader>
   )
 }
-
 
 export const RbacLoader = () => {
   return (

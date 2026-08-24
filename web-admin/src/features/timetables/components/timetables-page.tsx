@@ -47,8 +47,11 @@ export function TimetablesPage() {
     return (
       <div className="flex flex-col gap-6 w-full pb-20 animate-in fade-in duration-300">
         <PageHeader
-          kicker="HORARIOS Y ASIGNACIÓN DE AULAS"
-          kickerIcon={LayoutGrid}
+          breadcrumbs={[
+            { label: 'ADMINISTRACIÓN' },
+            { label: 'PLANIFICACIÓN ACADÉMICA', href: '/timetables' },
+            { label: 'HORARIOS Y AULAS', icon: LayoutGrid },
+          ]}
           title="Planificación Horaria"
           description="Diseño de bloques pedagógicos y control de colisiones docentes."
         />
@@ -80,10 +83,15 @@ export function TimetablesPage() {
     <div className="flex flex-col gap-8 w-full pb-20 animate-in fade-in duration-300">
 
       <PageHeader
-        kicker={`GESTIÓN ${currentYear.year}`}
-        kickerIcon={LayoutGrid}
+        breadcrumbs={[
+          { label: 'ADMINISTRACIÓN' },
+          { label: `GESTIÓN ${currentYear.year}`, href: '/academic-years' },
+          { label: 'MATRIZ DE HORARIOS', icon: LayoutGrid },
+        ]}
         title="Matriz de Horarios"
+        description="Diseño de bloques pedagógicos y control de colisiones docentes."
       >
+
         {canManageTimetables && (
           <PageHeaderButton
             id="btn-export-timetables"

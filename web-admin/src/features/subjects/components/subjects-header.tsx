@@ -23,9 +23,13 @@ export const SubjectsHeader = ({
       )}
 
       <PageHeader
-        kicker="CATÁLOGO GENERAL"
-        kickerIcon={BookMarked}
+        breadcrumbs={[
+          { label: 'ADMINISTRACIÓN' },
+          { label: 'PLAN DE ESTUDIOS', href: '/subjects' },
+          { label: 'CATÁLOGO DE MATERIAS', icon: BookMarked },
+        ]}
         title="Materias y Asignaturas"
+        description="Malla curricular institucional, códigos oficiales y áreas del conocimiento."
       >
         {canManageSubjects && (
           <PageHeaderButton
@@ -34,6 +38,7 @@ export const SubjectsHeader = ({
             onClick={onOpenCreate}
             icon={Plus}
             variant="dark"
+            hotkey="N"
           >
             Nueva Materia
           </PageHeaderButton>
@@ -42,4 +47,3 @@ export const SubjectsHeader = ({
     </div>
   )
 }
-

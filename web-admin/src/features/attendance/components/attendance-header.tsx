@@ -25,11 +25,15 @@ export const AttendanceHeader = ({
   return (
     <>
       <PageHeader
-        kicker="CONTROL CENTRAL"
-        kickerIcon={ClipboardCheck}
+        breadcrumbs={[
+          { label: 'CONTROL ESCOLAR' },
+          { label: 'ASISTENCIAS', href: '/attendance' },
+          { label: 'MONITOREO Y REGISTRO', icon: ClipboardCheck },
+        ]}
         title="Gestión de Asistencia"
         description="Monitoreo de ingresos en tiempo real, lector de credenciales y registro de licencias."
       />
+
 
       <div className="flex border-b border-uecg-line overflow-x-auto bg-gray-50/50 p-1 gap-1">
         {tabs.map((tab) => {

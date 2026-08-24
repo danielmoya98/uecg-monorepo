@@ -5,12 +5,16 @@ import type { Option } from '../types/identity.types'
 
 export const IdentityHeader = () => (
   <PageHeader
-    kicker="SEGURIDAD Y ACCESO"
-    kickerIcon={ScanFace}
+    breadcrumbs={[
+      { label: 'CONTROL ESCOLAR' },
+      { label: 'IDENTIDAD DIGITAL', href: '/identity' },
+      { label: 'CENTRO DE CARNETIZACIÓN', icon: ScanFace },
+    ]}
     title="Centro de Carnetización"
     description="Generación masiva de Identidades Digitales (QR) y credenciales impresas."
   />
 )
+
 
 export const IdentitySkeleton = () => (
   <div className="flex flex-col gap-8 w-full relative animate-in fade-in duration-300">

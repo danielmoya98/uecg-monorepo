@@ -16,8 +16,11 @@ export const AssignmentsHeader = ({
 }: HeaderProps) => {
   return (
     <PageHeader
-      kicker={`GESTIÓN ${year}`}
-      kickerIcon={CalendarRange}
+      breadcrumbs={[
+        { label: 'ADMINISTRACIÓN' },
+        { label: `GESTIÓN ${year}`, href: '/academic-years' },
+        { label: 'CARGA HORARIA', icon: CalendarRange },
+      ]}
       title="Carga Horaria"
       description="Asignación de materias y plantel docente para la gestión escolar."
     >
@@ -40,6 +43,7 @@ export const AssignmentsHeader = ({
             disabled={isCloneDisabled}
             icon={Copy}
             variant="dark"
+            hotkey="C"
           >
             Clonar Carga
           </PageHeaderButton>
@@ -53,12 +57,15 @@ export const TeacherAssignmentsSkeleton = () => {
   return (
     <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">
       <PageHeader
-
-        kicker="GESTIÓN ESCOLAR"
-        kickerIcon={CalendarRange}
+        breadcrumbs={[
+          { label: 'ADMINISTRACIÓN' },
+          { label: 'GESTIÓN ESCOLAR', href: '/academic-years' },
+          { label: 'CARGA HORARIA', icon: CalendarRange },
+        ]}
         title="Carga Horaria"
         description="Asignación de materias y plantel docente para la gestión escolar."
       />
+
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[60vh] pb-20 animate-pulse">
         {/* Columna Izquierda: Selector de Cursos Skeleton */}

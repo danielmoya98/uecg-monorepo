@@ -108,21 +108,27 @@ export function DrawerHeader({
         </div>
       </div>
 
-      {/* Botón de Cierre X accesible */}
+      {/* Botón de Cierre X accesible con Hotkey ESC */}
       {showCloseButton && (
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={isSubmitting}
-          className="p-1.5 relative z-10 text-white/70 hover:text-white transition-colors focus:outline-none disabled:opacity-50 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer"
-          aria-label="Cerrar cajón"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-2 relative z-10">
+          <kbd className="hidden sm:inline-flex items-center justify-center font-mono text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 border border-white/20 bg-white/10 text-white/80 select-none pointer-events-none">
+            ESC
+          </kbd>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="p-1.5 text-white/70 hover:text-white transition-colors focus:outline-none disabled:opacity-50 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer"
+            aria-label="Cerrar cajón (ESC)"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       )}
     </div>
   )
 }
+
 
 export interface DrawerShellProps {
   isOpen: boolean

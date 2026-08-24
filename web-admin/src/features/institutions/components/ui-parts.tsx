@@ -3,12 +3,16 @@ import { PageHeader } from "@/shared/ui/page-header";
 
 export const SettingsHeader = () => (
   <PageHeader
-    kicker="CONFIGURACIÓN GLOBAL"
-    kickerIcon={Building2}
+    breadcrumbs={[
+      { label: 'SISTEMA' },
+      { label: 'CONFIGURACIÓN', href: '/settings' },
+      { label: 'GESTIÓN INSTITUCIONAL (RUE)', icon: Building2 },
+    ]}
     title="Gestión Institucional (RUE)"
     description="Central de configuraciones modulares del colegio. Estos datos impactan libretas y reportes oficiales SIE."
   />
 );
+
 
 export const SettingsSkeleton = () => (
   <div className="flex flex-col gap-8 w-full pb-20 animate-in fade-in duration-300">

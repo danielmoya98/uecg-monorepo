@@ -28,8 +28,11 @@ export const ClassroomsHeader = ({
       )}
 
       <PageHeader
-        kicker={currentYearName ? `GESTIÓN ACTIVA: ${currentYearName}` : 'ESTRUCTURA ESCOLAR'}
-        kickerIcon={Landmark}
+        breadcrumbs={[
+          { label: 'ADMINISTRACIÓN' },
+          { label: currentYearName ? `GESTIÓN ${currentYearName}` : 'GESTIÓN ACADÉMICA', href: '/academic-years' },
+          { label: 'AULAS Y CURSOS', icon: Landmark },
+        ]}
         title="Aulas y Cursos"
         description="Organización de niveles, turnos, grados y paralelos institucionales."
       >
@@ -50,6 +53,7 @@ export const ClassroomsHeader = ({
               onClick={onOpenCreate}
               icon={Plus}
               variant="dark"
+              hotkey="N"
             >
               Nueva Aula
             </PageHeaderButton>
@@ -59,4 +63,3 @@ export const ClassroomsHeader = ({
     </div>
   )
 }
-

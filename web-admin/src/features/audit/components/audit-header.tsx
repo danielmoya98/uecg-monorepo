@@ -7,8 +7,11 @@ interface AuditHeaderProps {
 
 export const AuditHeader = ({ isFetching = false }: AuditHeaderProps) => (
   <PageHeader
-    kicker="TRAZABILIDAD DEL SISTEMA"
-    kickerIcon={Terminal}
+    breadcrumbs={[
+      { label: 'SISTEMA' },
+      { label: 'SEGURIDAD', href: '/audit' },
+      { label: 'AUDITORÍA GLOBAL', icon: Terminal },
+    ]}
     title="Auditoría Global"
     description="Registro inmutable de transacciones, mutaciones de datos y eventos de seguridad."
   >
@@ -31,4 +34,3 @@ export const AuditHeader = ({ isFetching = false }: AuditHeaderProps) => (
     </div>
   </PageHeader>
 );
-
