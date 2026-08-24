@@ -14,17 +14,43 @@ import {
   Sparkles,
   School,
   User,
+  Info,
 } from 'lucide-react';
+import logoSvg from '@/assets/logo.svg';
 import { AuthService } from '@/features/auth/api/auth.service';
 import { useTourStore } from '@/features/academic-years/store/use-tour-store';
 import { setupWizardSchema, type SetupWizardFormValues } from '../../schemas/setup-wizard.schema';
 import SwissSelect from '../swiss-select';
 
 const STEPS = [
-  { id: 1, title: 'Directora / Administradora', subtitle: 'Acreditación del usuario principal', icon: ShieldCheck },
-  { id: 2, title: 'Identidad del Colegio', subtitle: 'Estructura legal RUE / SIE', icon: Building2 },
-  { id: 3, title: 'Operación & Asistencia', subtitle: 'Parámetros y tolerancias', icon: Sliders },
-  { id: 4, title: 'Puesta en Marcha', subtitle: 'Revisión final y arranque', icon: Sparkles },
+  {
+    id: 1,
+    title: 'Directora / Administrador',
+    subtitle: 'Cuenta de acceso suprema',
+    icon: ShieldCheck,
+    tag: 'Paso 1 de 4',
+  },
+  {
+    id: 2,
+    title: 'Ficha RUE del Colegio',
+    subtitle: 'Acreditación legal SIE',
+    icon: Building2,
+    tag: 'Paso 2 de 4',
+  },
+  {
+    id: 3,
+    title: 'Operación & Asistencia',
+    subtitle: 'Horarios y tolerancias',
+    icon: Sliders,
+    tag: 'Paso 3 de 4',
+  },
+  {
+    id: 4,
+    title: 'Puesta en Marcha',
+    subtitle: 'Confirmación y arranque',
+    icon: Sparkles,
+    tag: 'Paso 4 de 4',
+  },
 ];
 
 export default function SetupWizardPage() {
@@ -116,154 +142,185 @@ export default function SetupWizardPage() {
       if (response?.user) {
         AuthService.saveSessionMetadata(response.user);
       }
-      toast.success('¡COLEGIO E INSTITUCIÓN REGISTRADOS CON ÉXITO!', {
-        description: 'Bienvenida a la plataforma. Iniciando el asistente de puesta en marcha...',
+      toast.success('¡COLEGIO E INSTITUCIÓN INICIALIZADOS CON ÉXITO!', {
+        description: 'Bienvenida a la plataforma. Iniciando el asistente guiado...',
       });
-      // Iniciar el tour desde el inicio
       startTour(0);
       navigate({ to: '/dashboard' as any });
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || 'Error al inicializar el colegio';
-      toast.error('ERROR DE INICIALIZACIÓN', { description: typeof msg === 'string' ? msg : msg[0] });
+      toast.error('ERROR DE INICIALIZACIÓN', {
+        description: typeof msg === 'string' ? msg : msg[0],
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-uecg-canvas flex flex-col justify-between p-4 md:p-8 font-sans selection:bg-uecg-blue selection:text-white">
-      {/* Top Header */}
-      <header className="max-w-4xl w-full mx-auto flex items-center justify-between border-b border-uecg-line pb-4 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-uecg-blue text-white flex items-center justify-center font-black tracking-widest text-sm shadow-sm">
-            UE
+    <div className="min-h-screen bg-gradient-to-b from-[#0B3A64] via-[#0F4C81] to-[#0A2D4F] text-white flex flex-col justify-between p-4 sm:p-6 md:p-10 font-sans antialiased relative selection:bg-blue-300 selection:text-[#0F4C81]">
+      {/* Background Decorative Grid */}
+      <div
+        className="absolute inset-0 opacity-5 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 1px, transparent 1px)
+          `,
+          backgroundSize: '36px 36px',
+        }}
+      />
+
+      {/* TOP HEADER */}
+      <header className="relative z-10 max-w-5xl w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-white/20 pb-5">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 bg-white/10 border border-white/30 flex items-center justify-center p-2 shadow-inner backdrop-blur-xs">
+            <img
+              src={logoSvg}
+              alt="Escudo UECG"
+              className="w-full h-full object-contain filter invert brightness-200"
+            />
           </div>
           <div>
-            <h1 className="text-sm font-black tracking-wider uppercase text-uecg-black">
-              Colegio Che Guevara
+            <h1 className="text-sm font-black tracking-widest uppercase text-white">
+              Unidad Educativa Colegio Che Guevara
             </h1>
-            <p className="text-[10px] text-uecg-gray tracking-widest uppercase">
-              Asistente de Primer Arranque &bull; Setup Wizard
+            <p className="text-[10px] text-blue-200 tracking-[0.2em] uppercase font-bold">
+              Asistente de Primer Arranque &bull; Configuración Inicial
             </p>
           </div>
         </div>
-        <div className="text-right">
-          <span className="text-[10px] font-black text-uecg-blue uppercase tracking-widest bg-blue-50 px-2.5 py-1 border border-blue-200">
+
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-black uppercase tracking-widest bg-white/15 border border-white/25 px-3 py-1.5 text-blue-100 backdrop-blur-xs">
             Paso {currentStep} de 4
           </span>
         </div>
       </header>
 
-      {/* Main Container */}
-      <main className="max-w-4xl w-full mx-auto flex-1 flex flex-col">
-        {/* Progress Step Bar */}
-        <div className="grid grid-cols-4 gap-2 mb-8">
+      {/* CENTER CONTAINER */}
+      <main className="relative z-10 max-w-5xl w-full mx-auto my-6 flex-1 flex flex-col justify-center">
+        {/* Step Progress Pills */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
           {STEPS.map((s) => {
             const Icon = s.icon;
             const isDone = currentStep > s.id;
             const isCurrent = currentStep === s.id;
             return (
-              <div
+              <button
                 key={s.id}
-                className={`p-3 border transition-all flex flex-col justify-between gap-2 ${
+                type="button"
+                onClick={() => {
+                  if (s.id < currentStep) setCurrentStep(s.id);
+                }}
+                className={`p-3 border text-left transition-all flex flex-col justify-between gap-2 backdrop-blur-xs cursor-default ${
                   isCurrent
-                    ? 'border-uecg-blue bg-white shadow-sm ring-1 ring-uecg-blue'
+                    ? 'bg-white text-[#0F4C81] border-white shadow-xl ring-2 ring-blue-300'
                     : isDone
-                      ? 'border-emerald-300 bg-emerald-50/50 text-emerald-900'
-                      : 'border-uecg-line bg-white/50 opacity-60'
+                      ? 'bg-white/20 text-blue-100 border-white/30 cursor-pointer hover:bg-white/30'
+                      : 'bg-black/20 text-white/50 border-white/10'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-widest">
+                  <span className={`text-[10px] font-mono font-black uppercase tracking-widest ${isCurrent ? 'text-[#0F4C81]' : 'text-blue-200'}`}>
                     0{s.id}
                   </span>
-                  <Icon className={`w-4 h-4 ${isCurrent ? 'text-uecg-blue' : isDone ? 'text-emerald-600' : 'text-uecg-gray'}`} />
+                  <Icon className={`w-4 h-4 ${isCurrent ? 'text-[#0F4C81]' : isDone ? 'text-emerald-300' : 'text-white/40'}`} />
                 </div>
                 <div>
                   <h3 className="text-xs font-black uppercase tracking-tight line-clamp-1">{s.title}</h3>
-                  <p className="text-[9px] text-uecg-gray hidden sm:block line-clamp-1">{s.subtitle}</p>
+                  <p className={`text-[9px] line-clamp-1 ${isCurrent ? 'text-gray-600' : 'text-blue-200/80'}`}>
+                    {s.subtitle}
+                  </p>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
 
-        {/* Step Content Card */}
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-white border border-uecg-line p-6 md:p-8 flex-1 flex flex-col justify-between shadow-xs">
+        {/* Form Card */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white text-[#1A1A1A] border border-white/30 shadow-2xl p-6 sm:p-8 md:p-10 flex flex-col justify-between"
+        >
           {/* STEP 1: Directora */}
           {currentStep === 1 && (
             <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="border-b border-uecg-line pb-3">
-                <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-blue-50 text-uecg-blue border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
-                  <User className="w-3 h-3" /> Cuenta Directiva Principal
+              <div className="border-b border-gray-200 pb-4">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-[#0F4C81] border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
+                  <User className="w-3.5 h-3.5" /> Cuenta de Administradora / Directora
                 </div>
-                <h2 className="text-lg font-black text-uecg-black tracking-tight">
-                  1. Registro de la Directora / Administradora
+                <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight uppercase">
+                  1. Acreditación de la Cuenta Principal
                 </h2>
-                <p className="text-xs text-uecg-gray">
-                  Esta cuenta tendrá los permisos supremos para gestionar la estructura académica, el personal docente y las credenciales oficiales.
+                <p className="text-xs text-gray-500 mt-1">
+                  Ingrese los datos personales y de acceso de la persona titular de la Dirección. Esta cuenta tendrá acceso ilimitado para configurar gestiones, aulas y emitir credenciales.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
-                    Nombre Completo &bull; Título Oficial <span className="text-red-500">*</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
+                    Nombre Completo &bull; Título Profesional <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('fullName')}
                     placeholder="Ej. Lic. María Elena Ramos"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  {errors.fullName && <p className="text-[10px] text-red-500">{errors.fullName.message}</p>}
+                  <span className="text-[9px] text-gray-500">Nombre con el que figurará en actas y reportes</span>
+                  {errors.fullName && <p className="text-[10px] font-bold text-red-500">{errors.fullName.message}</p>}
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Cédula de Identidad (CI) <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('ci')}
                     placeholder="Ej. 1234567 CH"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  {errors.ci && <p className="text-[10px] text-red-500">{errors.ci.message}</p>}
+                  <span className="text-[9px] text-gray-500">Número de carnet y expedición</span>
+                  {errors.ci && <p className="text-[10px] font-bold text-red-500">{errors.ci.message}</p>}
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
-                    Correo Electrónico de Acceso <span className="text-red-500">*</span>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
+                    Correo Electrónico de Ingreso <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
                     {...register('email')}
                     placeholder="directora@uecg.edu.bo"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  {errors.email && <p className="text-[10px] text-red-500">{errors.email.message}</p>}
+                  <span className="text-[9px] text-gray-500">Servirá para iniciar sesión en la plataforma</span>
+                  {errors.email && <p className="text-[10px] font-bold text-red-500">{errors.email.message}</p>}
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Contraseña Maestra <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="password"
                     {...register('password')}
                     placeholder="Mínimo 8 caracteres"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  {errors.password && <p className="text-[10px] text-red-500">{errors.password.message}</p>}
+                  <span className="text-[9px] text-gray-500">Recomendamos usar mayúsculas, números y símbolos</span>
+                  {errors.password && <p className="text-[10px] font-bold text-red-500">{errors.password.message}</p>}
                 </div>
 
-                <div className="space-y-1 md:col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
-                    Teléfono Celular / Contacto de Emergencia
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
+                    Teléfono Celular / WhatsApp de Contacto (Opcional)
                   </label>
                   <input
                     {...register('phone')}
                     placeholder="Ej. 78901234"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -273,45 +330,47 @@ export default function SetupWizardPage() {
           {/* STEP 2: Institución */}
           {currentStep === 2 && (
             <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="border-b border-uecg-line pb-3">
-                <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-blue-50 text-uecg-blue border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
-                  <School className="w-3 h-3" /> Ficha SIE / RUE
+              <div className="border-b border-gray-200 pb-4">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-[#0F4C81] border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
+                  <School className="w-3.5 h-3.5" /> Ficha SIE / RUE Ministerial
                 </div>
-                <h2 className="text-lg font-black text-uecg-black tracking-tight">
+                <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight uppercase">
                   2. Datos Oficiales de la Unidad Educativa
                 </h2>
-                <p className="text-xs text-uecg-gray">
-                  Datos de acreditación ante el Ministerio de Educación del Estado Plurinacional de Bolivia.
+                <p className="text-xs text-gray-500 mt-1">
+                  Especifique el código RUE otorgado por la Dirección Distrital y los niveles académicos habilitados.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Código RUE / SIE <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('rueCode')}
                     placeholder="Ej. 80730145"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  {errors.rueCode && <p className="text-[10px] text-red-500">{errors.rueCode.message}</p>}
+                  <span className="text-[9px] text-gray-500">Código oficial de registro educativo ministerial</span>
+                  {errors.rueCode && <p className="text-[10px] font-bold text-red-500">{errors.rueCode.message}</p>}
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
-                    Nombre Oficial del Colegio <span className="text-red-500">*</span>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
+                    Nombre Oficial del Establecimiento <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('institutionName')}
                     placeholder="Unidad Educativa Colegio Che Guevara"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  {errors.institutionName && <p className="text-[10px] text-red-500">{errors.institutionName.message}</p>}
+                  <span className="text-[9px] text-gray-500">Tal como aparece en la Resolución Administrativa</span>
+                  {errors.institutionName && <p className="text-[10px] font-bold text-red-500">{errors.institutionName.message}</p>}
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Tipo de Dependencia
                   </label>
                   <SwissSelect
@@ -326,8 +385,8 @@ export default function SetupWizardPage() {
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Departamento (Bolivia)
                   </label>
                   <SwissSelect
@@ -348,50 +407,50 @@ export default function SetupWizardPage() {
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Municipio <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('municipality')}
                     placeholder="Ej. Sucre"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Distrito Educativo <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('district')}
                     placeholder="Ej. Sucre 1"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
                 </div>
 
-                <div className="space-y-1 md:col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
-                    Dirección Física del Establecimiento <span className="text-red-500">*</span>
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
+                    Dirección Física del Colegio <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('address')}
                     placeholder="Ej. Zona Villa Armonía, Calle Principal #123"
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  {errors.address && <p className="text-[10px] text-red-500">{errors.address.message}</p>}
+                  {errors.address && <p className="text-[10px] font-bold text-red-500">{errors.address.message}</p>}
                 </div>
 
                 {/* Turnos y Niveles */}
-                <div className="space-y-2 md:col-span-2 pt-2 border-t border-uecg-line">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black block">
-                    Turnos Operativos Autorizados <span className="text-red-500">*</span>
+                <div className="space-y-2 md:col-span-2 pt-3 border-t border-gray-200">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
+                    Turnos Operativos Habilitados <span className="text-red-500">*</span>
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { id: 'MANANA', label: 'Mañana' },
-                      { id: 'TARDE', label: 'Tarde' },
-                      { id: 'NOCHE', label: 'Noche' },
+                      { id: 'MANANA', label: 'Turno Mañana' },
+                      { id: 'TARDE', label: 'Turno Tarde' },
+                      { id: 'NOCHE', label: 'Turno Noche' },
                     ].map((t) => {
                       const isSelected = formValues.shifts?.includes(t.id);
                       return (
@@ -399,23 +458,23 @@ export default function SetupWizardPage() {
                           key={t.id}
                           type="button"
                           onClick={() => toggleArrayItem('shifts', t.id)}
-                          className={`px-3 py-1.5 text-xs font-black uppercase tracking-wider border cursor-pointer transition-colors ${
+                          className={`px-4 py-2 text-xs font-black uppercase tracking-wider border cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-uecg-blue text-white border-uecg-blue'
-                              : 'bg-white text-uecg-black border-uecg-line hover:bg-neutral-50'
+                              ? 'bg-[#0F4C81] text-white border-[#0F4C81] shadow-sm'
+                              : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
                           }`}
                         >
-                          {isSelected ? '✓ ' : ''}{t.label}
+                          {isSelected ? '✓ ' : '+ '}{t.label}
                         </button>
                       );
                     })}
                   </div>
-                  {errors.shifts && <p className="text-[10px] text-red-500">{errors.shifts.message}</p>}
+                  {errors.shifts && <p className="text-[10px] font-bold text-red-500">{errors.shifts.message}</p>}
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black block">
-                    Niveles Educativos Habilitados <span className="text-red-500">*</span>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
+                    Niveles Educativos Autorizados <span className="text-red-500">*</span>
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {[
@@ -429,18 +488,18 @@ export default function SetupWizardPage() {
                           key={l.id}
                           type="button"
                           onClick={() => toggleArrayItem('levels', l.id)}
-                          className={`px-3 py-1.5 text-xs font-black uppercase tracking-wider border cursor-pointer transition-colors ${
+                          className={`px-4 py-2 text-xs font-black uppercase tracking-wider border cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-uecg-blue text-white border-uecg-blue'
-                              : 'bg-white text-uecg-black border-uecg-line hover:bg-neutral-50'
+                              ? 'bg-[#0F4C81] text-white border-[#0F4C81] shadow-sm'
+                              : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
                           }`}
                         >
-                          {isSelected ? '✓ ' : ''}{l.label}
+                          {isSelected ? '✓ ' : '+ '}{l.label}
                         </button>
                       );
                     })}
                   </div>
-                  {errors.levels && <p className="text-[10px] text-red-500">{errors.levels.message}</p>}
+                  {errors.levels && <p className="text-[10px] font-bold text-red-500">{errors.levels.message}</p>}
                 </div>
               </div>
             </div>
@@ -449,158 +508,163 @@ export default function SetupWizardPage() {
           {/* STEP 3: Operación & Asistencia */}
           {currentStep === 3 && (
             <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="border-b border-uecg-line pb-3">
-                <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-blue-50 text-uecg-blue border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
-                  <Sliders className="w-3 h-3" /> Motor Operativo
+              <div className="border-b border-gray-200 pb-4">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-[#0F4C81] border border-blue-200 text-[10px] font-black uppercase tracking-wider mb-2">
+                  <Sliders className="w-3.5 h-3.5" /> Parámetros del Motor Operativo
                 </div>
-                <h2 className="text-lg font-black text-uecg-black tracking-tight">
-                  3. Reglas de Horarios y Asistencia
+                <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight uppercase">
+                  3. Reglas de Horarios y Control de Asistencia
                 </h2>
-                <p className="text-xs text-uecg-gray">
-                  Configure cómo operan las aulas físicas y el control de puntualidad en la App Móvil.
+                <p className="text-xs text-gray-500 mt-1">
+                  Configure cómo se asignan los salones de clase y los márgenes de tolerancia para el escáner QR móvil.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black block">
-                    Modo de Asignación de Aulas y Horarios
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
+                    Modo de Programación y Asignación de Aulas
                   </label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <label
                       onClick={() => setValue('schedulingMode', 'FIXED_BASE')}
-                      className={`p-4 border cursor-pointer flex flex-col justify-between gap-2 transition-all ${
+                      className={`p-4 border cursor-pointer flex flex-col justify-between gap-3 transition-all ${
                         formValues.schedulingMode === 'FIXED_BASE'
-                          ? 'border-uecg-blue bg-blue-50/40 ring-1 ring-uecg-blue'
-                          : 'border-uecg-line bg-white hover:bg-neutral-50'
+                          ? 'border-[#0F4C81] bg-blue-50/50 ring-2 ring-[#0F4C81] shadow-sm'
+                          : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase tracking-wider text-uecg-black">
-                          Aula Fija / Tradicional
+                        <span className="text-xs font-black uppercase tracking-wider text-[#0F4C81]">
+                          1. Aula Fija / Tradicional (Recomendado)
                         </span>
                         {formValues.schedulingMode === 'FIXED_BASE' && (
-                          <CheckCircle2 className="w-4 h-4 text-uecg-blue" />
+                          <CheckCircle2 className="w-4 h-4 text-[#0F4C81]" />
                         )}
                       </div>
-                      <p className="text-[11px] text-uecg-gray leading-relaxed">
-                        Los alumnos permanecen en un salón base fijo y los profesores rotan de curso. (Recomendado).
+                      <p className="text-[11px] text-gray-600 leading-relaxed">
+                        Cada curso (ej. 3ro A) tiene su salón permanente asignado. Los profesores rotan de aula salvo en materias especiales (Computación, Canchas).
                       </p>
                     </label>
 
                     <label
                       onClick={() => setValue('schedulingMode', 'DYNAMIC')}
-                      className={`p-4 border cursor-pointer flex flex-col justify-between gap-2 transition-all ${
+                      className={`p-4 border cursor-pointer flex flex-col justify-between gap-3 transition-all ${
                         formValues.schedulingMode === 'DYNAMIC'
-                          ? 'border-uecg-blue bg-blue-50/40 ring-1 ring-uecg-blue'
-                          : 'border-uecg-line bg-white hover:bg-neutral-50'
+                          ? 'border-[#0F4C81] bg-blue-50/50 ring-2 ring-[#0F4C81] shadow-sm'
+                          : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase tracking-wider text-uecg-black">
-                          Aulas Dinámicas / Rotativas
+                        <span className="text-xs font-black uppercase tracking-wider text-[#0F4C81]">
+                          2. Aulas Dinámicas / Rotativas
                         </span>
                         {formValues.schedulingMode === 'DYNAMIC' && (
-                          <CheckCircle2 className="w-4 h-4 text-uecg-blue" />
+                          <CheckCircle2 className="w-4 h-4 text-[#0F4C81]" />
                         )}
                       </div>
-                      <p className="text-[11px] text-uecg-gray leading-relaxed">
-                        Los alumnos se desplazan a laboratorios, talleres y aulas temáticas según la materia.
+                      <p className="text-[11px] text-gray-600 leading-relaxed">
+                        Los alumnos se desplazan de aula en aula según la materia y el profesor titular de cada salón o laboratorio temático.
                       </p>
                     </label>
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Tolerancia de Atraso (Minutos)
                   </label>
                   <input
                     type="number"
                     {...register('lateToleranceMinutes')}
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    placeholder="5"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  <span className="text-[9px] text-uecg-gray">Margen de gracia tras el toque de timbre</span>
+                  <span className="text-[9px] text-gray-500">Margen de gracia tras el toque de timbre (Puntual vs Atraso)</span>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-uecg-black">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A] block">
                     Límite para Falta Injustificada (Minutos)
                   </label>
                   <input
                     type="number"
                     {...register('absentToleranceMinutes')}
-                    className="w-full px-3 py-2 text-xs border border-uecg-line focus:border-uecg-blue focus:outline-none transition-colors"
+                    placeholder="15"
+                    className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-300 focus:border-[#0F4C81] focus:bg-white focus:outline-none transition-colors"
                   />
-                  <span className="text-[9px] text-uecg-gray">Pasado este tiempo se marca como falta</span>
+                  <span className="text-[9px] text-gray-500">Pasado este tiempo el escáner marcará falta automática</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* STEP 4: Revisión Final */}
+          {/* STEP 4: Resumen y Puesta en Marcha */}
           {currentStep === 4 && (
             <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="border-b border-uecg-line pb-3">
-                <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase tracking-wider mb-2">
-                  <CheckCircle2 className="w-3 h-3" /> Resumen de Configuración
+              <div className="border-b border-gray-200 pb-4">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-black uppercase tracking-wider mb-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Resumen de Puesta en Marcha
                 </div>
-                <h2 className="text-lg font-black text-uecg-black tracking-tight">
-                  4. Confirmación y Puesta en Marcha
+                <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight uppercase">
+                  4. Confirmación y Registro Final
                 </h2>
-                <p className="text-xs text-uecg-gray">
-                  Verifique que la información sea exacta antes de inicializar la plataforma.
+                <p className="text-xs text-gray-500 mt-1">
+                  Revise los datos antes de inicializar la plataforma.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 border border-uecg-line bg-neutral-50/50 space-y-2">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-uecg-blue">
-                    Acreditación Directiva
+                <div className="p-4 border border-gray-200 bg-gray-50/80 space-y-1.5">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0F4C81]">
+                    Directora / Administrador Principal
                   </h4>
-                  <p className="text-xs font-bold text-uecg-black">{formValues.fullName}</p>
-                  <p className="text-xs text-uecg-gray">CI: {formValues.ci}</p>
-                  <p className="text-xs text-uecg-gray">Email: {formValues.email}</p>
+                  <p className="text-xs font-bold text-gray-900">{formValues.fullName}</p>
+                  <p className="text-xs text-gray-600">CI: {formValues.ci}</p>
+                  <p className="text-xs text-gray-600">Email: {formValues.email}</p>
                 </div>
 
-                <div className="p-4 border border-uecg-line bg-neutral-50/50 space-y-2">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-uecg-blue">
-                    Ficha RUE del Establecimiento
+                <div className="p-4 border border-gray-200 bg-gray-50/80 space-y-1.5">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0F4C81]">
+                    Unidad Educativa &bull; RUE
                   </h4>
-                  <p className="text-xs font-bold text-uecg-black">{formValues.institutionName}</p>
-                  <p className="text-xs text-uecg-gray">Código RUE: {formValues.rueCode}</p>
-                  <p className="text-xs text-uecg-gray">
+                  <p className="text-xs font-bold text-gray-900">{formValues.institutionName}</p>
+                  <p className="text-xs text-gray-600">Código RUE: {formValues.rueCode}</p>
+                  <p className="text-xs text-gray-600">
                     {formValues.department} &bull; {formValues.municipality} ({formValues.district})
                   </p>
                 </div>
 
-                <div className="p-4 border border-uecg-line bg-neutral-50/50 space-y-2 md:col-span-2">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-uecg-blue">
-                    Capacidades & Modo Operativo
+                <div className="p-4 border border-gray-200 bg-gray-50/80 space-y-1.5 md:col-span-2">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0F4C81]">
+                    Turnos, Niveles y Motor Operativo
                   </h4>
-                  <div className="flex flex-wrap gap-4 text-xs text-uecg-gray">
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-600">
                     <div><strong>Turnos:</strong> {formValues.shifts?.join(', ')}</div>
                     <div><strong>Niveles:</strong> {formValues.levels?.join(', ')}</div>
-                    <div><strong>Modo Horario:</strong> {formValues.schedulingMode === 'FIXED_BASE' ? 'Aula Fija' : 'Aulas Dinámicas'}</div>
-                    <div><strong>Tolerancia:</strong> {formValues.lateToleranceMinutes} min atraso / {formValues.absentToleranceMinutes} min falta</div>
+                    <div><strong>Horarios:</strong> {formValues.schedulingMode === 'FIXED_BASE' ? 'Aula Fija' : 'Aulas Dinámicas'}</div>
+                    <div><strong>Tolerancia Asistencia:</strong> {formValues.lateToleranceMinutes} min atraso / {formValues.absentToleranceMinutes} min falta</div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-blue-50 border-l-2 border-uecg-blue p-3 text-xs text-uecg-gray leading-relaxed">
-                💡 <strong>Asistencia Inicial:</strong> Al hacer clic en <em>"Inicializar Colegio y Comenzar Guía"</em>, el sistema creará tu sesión de inmediato y abrirá el <strong>Tour Interactivo</strong> para guiarte en la configuración del año lectivo, cursos y profesores.
+              <div className="p-4 bg-blue-50/70 border-l-4 border-[#0F4C81] text-xs text-gray-700 leading-relaxed flex items-start gap-3">
+                <Info className="w-5 h-5 text-[#0F4C81] shrink-0 mt-0.5" />
+                <div>
+                  <strong>Asistente Interactivo de Primera Gestión:</strong> Al hacer clic en <em>"Inicializar Colegio y Comenzar Guía"</em>, el sistema creará tu sesión de inmediato y abrirá el <strong>Tour Interactivo (Driver.js)</strong> para guiarte en la creación del primer año lectivo, cursos y profesores.
+                </div>
               </div>
             </div>
           )}
 
           {/* Navigation Controls Footer */}
-          <div className="flex items-center justify-between pt-6 border-t border-uecg-line mt-8">
+          <div className="flex items-center justify-between pt-6 border-t border-gray-200 mt-8">
             {currentStep > 1 ? (
               <button
                 type="button"
                 onClick={handlePrevStep}
                 disabled={isSubmitting}
-                className="px-4 py-2 text-xs font-black uppercase tracking-wider border border-uecg-line text-uecg-black hover:bg-neutral-50 transition-colors flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 text-xs font-black uppercase tracking-wider border border-gray-300 text-gray-800 hover:bg-gray-100 transition-colors flex items-center gap-2 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Anterior
               </button>
@@ -612,7 +676,7 @@ export default function SetupWizardPage() {
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="px-6 py-2 text-xs font-black uppercase tracking-wider bg-uecg-blue text-white hover:bg-blue-700 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
+                className="px-7 py-2.5 text-xs font-black uppercase tracking-wider bg-[#0F4C81] text-white hover:bg-blue-800 transition-colors flex items-center gap-2 cursor-pointer shadow-md"
               >
                 Siguiente <ArrowRight className="w-3.5 h-3.5" />
               </button>
@@ -620,7 +684,7 @@ export default function SetupWizardPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2.5 text-xs font-black uppercase tracking-wider bg-emerald-600 text-white hover:bg-emerald-700 transition-colors flex items-center gap-2 cursor-pointer shadow-sm disabled:opacity-50"
+                className="px-7 py-3 text-xs font-black uppercase tracking-wider bg-emerald-600 text-white hover:bg-emerald-700 transition-all flex items-center gap-2.5 cursor-pointer shadow-lg disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
@@ -636,6 +700,16 @@ export default function SetupWizardPage() {
           </div>
         </form>
       </main>
+
+      {/* BOTTOM FOOTER */}
+      <footer className="relative z-10 max-w-5xl w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-white/20 pt-4 text-center sm:text-left">
+        <p className="text-[10px] text-blue-200 tracking-wider uppercase font-medium">
+          Unidad Educativa Colegio Che Guevara &bull; Plataforma Integral de Gestión Académica
+        </p>
+        <p className="text-[9px] text-blue-300/80 uppercase font-mono tracking-widest">
+          Ley 070 &bull; Avelino Siñani - Elizardo Pérez
+        </p>
+      </footer>
     </div>
   );
 }
