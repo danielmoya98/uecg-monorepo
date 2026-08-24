@@ -15,7 +15,7 @@ export interface SwissSearchInputProps {
 export function SwissSearchInput({
   value,
   onChange,
-  placeholder = 'BUSCAR... (CTRL+K)',
+  placeholder = 'BUSCAR ESTUDIANTE (CTRL+K)...',
   viewMode,
   onViewModeChange,
   showViewToggle = false,
@@ -42,7 +42,7 @@ export function SwissSearchInput({
       {/* Input de Buscador */}
       <div className="relative flex-1 group">
         <Search
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-uecg-gray dark:text-zinc-400 group-focus-within:text-uecg-blue dark:group-focus-within:text-blue-400 transition-colors pointer-events-none"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-uecg-gray group-focus-within:text-uecg-blue transition-colors pointer-events-none"
           aria-hidden="true"
         />
         <input
@@ -51,13 +51,13 @@ export function SwissSearchInput({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-full border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] text-uecg-text dark:text-zinc-100 pl-11 pr-12 py-3 text-[11px] font-bold uppercase tracking-widest placeholder:text-gray-400 dark:placeholder:text-zinc-500 focus:border-uecg-blue dark:focus:border-blue-500 focus:outline-none transition-colors shadow-sm"
+          className="w-full h-full border border-uecg-line bg-white pl-11 pr-12 py-3 text-uecg-text focus:border-uecg-blue focus:outline-none uppercase text-[11px] font-bold tracking-widest placeholder:text-gray-400 transition-colors shadow-sm"
         />
         {value && (
           <button
             type="button"
             onClick={() => onChange('')}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 focus:outline-none p-1 transition-colors cursor-pointer"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 focus:outline-none p-1 transition-colors cursor-pointer"
             aria-label="Limpiar búsqueda"
           >
             <X className="w-4 h-4" />
@@ -67,14 +67,14 @@ export function SwissSearchInput({
 
       {/* Toggle opcional de modo de visualización */}
       {showViewToggle && onViewModeChange && viewMode && (
-        <div className="flex border border-uecg-line dark:border-zinc-800 bg-white dark:bg-[#121214] shadow-sm shrink-0">
+        <div className="flex border border-uecg-line bg-white shadow-sm shrink-0">
           <button
             type="button"
             onClick={() => onViewModeChange('table')}
             className={`px-4 py-3 flex items-center justify-center transition-colors cursor-pointer ${
               viewMode === 'table'
-                ? 'bg-uecg-dark text-white dark:bg-zinc-800 dark:text-white shadow-inner'
-                : 'text-uecg-gray dark:text-zinc-400 hover:text-uecg-dark dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-800/50'
+                ? 'bg-uecg-dark text-white shadow-inner'
+                : 'text-uecg-gray hover:text-uecg-dark hover:bg-gray-50'
             }`}
             title="Vista de Lista"
             aria-label="Vista de Lista"
@@ -84,10 +84,10 @@ export function SwissSearchInput({
           <button
             type="button"
             onClick={() => onViewModeChange('grid')}
-            className={`px-4 py-3 flex items-center justify-center transition-colors cursor-pointer border-l border-uecg-line dark:border-zinc-800 ${
+            className={`px-4 py-3 flex items-center justify-center transition-colors cursor-pointer border-l border-uecg-line ${
               viewMode === 'grid'
-                ? 'bg-uecg-dark text-white dark:bg-zinc-800 dark:text-white shadow-inner border-transparent'
-                : 'text-uecg-gray dark:text-zinc-400 hover:text-uecg-dark dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-800/50'
+                ? 'bg-uecg-dark text-white shadow-inner border-transparent'
+                : 'text-uecg-gray hover:text-uecg-dark hover:bg-gray-50'
             }`}
             title="Vista de Cuadrícula"
             aria-label="Vista de Cuadrícula"

@@ -23,15 +23,15 @@ export const AssignmentsTable = ({
     <SwissTableContainer isFetching={isFetching}>
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800">
-            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">
+          <tr className="bg-gray-50 border-b border-uecg-line">
+            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
               Materia
             </th>
-            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">
+            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
               Docente Asignado
             </th>
             {canManage && (
-              <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 text-center w-28">
+              <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-28">
                 Acciones
               </th>
             )}
@@ -52,16 +52,16 @@ export const AssignmentsTable = ({
             assignments.map((a, index) => (
               <tr
                 key={a.id}
-                className="border-b border-uecg-line dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+                className="border-b border-uecg-line hover:bg-gray-50 transition-colors group animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
                 style={{ animationDelay: `${index * 30}ms` }}
               >
-                <td className="px-4 py-3 border-r border-uecg-line dark:border-zinc-800">
-                  <p className="font-black uppercase tracking-tight text-uecg-text dark:text-zinc-100 text-xs">
+                <td className="px-4 py-3 border-r border-uecg-line">
+                  <p className="font-black uppercase tracking-tight text-uecg-text text-xs">
                     {a.subject.name}
                   </p>
                 </td>
-                <td className="px-4 py-3 border-r border-uecg-line dark:border-zinc-800">
-                  <p className="text-[11px] font-bold text-uecg-gray dark:text-zinc-400 uppercase tracking-widest">
+                <td className="px-4 py-3 border-r border-uecg-line">
+                  <p className="text-[11px] font-bold text-uecg-gray uppercase tracking-widest">
                     {a.teacher.fullName}
                   </p>
                 </td>
@@ -72,7 +72,7 @@ export const AssignmentsTable = ({
                         <button
                           type="button"
                           onClick={() => onReassignRequest(a)}
-                          className="text-uecg-gray dark:text-zinc-400 hover:text-uecg-blue dark:hover:text-blue-400 transition-colors focus:outline-none outline-none cursor-pointer p-1"
+                          className="text-uecg-gray hover:text-uecg-blue transition-colors focus:outline-none outline-none cursor-pointer p-1"
                           title="Reasignar Docente Titular"
                         >
                           <UserCheck className="w-4 h-4" />
@@ -81,7 +81,7 @@ export const AssignmentsTable = ({
                       <button
                         type="button"
                         onClick={() => onDeleteRequest(a)}
-                        className="text-uecg-gray dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 transition-colors focus:outline-none outline-none cursor-pointer p-1"
+                        className="text-uecg-gray hover:text-red-600 transition-colors focus:outline-none outline-none cursor-pointer p-1"
                         title="Eliminar asignación"
                       >
                         <Trash2 className="w-4 h-4" />

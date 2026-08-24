@@ -187,18 +187,18 @@ export default function EnrollmentsTable({
         <SwissTableContainer isFetching={isFetching} isPending={isPending}>
             <table className="w-full text-left border-collapse">
                 <thead>
-                    <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800">
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">
+                    <tr className="bg-gray-50 border-b border-uecg-line">
+                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
                             Estudiante Solicitante
                         </th>
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">
+                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
                             Tipo Inscripción
                         </th>
-                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 text-center">
+                        <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line text-center">
                             Fecha Solicitud
                         </th>
                         {canManage && (
-                            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 text-center w-20">
+                            <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-20">
                                 Acción
                             </th>
                         )}
@@ -207,23 +207,23 @@ export default function EnrollmentsTable({
                 <tbody>
                     {isPending ? (
                         Array.from({ length: 5 }).map((_, i) => (
-                            <tr key={`skeleton-${i}`} className="border-b border-uecg-line dark:border-zinc-800 animate-pulse">
-                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800 flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-gray-200 dark:bg-zinc-800 shrink-0" />
+                            <tr key={`skeleton-${i}`} className="border-b border-uecg-line animate-pulse">
+                                <td className="px-4 py-4 border-r border-uecg-line flex items-center gap-4">
+                                    <div className="w-10 h-10 bg-gray-200 shrink-0" />
                                     <div className="flex flex-col gap-2">
-                                        <div className="h-3 w-40 bg-gray-200 dark:bg-zinc-800" />
-                                        <div className="h-2 w-20 bg-gray-100 dark:bg-zinc-800/60" />
+                                        <div className="h-3 w-40 bg-gray-200" />
+                                        <div className="h-2 w-20 bg-gray-100" />
                                     </div>
                                 </td>
-                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800">
-                                    <div className="h-5 w-20 bg-gray-200 dark:bg-zinc-800" />
+                                <td className="px-4 py-4 border-r border-uecg-line">
+                                    <div className="h-5 w-20 bg-gray-200" />
                                 </td>
-                                <td className="px-4 py-4 border-r border-uecg-line dark:border-zinc-800">
-                                    <div className="h-3 w-24 bg-gray-100 dark:bg-zinc-800 mx-auto" />
+                                <td className="px-4 py-4 border-r border-uecg-line">
+                                    <div className="h-3 w-24 bg-gray-100 mx-auto" />
                                 </td>
                                 {canManage && (
                                     <td className="px-4 py-4">
-                                        <div className="h-4 w-4 bg-gray-200 dark:bg-zinc-800 mx-auto" />
+                                        <div className="h-4 w-4 bg-gray-200 mx-auto" />
                                     </td>
                                 )}
                             </tr>
@@ -238,6 +238,7 @@ export default function EnrollmentsTable({
                             </td>
                         </tr>
                     ) : (
+
                         enrollments.map((req: any, index: number) => (
                             <EnrollmentsTableRow
                                 key={req.id}

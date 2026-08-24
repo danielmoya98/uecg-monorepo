@@ -16,20 +16,20 @@ export const RoleTable = ({ roles, onAction }: RoleTableProps) => {
     <SwissTableContainer>
       <table className="w-full text-left border-collapse min-w-[700px]">
         <thead>
-          <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800">
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">
+          <tr className="bg-gray-50 border-b border-uecg-line">
+            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
               Identidad / Perfil
             </th>
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800">
+            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
               Descripción Alcance
             </th>
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 text-center w-28">
+            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line text-center w-28">
               Usuarios
             </th>
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 text-center w-28">
+            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line text-center w-28">
               Permisos
             </th>
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 text-center w-24">
+            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-24">
               Operación
             </th>
           </tr>
@@ -97,25 +97,25 @@ const RoleTableRow = ({ role, index, onAction }: RoleTableRowProps) => {
 
   return (
     <tr
-      className="border-b border-uecg-line dark:border-zinc-800 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 transition-colors duration-150 animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+      className="border-b border-uecg-line hover:bg-blue-50/20 transition-colors duration-150 animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
       style={{ animationDelay: `${index * 30}ms` }}
     >
       {/* 1. Perfil / Nombre */}
-      <td className="px-5 py-3.5 border-r border-uecg-line dark:border-zinc-800">
+      <td className="px-5 py-3.5 border-r border-uecg-line">
         <div className="flex items-center gap-3.5">
           <div
-            className="w-8 h-8 bg-uecg-dark dark:bg-zinc-800 text-white flex items-center justify-center font-black text-[10px] shadow-sm shrink-0"
+            className="w-8 h-8 bg-uecg-dark text-white flex items-center justify-center font-black text-[10px] shadow-sm shrink-0"
             aria-hidden="true"
           >
             {role.name.substring(0, 2).toUpperCase()}
           </div>
-          <span className="font-black uppercase tracking-tight text-xs text-uecg-text dark:text-zinc-100">
+          <span className="font-black uppercase tracking-tight text-xs text-uecg-text">
             {role.name.replace(/_/g, ' ')}
           </span>
           {isProtected && (
             <span title="Perfil protegido por la semilla de seguridad">
               <ShieldCheck
-                className="w-4 h-4 text-uecg-blue dark:text-blue-400 shrink-0"
+                className="w-4 h-4 text-uecg-blue shrink-0"
                 aria-label="Rol del sistema protegido"
               />
             </span>
@@ -124,17 +124,17 @@ const RoleTableRow = ({ role, index, onAction }: RoleTableRowProps) => {
       </td>
 
       {/* 2. Descripción */}
-      <td className="px-5 py-3.5 border-r border-uecg-line dark:border-zinc-800 text-[10px] font-bold text-uecg-gray dark:text-zinc-400 uppercase tracking-wide leading-relaxed">
+      <td className="px-5 py-3.5 border-r border-uecg-line text-[10px] font-bold text-uecg-gray uppercase tracking-wide leading-relaxed">
         {role.description || 'Sin descripción establecida.'}
       </td>
 
       {/* 3. Cantidad Usuarios */}
-      <td className="px-5 py-3.5 border-r border-uecg-line dark:border-zinc-800 text-center font-black text-xs text-uecg-dark dark:text-zinc-200">
+      <td className="px-5 py-3.5 border-r border-uecg-line text-center font-black text-xs text-uecg-dark">
         {role._count?.users || 0}
       </td>
 
       {/* 4. Cantidad Permisos */}
-      <td className="px-5 py-3.5 border-r border-uecg-line dark:border-zinc-800 text-center font-black text-xs text-uecg-blue dark:text-blue-400">
+      <td className="px-5 py-3.5 border-r border-uecg-line text-center font-black text-xs text-uecg-blue">
         {role.permissions?.length || 0}
       </td>
 
@@ -144,7 +144,7 @@ const RoleTableRow = ({ role, index, onAction }: RoleTableRowProps) => {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="text-uecg-gray dark:text-zinc-400 hover:text-uecg-blue dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-zinc-800 p-2 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-uecg-blue"
+            className="text-uecg-gray hover:text-uecg-blue hover:bg-gray-100 p-2 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-uecg-blue"
             aria-haspopup="true"
             aria-expanded={isOpen}
             aria-label={`Acciones operativas para el rol ${role.name}`}
@@ -154,12 +154,12 @@ const RoleTableRow = ({ role, index, onAction }: RoleTableRowProps) => {
 
           {isOpen && (
             <div
-              className="absolute right-0 mt-1 w-48 bg-white dark:bg-[#121214] border border-uecg-line dark:border-zinc-800 shadow-2xl z-20 flex flex-col text-left animate-in fade-in zoom-in-95 duration-150"
+              className="absolute right-0 mt-1 w-48 bg-white border border-uecg-line shadow-2xl z-20 flex flex-col text-left animate-in fade-in zoom-in-95 duration-150"
               role="menu"
               aria-label="Operaciones"
             >
-              <div className="px-3.5 py-2 border-b border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
-                <span className="text-[9px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400">
+              <div className="px-3.5 py-2 border-b border-uecg-line bg-gray-50">
+                <span className="text-[9px] font-black uppercase tracking-widest text-uecg-gray">
                   Operaciones
                 </span>
               </div>
@@ -169,7 +169,7 @@ const RoleTableRow = ({ role, index, onAction }: RoleTableRowProps) => {
                   setIsOpen(false)
                   onAction('edit_permissions', role)
                 }}
-                className="flex items-center gap-2.5 px-3.5 py-3 text-[9px] font-black uppercase tracking-widest hover:bg-uecg-blue hover:text-white transition-all text-uecg-dark dark:text-zinc-200 cursor-pointer text-left focus:bg-uecg-blue focus:text-white outline-none"
+                className="flex items-center gap-2.5 px-3.5 py-3 text-[9px] font-black uppercase tracking-widest hover:bg-uecg-blue hover:text-white transition-all text-uecg-dark cursor-pointer text-left focus:bg-uecg-blue focus:text-white outline-none"
                 role="menuitem"
               >
                 <Settings2 className="w-3.5 h-3.5" /> Matriz de Permisos
@@ -181,7 +181,7 @@ const RoleTableRow = ({ role, index, onAction }: RoleTableRowProps) => {
                   onAction('delete', role)
                 }}
                 disabled={isProtected}
-                className="flex items-center gap-2.5 px-3.5 py-3 text-[9px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all border-t border-uecg-line dark:border-zinc-800 disabled:opacity-35 disabled:hover:bg-transparent disabled:hover:text-red-600 disabled:cursor-not-allowed cursor-pointer text-left focus:bg-red-600 focus:text-white outline-none"
+                className="flex items-center gap-2.5 px-3.5 py-3 text-[9px] font-black uppercase tracking-widest text-red-600 hover:bg-red-600 hover:text-white transition-all border-t border-uecg-line disabled:opacity-35 disabled:hover:bg-transparent disabled:hover:text-red-600 disabled:cursor-not-allowed cursor-pointer text-left focus:bg-red-600 focus:text-white outline-none"
                 role="menuitem"
               >
                 <Trash2 className="w-3.5 h-3.5" /> Eliminar Rol
