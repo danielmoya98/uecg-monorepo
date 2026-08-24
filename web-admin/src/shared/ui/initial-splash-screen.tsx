@@ -8,7 +8,7 @@ export function InitialSplashScreen({
   message = 'INICIALIZANDO PLATAFORMA ESCOLAR...',
 }: InitialSplashScreenProps) {
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-between bg-[#0F4C81] text-white select-none p-6 font-sans antialiased overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-between bg-gradient-to-b from-[#000060] via-[#000089] to-[#000050] text-white select-none p-6 font-sans antialiased overflow-hidden">
       {/* Subtle Swiss grid background pattern */}
       <div
         className="absolute inset-0 opacity-5 pointer-events-none"
