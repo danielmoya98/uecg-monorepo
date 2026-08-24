@@ -286,4 +286,106 @@ describe("AcademicYearsService - Pruebas Unitarias", () => {
       expect(mockCache.del).toHaveBeenCalled();
     });
   });
+
+  describe("Integrity Guard y Cierre de Gestión", () => {
+    it("debe rechazar clausurar la gestión (CLOSED) si existen trimestres aún abiertos", async () => {
+      const mockYear = {
+        id: "year-uuid",
+        year: 2026,
+        name: "Gestión 2026",
+        startDate: new Date("2026-02-01"),
+        endDate: new Date("2026-11-30"),
+        status: AcademicStatus.ACTIVE,
+        trimesters: [{ id: "t1", name: "1er Trimestre", isOpen: true, startDate: new Date("2026-02-01"), endDate: new Date("2026-05-01") }],
+      };
+
+      mockPrisma.academicYear.findUnique.mockResolvedValueOnce(mockYear);
+      mockPrisma.trimester.findMany = jest.fn().mockResolvedValue([
+        { id: "t1", name: "1er Trimestre", isOpen: true },
+      ]);
+      mockPrisma.dataUpdateRequest = { count: jest.fn().mockResolvedValue(0) };
+
+      await expect(
+        service.update("year-uuid", { status: AcademicStatus.CLOSED }),
+      ).rejects.toThrow(ConflictException);
+    });
+
+    it("checkCanClose debe devolver canClose=true cuando todos los trimestres están cerrados y sin rectificaciones pendientes", async () => {
+      const mockYear = {
+        id: "year-uuid",
+        year: 2026,
+        name: "Gestión 2026",
+        status: AcademicStatus.ACTIVE,
+      };
+
+      mockPrisma.academicYear.findUnique.mockResolvedValue(mockYear);
+      mockPrisma.trimester.findMany = jest.fn().mockResolvedValue([
+        { id: "t1", name: "1er Trimestre", isOpen: false },
+        { id: "t2", name: "2do Trimestre", isOpen: false },
+        { id: "t3", name: "3er Trimestre", isOpen: false },
+      ]);
+      mockPrisma.dataUpdateRequest = { count: jest.fn().mockResolvedValue(0) };
+
+      const result = await service.checkCanClose("year-uuid");
+
+      expect(result.canClose).toBe(true);
+      expect(result.openTrimesters).toEqual([]);
+      expect(result.pendingDataUpdatesCount).toBe(0);
+      expect(result.reasons).toEqual([]);
+    });
+  });
+
+  describe("cloneStructure (Clonación Atómica de Estructura)", () => {
+    it("debe rechazar clonar si la gestión origen y destino son iguales", async () => {
+      await expect(
+        service.cloneStructure("same-id", { sourceYearId: "same-id" }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it("debe clonar aulas y asignaciones de una gestión a otra", async () => {
+      const targetYear = { id: "target-id", year: 2027, status: AcademicStatus.PLANNING };
+      const sourceYear = {
+        id: "source-id",
+        year: 2026,
+        status: AcademicStatus.ACTIVE,
+        classrooms: [
+          {
+            id: "source-c1",
+            level: "SECUNDARIA",
+            grade: "1",
+            section: "A",
+            shift: "MANANA",
+            capacity: 35,
+            baseRoomId: "room-1",
+            subjectAssignments: [
+              { subjectId: "sub-1", teacherId: "teach-1" },
+            ],
+          },
+        ],
+      };
+
+      mockPrisma.academicYear.findUnique
+        .mockResolvedValueOnce(targetYear)
+        .mockResolvedValueOnce(sourceYear);
+
+      mockPrisma.classroom.findMany = jest.fn().mockResolvedValue([]);
+      mockPrisma.classroom.create = jest.fn().mockResolvedValue({ id: "new-c1" });
+      mockPrisma.teacherAssignment = {
+        findMany: jest.fn().mockResolvedValue([]),
+        create: jest.fn().mockResolvedValue({ id: "new-ta1" }),
+      };
+
+      const result = await service.cloneStructure("target-id", {
+        sourceYearId: "source-id",
+        cloneAssignments: true,
+        cloneBaseRooms: true,
+      });
+
+      expect(result.clonedClassroomsCount).toBe(1);
+      expect(result.clonedAssignmentsCount).toBe(1);
+      expect(mockPrisma.classroom.create).toHaveBeenCalled();
+      expect(mockPrisma.teacherAssignment.create).toHaveBeenCalled();
+      expect(mockEventEmitter.emit).toHaveBeenCalledWith("academic-year.updated", expect.any(Object));
+    });
+  });
 });

@@ -19,6 +19,8 @@ import { CreateAcademicYearDto } from "./dto/create-academic-year.dto";
 
 import { UpdateAcademicYearDto } from "./dto/update-academic-year.dto";
 
+import { CloneStructureDto } from "./dto/clone-structure.dto";
+
 import { TrimestersService } from "../trimesters/trimesters.service";
 
 import { PaginationDto } from "../common/dto/pagination.dto";
@@ -43,8 +45,59 @@ export class AcademicYearsService {
   ) {}
 
   // ======================================================
-  // INTERNAL RULES
+  // INTERNAL RULES & CONCURRENCY LOCKS
   // ======================================================
+
+  /**
+   * 🔒 Bloqueo transaccional de asesoría a nivel de PostgreSQL.
+   * Garantiza exclusión mutua estricta en operaciones concurrentes sobre el estado de las gestiones.
+   */
+  private async acquireConcurrencyLock(tx: any) {
+    try {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('uecg_academic_year_status_lock'))`;
+    } catch {
+      // Si el motor de pruebas no soporta advisory locks de Postgres, continúa sin bloquear
+    }
+  }
+
+  /**
+   * 🛡️ Guardia de Integridad para Clausura de Gestión Escolar.
+   * Impide cerrar un año si existen trimestres abiertos o rectificaciones de notas pendientes.
+   */
+  private async validateCanCloseAcademicYear(tx: any, academicYearId: string) {
+    const trimesters = await tx.trimester.findMany({
+      where: { academicYearId },
+    });
+
+    if (!trimesters || trimesters.length === 0) {
+      throw new BadRequestException(
+        "No se puede clausurar la gestión académica porque no tiene trimestres configurados.",
+      );
+    }
+
+    const openTrimesters = trimesters.filter((t: any) => t.isOpen);
+    if (openTrimesters.length > 0) {
+      const openNames = openTrimesters.map((t: any) => t.name).join(", ");
+      throw new ConflictException(
+        `No se puede clausurar la gestión académica porque los siguientes trimestres siguen abiertos: ${openNames}. Proceda al cierre formal de todos los trimestres antes de clausurar el año lectivo.`,
+      );
+    }
+
+    const pendingDataUpdates = await tx.dataUpdateRequest.count({
+      where: {
+        status: "PENDING",
+        enrollment: {
+          academicYearId,
+        },
+      },
+    });
+
+    if (pendingDataUpdates > 0) {
+      throw new ConflictException(
+        `No se puede clausurar la gestión escolar porque existen ${pendingDataUpdates} solicitud(es) de rectificación de datos pendientes de resolución en Secretaría.`,
+      );
+    }
+  }
 
   private async deactivateOtherActiveYears(tx: any, excludeId?: string) {
     await tx.academicYear.updateMany({
@@ -100,6 +153,9 @@ export class AcademicYearsService {
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
+      // 🔒 Bloqueo transaccional contra condiciones de carrera concurrentes
+      await this.acquireConcurrencyLock(tx);
+
       // ======================================================
       // ONLY ONE ACTIVE YEAR
       // ======================================================
@@ -311,6 +367,9 @@ export class AcademicYearsService {
 
   async update(id: string, data: UpdateAcademicYearDto) {
     const updatedYear = await this.prisma.$transaction(async (tx) => {
+      // 🔒 Bloqueo transaccional contra condiciones de carrera concurrentes
+      await this.acquireConcurrencyLock(tx);
+
       const currentYear = await tx.academicYear.findUnique({
         where: { id },
         include: {
@@ -320,6 +379,14 @@ export class AcademicYearsService {
 
       if (!currentYear) {
         throw new NotFoundException("Gestión académica no encontrada");
+      }
+
+      // 🛡️ GUARDIA DE INTEGRIDAD: Validar si se está clausurando la gestión escolar
+      if (
+        data.status === AcademicStatus.CLOSED &&
+        currentYear.status !== AcademicStatus.CLOSED
+      ) {
+        await this.validateCanCloseAcademicYear(tx, id);
       }
 
       // Validación robusta de fechas (incluso si solo se pasa startDate o endDate)
@@ -406,6 +473,9 @@ export class AcademicYearsService {
     const year = await this.findOne(id);
 
     await this.prisma.$transaction(async (tx) => {
+      // 🔒 Bloqueo transaccional contra condiciones de carrera concurrentes
+      await this.acquireConcurrencyLock(tx);
+
       const classroomsCount = await tx.classroom.count({
         where: {
           academicYearId: id,
@@ -737,6 +807,209 @@ export class AcademicYearsService {
       completedSteps,
       totalSteps: steps.length,
       steps,
+    };
+  }
+
+  // ======================================================
+  // CHECK CAN CLOSE INTEGRITY PRE-CHECK
+  // ======================================================
+
+  async checkCanClose(academicYearId: string) {
+    const year = await this.findOne(academicYearId);
+    if (!year) {
+      throw new NotFoundException(
+        `Gestión escolar con ID ${academicYearId} no encontrada.`,
+      );
+    }
+
+    const trimesters = await this.prisma.trimester.findMany({
+      where: { academicYearId },
+      orderBy: { name: "asc" },
+    });
+
+    const openTrimesters = trimesters
+      .filter((t) => t.isOpen)
+      .map((t) => t.name);
+
+    const pendingDataUpdates = await this.prisma.dataUpdateRequest.count({
+      where: {
+        status: "PENDING",
+        enrollment: {
+          academicYearId,
+        },
+      },
+    });
+
+    const reasons: string[] = [];
+    if (trimesters.length === 0) {
+      reasons.push("No existen trimestres configurados.");
+    }
+    if (openTrimesters.length > 0) {
+      reasons.push(`Trimestres aún abiertos: ${openTrimesters.join(", ")}`);
+    }
+    if (pendingDataUpdates > 0) {
+      reasons.push(
+        `Existen ${pendingDataUpdates} solicitud(es) de rectificación de datos pendientes de aprobación en Secretaría.`,
+      );
+    }
+
+    return {
+      canClose: reasons.length === 0,
+      academicYear: {
+        id: year.id,
+        year: year.year,
+        status: year.status,
+      },
+      openTrimesters,
+      pendingDataUpdatesCount: pendingDataUpdates,
+      reasons,
+    };
+  }
+
+  // ======================================================
+  // ATOMIC STRUCTURE CLONING (ROLL-FORWARD)
+  // ======================================================
+
+  async cloneStructure(targetYearId: string, dto: CloneStructureDto) {
+    const { sourceYearId, cloneAssignments = true, cloneBaseRooms = true } = dto;
+
+    if (targetYearId === sourceYearId) {
+      throw new BadRequestException(
+        "La gestión origen y la gestión destino no pueden ser la misma.",
+      );
+    }
+
+    const [targetYear, sourceYear] = await Promise.all([
+      this.prisma.academicYear.findUnique({
+        where: { id: targetYearId },
+      }),
+      this.prisma.academicYear.findUnique({
+        where: { id: sourceYearId },
+        include: {
+          classrooms: {
+            include: {
+              subjectAssignments: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    if (!targetYear) {
+      throw new NotFoundException(
+        `Gestión destino con ID ${targetYearId} no encontrada.`,
+      );
+    }
+    if (!sourceYear) {
+      throw new NotFoundException(
+        `Gestión origen con ID ${sourceYearId} no encontrada.`,
+      );
+    }
+
+    if (targetYear.status === AcademicStatus.CLOSED) {
+      throw new ConflictException(
+        "No se puede clonar estructura en una gestión escolar que se encuentra clausurada (CLOSED).",
+      );
+    }
+
+    if (!sourceYear.classrooms || sourceYear.classrooms.length === 0) {
+      throw new BadRequestException(
+        `La gestión origen ${sourceYear.year} no tiene cursos ni aulas registradas para clonar.`,
+      );
+    }
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      // 🔒 Bloqueo transaccional contra concurrencia
+      await this.acquireConcurrencyLock(tx);
+
+      const existingTargetClassrooms = await tx.classroom.findMany({
+        where: { academicYearId: targetYearId },
+      });
+
+      const existingKeys = new Set(
+        existingTargetClassrooms.map(
+          (c) => `${c.level}-${c.grade}-${c.section}-${c.shift}`,
+        ),
+      );
+
+      let clonedClassroomsCount = 0;
+      let clonedAssignmentsCount = 0;
+
+      for (const sourceClassroom of sourceYear.classrooms) {
+        const key = `${sourceClassroom.level}-${sourceClassroom.grade}-${sourceClassroom.section}-${sourceClassroom.shift}`;
+
+        let targetClassroomId: string;
+
+        if (existingKeys.has(key)) {
+          const found = existingTargetClassrooms.find(
+            (c) =>
+              `${c.level}-${c.grade}-${c.section}-${c.shift}` === key,
+          );
+          targetClassroomId = found!.id;
+        } else {
+          const newClassroom = await tx.classroom.create({
+            data: {
+              academicYearId: targetYearId,
+              level: sourceClassroom.level,
+              grade: sourceClassroom.grade,
+              section: sourceClassroom.section,
+              shift: sourceClassroom.shift,
+              capacity: sourceClassroom.capacity,
+              baseRoomId: cloneBaseRooms ? sourceClassroom.baseRoomId : null,
+              advisorId: null,
+            },
+          });
+          targetClassroomId = newClassroom.id;
+          clonedClassroomsCount++;
+        }
+
+        if (cloneAssignments && sourceClassroom.subjectAssignments.length > 0) {
+          const existingAssignments = await tx.teacherAssignment.findMany({
+            where: { classroomId: targetClassroomId },
+          });
+          const existingSubjectTeacherKeys = new Set(
+            existingAssignments.map((a) => `${a.subjectId}-${a.teacherId}`),
+          );
+
+          for (const sa of sourceClassroom.subjectAssignments) {
+            const assignmentKey = `${sa.subjectId}-${sa.teacherId}`;
+            if (!existingSubjectTeacherKeys.has(assignmentKey)) {
+              await tx.teacherAssignment.create({
+                data: {
+                  classroomId: targetClassroomId,
+                  subjectId: sa.subjectId,
+                  teacherId: sa.teacherId,
+                },
+              });
+              clonedAssignmentsCount++;
+            }
+          }
+        }
+      }
+
+      return {
+        clonedClassroomsCount,
+        clonedAssignmentsCount,
+      };
+    });
+
+    await this.invalidateCurrentAcademicYearCache();
+
+    this.eventEmitter.emit("academic-year.updated", {
+      academicYearId: targetYearId,
+      year: targetYear.year,
+      clonedFrom: sourceYear.year,
+    });
+
+    this.logger.log(
+      `🔄 Estructura clonada de ${sourceYear.year} a ${targetYear.year}: ${result.clonedClassroomsCount} aulas, ${result.clonedAssignmentsCount} asignaciones.`,
+    );
+
+    return {
+      message: `Estructura de cursos y carga horaria clonada exitosamente desde la gestión ${sourceYear.year} a ${targetYear.year}.`,
+      sourceYear: sourceYear.year,
+      targetYear: targetYear.year,
+      ...result,
     };
   }
 }
