@@ -119,12 +119,51 @@
         background-color: rgba(59, 130, 246, 0.08) !important;
     }
 
+    [data-theme="dark"] .hover\:bg-blue-50\/20:hover {
+        background-color: rgba(59, 130, 246, 0.08) !important;
+    }
+
     [data-theme="dark"] .bg-blue-50 {
         background-color: rgba(59, 130, 246, 0.1) !important;
         color: var(--uecg-blue) !important;
         border-color: rgba(59, 130, 246, 0.2) !important;
     }
+
+    /* 5. SCROLLBARS SUIZOS DE PRECISIÓN */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: var(--uecg-surface);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 0px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    [data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-track {
+        background: #121214;
+    }
+    [data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #27272a;
+    }
+    [data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #3f3f46;
+    }
+
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 var(--uecg-surface);
+    }
+    [data-theme="dark"] .custom-scrollbar {
+        scrollbar-color: #27272a #121214;
+    }
 }
+
 
 /* =========================================
    5. ANIMACIONES VIEW TRANSITIONS API

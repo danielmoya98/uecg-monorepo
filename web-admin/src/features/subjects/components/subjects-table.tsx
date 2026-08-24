@@ -23,30 +23,31 @@ export default function SubjectsTable({
   return (
     <SwissTableContainer isFetching={isFetching} isPending={isPending}>
       <table className="w-full text-left border-collapse min-w-[700px]">
-        <thead>
-          <tr className="bg-gray-50 border-b border-uecg-line">
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
+        <thead className="sticky top-0 z-20 bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800 shadow-sm">
+          <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-uecg-line dark:border-zinc-800">
+            <th className="px-5 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
               Nombre de la Asignatura
             </th>
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line w-28 text-center">
+            <th className="px-5 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 w-28 text-center bg-gray-50 dark:bg-zinc-900">
               Sigla
             </th>
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line w-36 text-center">
+            <th className="px-5 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 w-36 text-center bg-gray-50 dark:bg-zinc-900">
               Nivel
             </th>
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line">
+            <th className="px-5 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
               Área de Conocimiento
             </th>
-            <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray border-r border-uecg-line w-28 text-center">
+            <th className="px-5 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 border-r border-uecg-line dark:border-zinc-800 w-28 text-center bg-gray-50 dark:bg-zinc-900">
               Estado
             </th>
             {canManage && (
-              <th className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-uecg-gray text-center w-24">
+              <th className="px-5 py-3.5 text-[10px] font-black uppercase tracking-widest text-uecg-gray dark:text-zinc-400 text-center w-24 bg-gray-50 dark:bg-zinc-900">
                 Operación
               </th>
             )}
           </tr>
         </thead>
+
         <tbody>
           {isPending ? (
             Array.from({ length: 5 }).map((_, i) => (

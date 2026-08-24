@@ -76,21 +76,23 @@ export function Sidebar() {
   const accessLevel = isAdmin ? "ROOT / ADMIN" : user?.role || "GUEST";
 
   return (
-    <aside
-      className={`flex flex-col bg-uecg-dark h-full text-white transition-all duration-300 ease-in-out relative z-[100] border-r border-white/5 shadow-2xl ${
-        isExpanded ? "w-[270px]" : "w-20"
-      }`}
+    <motion.aside
+      animate={{ width: isExpanded ? 270 : 80 }}
+      transition={{ type: "spring", stiffness: 350, damping: 30, mass: 0.8 }}
+      className="flex flex-col bg-uecg-dark h-full text-white relative z-[100] border-r border-white/5 shadow-2xl shrink-0 overflow-hidden select-none"
     >
       <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
       
       {/* Botón flotante para colapsar/expandir */}
-      <button
+      <motion.button
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.94 }}
         onClick={() => setIsExpanded(!isExpanded)}
-        className="absolute -right-4 top-10 flex h-8 w-8 items-center justify-center bg-uecg-blue text-white shadow-[2px_2px_0px_rgba(0,0,0,0.3)] transition-all hover:bg-blue-500 hover:translate-x-0.5 focus:outline-none z-50 border border-white/20 cursor-pointer"
+        className="absolute -right-4 top-10 flex h-8 w-8 items-center justify-center bg-uecg-blue text-white shadow-[2px_2px_0px_rgba(0,0,0,0.3)] transition-colors hover:bg-blue-500 focus:outline-none z-50 border border-white/20 cursor-pointer"
         aria-label={isExpanded ? "Colapsar menú" : "Expandir menú"}
       >
         {isExpanded ? <ChevronLeft className="h-4 w-4" strokeWidth={3} /> : <ChevronRight className="h-4 w-4" strokeWidth={3} />}
-      </button>
+      </motion.button>
 
       {/* Header Institucional */}
       <div
@@ -98,14 +100,26 @@ export function Sidebar() {
           isExpanded ? "items-start" : "items-center px-0"
         }`}
       >
-        <span
-          className={`text-[8px] font-black uppercase tracking-[0.3em] mb-1 flex items-center gap-1 transition-opacity ${
-            isExpanded ? "opacity-100" : "opacity-0 hidden"
-          } ${isAdmin ? "text-[#00FF88]" : "text-blue-300/70"}`}
-        >
-          {isAdmin && <ShieldCheck className="w-3 h-3" />}
-          {isAdmin ? "Sistema Raíz" : "Panel Operativo"}
-        </span>
+        <AnimatePresence mode="wait">
+          {isExpanded ? (
+            <motion.span
+              key="header-label-expanded"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.15 }}
+              className={`text-[8px] font-black uppercase tracking-[0.3em] mb-1 flex items-center gap-1 ${
+                isAdmin ? "text-[#00FF88]" : "text-blue-300/70"
+              }`}
+            >
+              {isAdmin && <ShieldCheck className="w-3 h-3" />}
+              {isAdmin ? "Sistema Raíz" : "Panel Operativo"}
+            </motion.span>
+          ) : (
+            <div key="header-label-dot" className="h-4" />
+          )}
+        </AnimatePresence>
+
         <h2 className="text-2xl mt-0.5 text-white font-black tracking-tighter flex items-center gap-1">
           {isExpanded ? "U.E.C.G." : "U"}
           {!isExpanded && <span className="w-1.5 h-1.5 bg-uecg-blue mb-2" />}
@@ -165,7 +179,7 @@ export function Sidebar() {
                             to={link.href as any}
                             id={tourId}
                             data-tour={tourId}
-                            className={`flex items-center gap-3 py-2.5 px-3.5 transition-all duration-200 ease-out overflow-hidden relative group cursor-pointer ${
+                            className={`flex items-center gap-3 py-2.5 px-3.5 transition-colors duration-150 overflow-hidden relative group cursor-pointer ${
                               isActive ? "bg-uecg-blue shadow-md text-white" : "hover:bg-white/5 text-white/70 hover:text-white"
                             }`}
                           >
@@ -209,7 +223,7 @@ export function Sidebar() {
                         id={tourId}
                         data-tour={tourId}
                         title={!isExpanded ? link.name : ""}
-                        className={`flex items-center gap-3.5 py-3 transition-all duration-200 ease-out overflow-hidden relative group cursor-pointer ${
+                        className={`flex items-center gap-3.5 py-3 transition-colors duration-150 overflow-hidden relative group cursor-pointer ${
                           isExpanded ? "px-4" : "justify-center px-0"
                         } ${isActive ? "bg-uecg-blue shadow-md" : "hover:bg-white/5"}`}
                       >
@@ -274,6 +288,7 @@ export function Sidebar() {
           </div>
         )}
       </div>
-    </aside>
+    </motion.aside>
   );
 }
+export default Sidebar;

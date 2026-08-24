@@ -167,14 +167,16 @@ export default function GradesPage() {
         ) : workspace.isGradesLoading ? (
           <GradesTableSkeleton />
         ) : (
-          <div className="overflow-x-auto custom-scrollbar flex-1">
+          <div className="overflow-auto custom-scrollbar flex-1 max-h-[calc(100vh-320px)]">
+
             <table className="w-full text-left border-collapse min-w-[800px]">
               <caption className="sr-only">
                 Planilla de notas académicas del curso seleccionado
               </caption>
-              <thead>
-                <tr className="bg-uecg-dark text-white text-[10px] font-black uppercase tracking-widest leading-none">
-                  <th className="p-3 border-r border-white/20" scope="col">
+              <thead className="sticky top-0 z-20 bg-uecg-dark dark:bg-black shadow-sm">
+                <tr className="bg-uecg-dark dark:bg-black text-white text-[10px] font-black uppercase tracking-widest leading-none">
+                  <th className="p-3 border-r border-white/20 bg-uecg-dark dark:bg-black" scope="col">
+
                     Estudiante
                   </th>
                   <th className="p-3 text-center border-r border-white/20 w-16" scope="col">
