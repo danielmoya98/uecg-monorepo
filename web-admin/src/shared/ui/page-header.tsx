@@ -117,9 +117,8 @@ export interface PageHeaderButtonProps extends React.ButtonHTMLAttributes<HTMLBu
   children: React.ReactNode
 }
 
-/**
- * Botón de acción estandarizado para las cabeceras de página con soporte de hotkeys.
- */
+import { motion } from 'framer-motion'
+
 export function PageHeaderButton({
   variant = 'dark',
   icon: Icon,
@@ -150,11 +149,14 @@ export function PageHeaderButton({
   }
 
   return (
-    <button
+    <motion.button
       type="button"
+      whileHover={!disabled && !isLoading ? { y: -1 } : undefined}
+      whileTap={!disabled && !isLoading ? { scale: 0.98 } : undefined}
+      transition={{ type: 'spring', stiffness: 450, damping: 25 }}
       disabled={disabled || isLoading}
-      className={`px-6 py-4 font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-sm transition-all cursor-pointer outline-none select-none disabled:opacity-50 disabled:cursor-not-allowed ${getVariantStyles()} ${className}`}
-      {...props}
+      className={`px-6 py-4 font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-sm transition-colors cursor-pointer outline-none select-none disabled:opacity-50 disabled:cursor-not-allowed ${getVariantStyles()} ${className}`}
+      {...(props as any)}
     >
       {isLoading ? (
         <Loader2 className="w-4 h-4 animate-spin shrink-0" />
@@ -167,7 +169,8 @@ export function PageHeaderButton({
           {hotkey}
         </SwissKbd>
       )}
-    </button>
+    </motion.button>
   )
 }
 export default PageHeader
+

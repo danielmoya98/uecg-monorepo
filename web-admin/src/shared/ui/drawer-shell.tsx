@@ -191,7 +191,7 @@ export function DrawerShell({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className={`absolute inset-0 bg-uecg-dark/70 will-change-[opacity] transform-gpu cursor-pointer ${overlayClassName}`}
             onClick={!isSubmitting ? onClose : undefined}
           />
@@ -201,9 +201,10 @@ export function DrawerShell({
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 240 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280, mass: 0.7 }}
             className={`relative h-full w-full ${maxWidth} border-l border-uecg-line bg-white dark:bg-[#121214] dark:border-zinc-800 text-uecg-text shadow-2xl flex flex-col z-10 will-change-transform transform-gpu ${className}`}
           >
+
             {/* Header del Drawer */}
             {header !== undefined ? (
               header
