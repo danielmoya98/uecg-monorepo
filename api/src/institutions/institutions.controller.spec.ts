@@ -69,11 +69,18 @@ describe('InstitutionsController', () => {
         mockResult,
       );
 
+      const reqMock = { user: { userId: 'admin-id' } };
       const dto = { enableDigitalRudeUpdates: true };
-      const result = await controller.updateCampaignSettings(dto);
+      const result = await controller.updateCampaignSettings(
+        dto,
+        reqMock as any,
+      );
 
       expect(result).toEqual(mockResult);
-      expect(service.updateCampaignSettings).toHaveBeenCalledWith(dto);
+      expect(service.updateCampaignSettings).toHaveBeenCalledWith(
+        dto,
+        'admin-id',
+      );
       expect(mockCacheManager.clear).toHaveBeenCalled();
     });
   });
@@ -105,11 +112,18 @@ describe('InstitutionsController', () => {
         mockResult,
       );
 
+      const reqMock = { user: { userId: 'admin-id' } };
       const dto = { lateToleranceMinutes: 10 };
-      const result = await controller.updateAttendanceSettings(dto);
+      const result = await controller.updateAttendanceSettings(
+        dto,
+        reqMock as any,
+      );
 
       expect(result).toEqual(mockResult);
-      expect(service.updateAttendanceSettings).toHaveBeenCalledWith(dto);
+      expect(service.updateAttendanceSettings).toHaveBeenCalledWith(
+        dto,
+        'admin-id',
+      );
       expect(mockCacheManager.clear).toHaveBeenCalled();
     });
   });
@@ -135,10 +149,13 @@ describe('InstitutionsController', () => {
       const result = await controller.create(dto, reqMock as any);
 
       expect(result).toEqual(mockResult);
-      expect(service.create).toHaveBeenCalledWith({
-        ...dto,
-        directorId: 'admin-id',
-      });
+      expect(service.create).toHaveBeenCalledWith(
+        {
+          ...dto,
+          directorId: 'admin-id',
+        },
+        'admin-id',
+      );
       expect(mockCacheManager.clear).toHaveBeenCalled();
     });
 
@@ -163,10 +180,13 @@ describe('InstitutionsController', () => {
       const result = await controller.create(dto, reqMock as any);
 
       expect(result).toEqual(mockResult);
-      expect(service.create).toHaveBeenCalledWith({
-        ...dto,
-        directorId: 'director-uuid',
-      });
+      expect(service.create).toHaveBeenCalledWith(
+        {
+          ...dto,
+          directorId: 'director-uuid',
+        },
+        'admin-id',
+      );
     });
   });
 
@@ -199,11 +219,16 @@ describe('InstitutionsController', () => {
       const mockResult = { success: true };
       mockInstitutionsService.update.mockResolvedValue(mockResult);
 
+      const reqMock = { user: { userId: 'admin-id' } };
       const dto = { name: 'Nombre Modificado' };
-      const result = await controller.update('inst-id', dto);
+      const result = await controller.update(
+        'inst-id',
+        dto,
+        reqMock as any,
+      );
 
       expect(result).toEqual(mockResult);
-      expect(service.update).toHaveBeenCalledWith('inst-id', dto);
+      expect(service.update).toHaveBeenCalledWith('inst-id', dto, 'admin-id');
       expect(mockCacheManager.clear).toHaveBeenCalled();
     });
   });

@@ -24,7 +24,12 @@ class RealtimeSSEClientImpl implements RealtimeSSEClient {
     }
 
     // Connect listener to standard SSE event types
-    const eventTypes = ['carnets-ready', 'export-reports-ready', 'export-ready']
+    const eventTypes = [
+      'carnets-ready',
+      'export-reports-ready',
+      'export-ready',
+      'institution-updated',
+    ]
     eventTypes.forEach((type) => {
       this.eventSource?.addEventListener(type, (event) => {
         try {

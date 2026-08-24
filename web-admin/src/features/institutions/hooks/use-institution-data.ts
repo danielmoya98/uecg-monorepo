@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import { useSocket } from '@/features/identity/providers/socket-provider';
 import { InstitutionsService } from '../api/institutions.service';
 import type { Institution, InstitutionPayload } from '../types/institutions.types';
 
@@ -13,11 +15,23 @@ interface ApiErrorResponse {
 
 export const useInstitutionData = () => {
   const queryClient = useQueryClient();
+  const socket = useSocket();
 
   const { data: currentInstitution, isLoading } = useQuery<Institution | null, Error>({
     queryKey: ['currentInstitution'],
     queryFn: InstitutionsService.getCurrent,
   });
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleUpdate = () => {
+      queryClient.invalidateQueries({ queryKey: ['currentInstitution'] });
+    };
+    socket.on('institution-updated', handleUpdate);
+    return () => {
+      socket.off('institution-updated', handleUpdate);
+    };
+  }, [socket, queryClient]);
 
   const saveMutation = useMutation<Institution, Error, InstitutionPayload>({
     mutationFn: (payload: InstitutionPayload) => {

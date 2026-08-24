@@ -122,4 +122,17 @@ export class RealtimeService {
       },
     });
   }
+
+  @OnEvent('institution.*')
+  handleInstitutionChanged(payload: any): void {
+    this.logger.log('📡 SSE Broadcast: institution-updated event emitted');
+    this.broadcast({
+      type: 'institution-updated',
+      data: {
+        message: 'La configuración institucional ha sido actualizada.',
+        timestamp: new Date().toISOString(),
+        payload,
+      },
+    });
+  }
 }
