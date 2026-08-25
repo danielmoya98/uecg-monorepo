@@ -53,10 +53,12 @@ export default function ChangeRequestsDrawer({ isOpen, onClose }: ChangeRequests
     mutationFn: ({
       requestId,
       status,
+      rejectionReason,
     }: {
       requestId: string
       status: 'APPROVED' | 'REJECTED'
-    }) => GradesService.resolveChangeRequest(requestId, status),
+      rejectionReason?: string
+    }) => GradesService.resolveChangeRequest(requestId, status, rejectionReason),
     onSuccess: (_data: any, variables) => {
       toast.success(
         variables.status === 'APPROVED'
@@ -76,6 +78,15 @@ export default function ChangeRequestsDrawer({ isOpen, onClose }: ChangeRequests
     },
   })
 
+  const handleReject = (requestId: string) => {
+    const reason = window.prompt('Indique el motivo del rechazo (opcional):')
+    if (reason === null) return // Cancelado
+    resolveMutation.mutate({
+      requestId,
+      status: 'REJECTED',
+      rejectionReason: reason.trim() || undefined,
+    })
+  }
 
   return (
     <DrawerShell
@@ -117,18 +128,18 @@ export default function ChangeRequestsDrawer({ isOpen, onClose }: ChangeRequests
             const newSaber = req.proposedSaber ?? grade.scoreSaber
             const newHacer = req.proposedHacer ?? grade.scoreHacer
             const newAuto = req.proposedAuto ?? grade.scoreAuto
+            const newRecovery = req.proposedRecovery ?? grade.recoveryScore
 
             const totalScore =
               (newSer || 0) + (newSaber || 0) + (newHacer || 0) + (newAuto || 0)
 
             let finalScore = totalScore
-            const recoveryScore = grade.recoveryScore
             let recoveryTag: string
 
             if (totalScore >= 51) {
               recoveryTag = 'APROBADO (SIN REC.)'
-            } else if (recoveryScore !== null) {
-              finalScore = Math.min(recoveryScore, 51)
+            } else if (newRecovery !== null && newRecovery !== undefined) {
+              finalScore = Math.min(newRecovery, 51)
               recoveryTag = `REC. APLICADA (MÁX 51)`
             } else {
               finalScore = totalScore
@@ -183,7 +194,7 @@ export default function ChangeRequestsDrawer({ isOpen, onClose }: ChangeRequests
                 </div>
 
                 {/* Comparación de Notas */}
-                <div className="grid grid-cols-5 gap-2">
+                <div className={`grid ${req.proposedRecovery !== undefined && req.proposedRecovery !== null ? 'grid-cols-6' : 'grid-cols-5'} gap-2`}>
                   <ScoreBadge
                     label="SER /10"
                     oldScore={grade.scoreSer}
@@ -204,6 +215,13 @@ export default function ChangeRequestsDrawer({ isOpen, onClose }: ChangeRequests
                     oldScore={grade.scoreAuto}
                     newScore={req.proposedAuto}
                   />
+                  {req.proposedRecovery !== undefined && req.proposedRecovery !== null && (
+                    <ScoreBadge
+                      label="REC. /100"
+                      oldScore={grade.recoveryScore}
+                      newScore={req.proposedRecovery}
+                    />
+                  )}
 
                   <div className="border-2 border-uecg-dark bg-uecg-dark text-white p-2 flex flex-col items-center justify-center">
                     <span className="text-[8px] font-black uppercase tracking-widest opacity-60 leading-none mb-1">
@@ -243,12 +261,7 @@ export default function ChangeRequestsDrawer({ isOpen, onClose }: ChangeRequests
                 <div className="border-t border-uecg-line pt-4 mt-1 grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    onClick={() =>
-                      resolveMutation.mutate({
-                        requestId: req.id,
-                        status: 'REJECTED',
-                      })
-                    }
+                    onClick={() => handleReject(req.id)}
                     disabled={isMutating}
                     className="flex items-center justify-center gap-2.5 py-3 border-2 border-uecg-dark text-[10px] font-black uppercase tracking-widest text-uecg-dark bg-white hover:bg-gray-100 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-uecg-blue cursor-pointer"
                   >
