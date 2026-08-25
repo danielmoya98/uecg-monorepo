@@ -68,6 +68,7 @@ export interface ChangeRequestPayload {
   proposedSaber?: number | null
   proposedHacer?: number | null
   proposedAuto?: number | null
+  proposedRecovery?: number | null
 }
 
 export interface ChangeRequest {
@@ -79,6 +80,8 @@ export interface ChangeRequest {
   proposedSaber?: number | null
   proposedHacer?: number | null
   proposedAuto?: number | null
+  proposedRecovery?: number | null
+  rejectionReason?: string | null
   grade: {
     id: string
     scoreSer: number | null

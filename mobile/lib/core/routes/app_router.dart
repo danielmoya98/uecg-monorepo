@@ -34,8 +34,34 @@ class AppRouter {
       GoRoute(path: '/dashboard/student', builder: (context, state) => const StudentDashboard()),
       GoRoute(path: '/dashboard/parent', builder: (context, state) => const ParentDashboard()),
       GoRoute(path: '/dashboard/teacher', builder: (context, state) => const TeacherDashboard()),
-      GoRoute(path: '/attendance/qr', builder: (context, state) => const QRAttendanceScreen()),
-      GoRoute(path: '/attendance/manual', builder: (context, state) => const ManualAttendanceScreen()),
+      GoRoute(
+        path: '/attendance/qr',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return QRAttendanceScreen(
+            classPeriodId: extra?['classPeriodId'] as String?,
+            classPeriodIds: (extra?['classPeriodIds'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList(),
+            courseTitle: extra?['courseTitle'] as String?,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/attendance/manual',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return ManualAttendanceScreen(
+            classroomId: extra?['classroomId'] as String?,
+            classPeriodId: extra?['classPeriodId'] as String?,
+            classPeriodIds: (extra?['classPeriodIds'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList(),
+            courseTitle: extra?['courseTitle'] as String?,
+            date: extra?['date'] as String?,
+          );
+        },
+      ),
       GoRoute(path: '/scanner/web-login', builder: (context, state) => const WebQrScannerScreen()),
       GoRoute(path: '/course-detail', builder: (context, state) => const CourseDetailScreen()),
     ],

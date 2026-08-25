@@ -317,6 +317,7 @@ export type GradeWhereInput = {
   trimester?: Prisma.XOR<Prisma.TrimesterScalarRelationFilter, Prisma.TrimesterWhereInput>
   modifier?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   gradeChangeRequests?: Prisma.GradeChangeRequestListRelationFilter
+  audits?: Prisma.GradeAuditListRelationFilter
 }
 
 export type GradeOrderByWithRelationInput = {
@@ -339,6 +340,7 @@ export type GradeOrderByWithRelationInput = {
   trimester?: Prisma.TrimesterOrderByWithRelationInput
   modifier?: Prisma.UserOrderByWithRelationInput
   gradeChangeRequests?: Prisma.GradeChangeRequestOrderByRelationAggregateInput
+  audits?: Prisma.GradeAuditOrderByRelationAggregateInput
 }
 
 export type GradeWhereUniqueInput = Prisma.AtLeast<{
@@ -365,6 +367,7 @@ export type GradeWhereUniqueInput = Prisma.AtLeast<{
   trimester?: Prisma.XOR<Prisma.TrimesterScalarRelationFilter, Prisma.TrimesterWhereInput>
   modifier?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   gradeChangeRequests?: Prisma.GradeChangeRequestListRelationFilter
+  audits?: Prisma.GradeAuditListRelationFilter
 }, "id" | "enrollmentId_teacherAssignmentId_trimesterId">
 
 export type GradeOrderByWithAggregationInput = {
@@ -425,6 +428,7 @@ export type GradeCreateInput = {
   trimester: Prisma.TrimesterCreateNestedOneWithoutGradesInput
   modifier?: Prisma.UserCreateNestedOneWithoutGradesInput
   gradeChangeRequests?: Prisma.GradeChangeRequestCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditCreateNestedManyWithoutGradeInput
 }
 
 export type GradeUncheckedCreateInput = {
@@ -443,6 +447,7 @@ export type GradeUncheckedCreateInput = {
   lastModifiedById?: string | null
   lastModifiedAt?: Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditUncheckedCreateNestedManyWithoutGradeInput
 }
 
 export type GradeUpdateInput = {
@@ -461,6 +466,7 @@ export type GradeUpdateInput = {
   trimester?: Prisma.TrimesterUpdateOneRequiredWithoutGradesNestedInput
   modifier?: Prisma.UserUpdateOneWithoutGradesNestedInput
   gradeChangeRequests?: Prisma.GradeChangeRequestUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateInput = {
@@ -479,6 +485,7 @@ export type GradeUncheckedUpdateInput = {
   lastModifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastModifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUncheckedUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeCreateManyInput = {
@@ -806,6 +813,20 @@ export type GradeUpdateOneRequiredWithoutGradeChangeRequestsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GradeUpdateToOneWithWhereWithoutGradeChangeRequestsInput, Prisma.GradeUpdateWithoutGradeChangeRequestsInput>, Prisma.GradeUncheckedUpdateWithoutGradeChangeRequestsInput>
 }
 
+export type GradeCreateNestedOneWithoutAuditsInput = {
+  create?: Prisma.XOR<Prisma.GradeCreateWithoutAuditsInput, Prisma.GradeUncheckedCreateWithoutAuditsInput>
+  connectOrCreate?: Prisma.GradeCreateOrConnectWithoutAuditsInput
+  connect?: Prisma.GradeWhereUniqueInput
+}
+
+export type GradeUpdateOneRequiredWithoutAuditsNestedInput = {
+  create?: Prisma.XOR<Prisma.GradeCreateWithoutAuditsInput, Prisma.GradeUncheckedCreateWithoutAuditsInput>
+  connectOrCreate?: Prisma.GradeCreateOrConnectWithoutAuditsInput
+  upsert?: Prisma.GradeUpsertWithoutAuditsInput
+  connect?: Prisma.GradeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GradeUpdateToOneWithWhereWithoutAuditsInput, Prisma.GradeUpdateWithoutAuditsInput>, Prisma.GradeUncheckedUpdateWithoutAuditsInput>
+}
+
 export type GradeCreateWithoutModifierInput = {
   id?: string
   scoreSer?: number | null
@@ -821,6 +842,7 @@ export type GradeCreateWithoutModifierInput = {
   teacherAssignment: Prisma.TeacherAssignmentCreateNestedOneWithoutGradesInput
   trimester: Prisma.TrimesterCreateNestedOneWithoutGradesInput
   gradeChangeRequests?: Prisma.GradeChangeRequestCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditCreateNestedManyWithoutGradeInput
 }
 
 export type GradeUncheckedCreateWithoutModifierInput = {
@@ -838,6 +860,7 @@ export type GradeUncheckedCreateWithoutModifierInput = {
   status?: $Enums.GradeStatus
   lastModifiedAt?: Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditUncheckedCreateNestedManyWithoutGradeInput
 }
 
 export type GradeCreateOrConnectWithoutModifierInput = {
@@ -901,6 +924,7 @@ export type GradeCreateWithoutTeacherAssignmentInput = {
   trimester: Prisma.TrimesterCreateNestedOneWithoutGradesInput
   modifier?: Prisma.UserCreateNestedOneWithoutGradesInput
   gradeChangeRequests?: Prisma.GradeChangeRequestCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditCreateNestedManyWithoutGradeInput
 }
 
 export type GradeUncheckedCreateWithoutTeacherAssignmentInput = {
@@ -918,6 +942,7 @@ export type GradeUncheckedCreateWithoutTeacherAssignmentInput = {
   lastModifiedById?: string | null
   lastModifiedAt?: Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditUncheckedCreateNestedManyWithoutGradeInput
 }
 
 export type GradeCreateOrConnectWithoutTeacherAssignmentInput = {
@@ -961,6 +986,7 @@ export type GradeCreateWithoutEnrollmentInput = {
   trimester: Prisma.TrimesterCreateNestedOneWithoutGradesInput
   modifier?: Prisma.UserCreateNestedOneWithoutGradesInput
   gradeChangeRequests?: Prisma.GradeChangeRequestCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditCreateNestedManyWithoutGradeInput
 }
 
 export type GradeUncheckedCreateWithoutEnrollmentInput = {
@@ -978,6 +1004,7 @@ export type GradeUncheckedCreateWithoutEnrollmentInput = {
   lastModifiedById?: string | null
   lastModifiedAt?: Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditUncheckedCreateNestedManyWithoutGradeInput
 }
 
 export type GradeCreateOrConnectWithoutEnrollmentInput = {
@@ -1021,6 +1048,7 @@ export type GradeCreateWithoutTrimesterInput = {
   teacherAssignment: Prisma.TeacherAssignmentCreateNestedOneWithoutGradesInput
   modifier?: Prisma.UserCreateNestedOneWithoutGradesInput
   gradeChangeRequests?: Prisma.GradeChangeRequestCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditCreateNestedManyWithoutGradeInput
 }
 
 export type GradeUncheckedCreateWithoutTrimesterInput = {
@@ -1038,6 +1066,7 @@ export type GradeUncheckedCreateWithoutTrimesterInput = {
   lastModifiedById?: string | null
   lastModifiedAt?: Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedCreateNestedManyWithoutGradeInput
+  audits?: Prisma.GradeAuditUncheckedCreateNestedManyWithoutGradeInput
 }
 
 export type GradeCreateOrConnectWithoutTrimesterInput = {
@@ -1081,6 +1110,7 @@ export type GradeCreateWithoutGradeChangeRequestsInput = {
   teacherAssignment: Prisma.TeacherAssignmentCreateNestedOneWithoutGradesInput
   trimester: Prisma.TrimesterCreateNestedOneWithoutGradesInput
   modifier?: Prisma.UserCreateNestedOneWithoutGradesInput
+  audits?: Prisma.GradeAuditCreateNestedManyWithoutGradeInput
 }
 
 export type GradeUncheckedCreateWithoutGradeChangeRequestsInput = {
@@ -1098,6 +1128,7 @@ export type GradeUncheckedCreateWithoutGradeChangeRequestsInput = {
   status?: $Enums.GradeStatus
   lastModifiedById?: string | null
   lastModifiedAt?: Date | string
+  audits?: Prisma.GradeAuditUncheckedCreateNestedManyWithoutGradeInput
 }
 
 export type GradeCreateOrConnectWithoutGradeChangeRequestsInput = {
@@ -1131,6 +1162,7 @@ export type GradeUpdateWithoutGradeChangeRequestsInput = {
   teacherAssignment?: Prisma.TeacherAssignmentUpdateOneRequiredWithoutGradesNestedInput
   trimester?: Prisma.TrimesterUpdateOneRequiredWithoutGradesNestedInput
   modifier?: Prisma.UserUpdateOneWithoutGradesNestedInput
+  audits?: Prisma.GradeAuditUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateWithoutGradeChangeRequestsInput = {
@@ -1148,6 +1180,95 @@ export type GradeUncheckedUpdateWithoutGradeChangeRequestsInput = {
   status?: Prisma.EnumGradeStatusFieldUpdateOperationsInput | $Enums.GradeStatus
   lastModifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastModifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  audits?: Prisma.GradeAuditUncheckedUpdateManyWithoutGradeNestedInput
+}
+
+export type GradeCreateWithoutAuditsInput = {
+  id?: string
+  scoreSer?: number | null
+  scoreSaber?: number | null
+  scoreHacer?: number | null
+  scoreAuto?: number | null
+  totalScore?: number | null
+  recoveryScore?: number | null
+  finalScore?: number | null
+  status?: $Enums.GradeStatus
+  lastModifiedAt?: Date | string
+  enrollment: Prisma.EnrollmentCreateNestedOneWithoutGradesInput
+  teacherAssignment: Prisma.TeacherAssignmentCreateNestedOneWithoutGradesInput
+  trimester: Prisma.TrimesterCreateNestedOneWithoutGradesInput
+  modifier?: Prisma.UserCreateNestedOneWithoutGradesInput
+  gradeChangeRequests?: Prisma.GradeChangeRequestCreateNestedManyWithoutGradeInput
+}
+
+export type GradeUncheckedCreateWithoutAuditsInput = {
+  id?: string
+  enrollmentId: string
+  teacherAssignmentId: string
+  trimesterId: string
+  scoreSer?: number | null
+  scoreSaber?: number | null
+  scoreHacer?: number | null
+  scoreAuto?: number | null
+  totalScore?: number | null
+  recoveryScore?: number | null
+  finalScore?: number | null
+  status?: $Enums.GradeStatus
+  lastModifiedById?: string | null
+  lastModifiedAt?: Date | string
+  gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedCreateNestedManyWithoutGradeInput
+}
+
+export type GradeCreateOrConnectWithoutAuditsInput = {
+  where: Prisma.GradeWhereUniqueInput
+  create: Prisma.XOR<Prisma.GradeCreateWithoutAuditsInput, Prisma.GradeUncheckedCreateWithoutAuditsInput>
+}
+
+export type GradeUpsertWithoutAuditsInput = {
+  update: Prisma.XOR<Prisma.GradeUpdateWithoutAuditsInput, Prisma.GradeUncheckedUpdateWithoutAuditsInput>
+  create: Prisma.XOR<Prisma.GradeCreateWithoutAuditsInput, Prisma.GradeUncheckedCreateWithoutAuditsInput>
+  where?: Prisma.GradeWhereInput
+}
+
+export type GradeUpdateToOneWithWhereWithoutAuditsInput = {
+  where?: Prisma.GradeWhereInput
+  data: Prisma.XOR<Prisma.GradeUpdateWithoutAuditsInput, Prisma.GradeUncheckedUpdateWithoutAuditsInput>
+}
+
+export type GradeUpdateWithoutAuditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  scoreSer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scoreSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scoreHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scoreAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  recoveryScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  finalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.EnumGradeStatusFieldUpdateOperationsInput | $Enums.GradeStatus
+  lastModifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  enrollment?: Prisma.EnrollmentUpdateOneRequiredWithoutGradesNestedInput
+  teacherAssignment?: Prisma.TeacherAssignmentUpdateOneRequiredWithoutGradesNestedInput
+  trimester?: Prisma.TrimesterUpdateOneRequiredWithoutGradesNestedInput
+  modifier?: Prisma.UserUpdateOneWithoutGradesNestedInput
+  gradeChangeRequests?: Prisma.GradeChangeRequestUpdateManyWithoutGradeNestedInput
+}
+
+export type GradeUncheckedUpdateWithoutAuditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  enrollmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherAssignmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  trimesterId?: Prisma.StringFieldUpdateOperationsInput | string
+  scoreSer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scoreSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scoreHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scoreAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  recoveryScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  finalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.EnumGradeStatusFieldUpdateOperationsInput | $Enums.GradeStatus
+  lastModifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastModifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeCreateManyModifierInput = {
@@ -1181,6 +1302,7 @@ export type GradeUpdateWithoutModifierInput = {
   teacherAssignment?: Prisma.TeacherAssignmentUpdateOneRequiredWithoutGradesNestedInput
   trimester?: Prisma.TrimesterUpdateOneRequiredWithoutGradesNestedInput
   gradeChangeRequests?: Prisma.GradeChangeRequestUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateWithoutModifierInput = {
@@ -1198,6 +1320,7 @@ export type GradeUncheckedUpdateWithoutModifierInput = {
   status?: Prisma.EnumGradeStatusFieldUpdateOperationsInput | $Enums.GradeStatus
   lastModifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUncheckedUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateManyWithoutModifierInput = {
@@ -1247,6 +1370,7 @@ export type GradeUpdateWithoutTeacherAssignmentInput = {
   trimester?: Prisma.TrimesterUpdateOneRequiredWithoutGradesNestedInput
   modifier?: Prisma.UserUpdateOneWithoutGradesNestedInput
   gradeChangeRequests?: Prisma.GradeChangeRequestUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateWithoutTeacherAssignmentInput = {
@@ -1264,6 +1388,7 @@ export type GradeUncheckedUpdateWithoutTeacherAssignmentInput = {
   lastModifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastModifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUncheckedUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateManyWithoutTeacherAssignmentInput = {
@@ -1313,6 +1438,7 @@ export type GradeUpdateWithoutEnrollmentInput = {
   trimester?: Prisma.TrimesterUpdateOneRequiredWithoutGradesNestedInput
   modifier?: Prisma.UserUpdateOneWithoutGradesNestedInput
   gradeChangeRequests?: Prisma.GradeChangeRequestUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateWithoutEnrollmentInput = {
@@ -1330,6 +1456,7 @@ export type GradeUncheckedUpdateWithoutEnrollmentInput = {
   lastModifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastModifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUncheckedUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateManyWithoutEnrollmentInput = {
@@ -1379,6 +1506,7 @@ export type GradeUpdateWithoutTrimesterInput = {
   teacherAssignment?: Prisma.TeacherAssignmentUpdateOneRequiredWithoutGradesNestedInput
   modifier?: Prisma.UserUpdateOneWithoutGradesNestedInput
   gradeChangeRequests?: Prisma.GradeChangeRequestUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateWithoutTrimesterInput = {
@@ -1396,6 +1524,7 @@ export type GradeUncheckedUpdateWithoutTrimesterInput = {
   lastModifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastModifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gradeChangeRequests?: Prisma.GradeChangeRequestUncheckedUpdateManyWithoutGradeNestedInput
+  audits?: Prisma.GradeAuditUncheckedUpdateManyWithoutGradeNestedInput
 }
 
 export type GradeUncheckedUpdateManyWithoutTrimesterInput = {
@@ -1421,10 +1550,12 @@ export type GradeUncheckedUpdateManyWithoutTrimesterInput = {
 
 export type GradeCountOutputType = {
   gradeChangeRequests: number
+  audits: number
 }
 
 export type GradeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   gradeChangeRequests?: boolean | GradeCountOutputTypeCountGradeChangeRequestsArgs
+  audits?: boolean | GradeCountOutputTypeCountAuditsArgs
 }
 
 /**
@@ -1442,6 +1573,13 @@ export type GradeCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extens
  */
 export type GradeCountOutputTypeCountGradeChangeRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.GradeChangeRequestWhereInput
+}
+
+/**
+ * GradeCountOutputType without action
+ */
+export type GradeCountOutputTypeCountAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GradeAuditWhereInput
 }
 
 
@@ -1465,6 +1603,7 @@ export type GradeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   trimester?: boolean | Prisma.TrimesterDefaultArgs<ExtArgs>
   modifier?: boolean | Prisma.Grade$modifierArgs<ExtArgs>
   gradeChangeRequests?: boolean | Prisma.Grade$gradeChangeRequestsArgs<ExtArgs>
+  audits?: boolean | Prisma.Grade$auditsArgs<ExtArgs>
   _count?: boolean | Prisma.GradeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["grade"]>
 
@@ -1534,6 +1673,7 @@ export type GradeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   trimester?: boolean | Prisma.TrimesterDefaultArgs<ExtArgs>
   modifier?: boolean | Prisma.Grade$modifierArgs<ExtArgs>
   gradeChangeRequests?: boolean | Prisma.Grade$gradeChangeRequestsArgs<ExtArgs>
+  audits?: boolean | Prisma.Grade$auditsArgs<ExtArgs>
   _count?: boolean | Prisma.GradeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GradeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1557,6 +1697,7 @@ export type $GradePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     trimester: Prisma.$TrimesterPayload<ExtArgs>
     modifier: Prisma.$UserPayload<ExtArgs> | null
     gradeChangeRequests: Prisma.$GradeChangeRequestPayload<ExtArgs>[]
+    audits: Prisma.$GradeAuditPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1972,6 +2113,7 @@ export interface Prisma__GradeClient<T, Null = never, ExtArgs extends runtime.Ty
   trimester<T extends Prisma.TrimesterDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrimesterDefaultArgs<ExtArgs>>): Prisma.Prisma__TrimesterClient<runtime.Types.Result.GetResult<Prisma.$TrimesterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   modifier<T extends Prisma.Grade$modifierArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Grade$modifierArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   gradeChangeRequests<T extends Prisma.Grade$gradeChangeRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Grade$gradeChangeRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GradeChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  audits<T extends Prisma.Grade$auditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Grade$auditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GradeAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2456,6 +2598,30 @@ export type Grade$gradeChangeRequestsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.GradeChangeRequestScalarFieldEnum | Prisma.GradeChangeRequestScalarFieldEnum[]
+}
+
+/**
+ * Grade.audits
+ */
+export type Grade$auditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GradeAudit
+   */
+  select?: Prisma.GradeAuditSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GradeAudit
+   */
+  omit?: Prisma.GradeAuditOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeAuditInclude<ExtArgs> | null
+  where?: Prisma.GradeAuditWhereInput
+  orderBy?: Prisma.GradeAuditOrderByWithRelationInput | Prisma.GradeAuditOrderByWithRelationInput[]
+  cursor?: Prisma.GradeAuditWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GradeAuditScalarFieldEnum | Prisma.GradeAuditScalarFieldEnum[]
 }
 
 /**

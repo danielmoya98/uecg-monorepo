@@ -118,6 +118,16 @@ export type DataUpdateRequest = Prisma.DataUpdateRequestModel
  */
 export type AttendanceRecord = Prisma.AttendanceRecordModel
 /**
+ * Model AttendanceJustification
+ * 
+ */
+export type AttendanceJustification = Prisma.AttendanceJustificationModel
+/**
+ * Model Holiday
+ * 
+ */
+export type Holiday = Prisma.HolidayModel
+/**
  * Model Trimester
  * 
  */
@@ -132,6 +142,11 @@ export type Grade = Prisma.GradeModel
  * 
  */
 export type GradeChangeRequest = Prisma.GradeChangeRequestModel
+/**
+ * Model GradeAudit
+ * 
+ */
+export type GradeAudit = Prisma.GradeAuditModel
 /**
  * Model AuditLog
  * 

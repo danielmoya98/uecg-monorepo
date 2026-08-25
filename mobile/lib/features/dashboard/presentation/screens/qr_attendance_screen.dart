@@ -4,15 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../data/models/institution_model.dart';
+import '../providers/attendance_provider.dart';
 import '../providers/institution_provider.dart';
 
 class QRAttendanceScreen extends ConsumerStatefulWidget {
   final String? classPeriodId;
+  final List<String>? classPeriodIds;
   final String? courseTitle;
 
   const QRAttendanceScreen({
     super.key,
     this.classPeriodId,
+    this.classPeriodIds,
     this.courseTitle,
   });
 
@@ -26,6 +29,36 @@ class _QRAttendanceScreenState extends ConsumerState<QRAttendanceScreen> {
   final Set<String> _scannedTokens = {};
   bool _isProcessingScan = false;
 
+  String _formatStatus(String status) {
+    switch (status) {
+      case 'PRESENT':
+        return 'PRESENTE';
+      case 'LATE':
+        return 'ATRASO';
+      case 'ABSENT':
+        return 'FALTA';
+      case 'EXCUSED':
+        return 'LICENCIA';
+      default:
+        return status;
+    }
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'PRESENT':
+        return const Color(0xFF10B981);
+      case 'LATE':
+        return const Color(0xFFF59E0B);
+      case 'ABSENT':
+        return const Color(0xFFEF4444);
+      case 'EXCUSED':
+        return const Color(0xFF3B82F6);
+      default:
+        return AppTheme.swissBlue;
+    }
+  }
+
   Future<void> _handleScan(String rawValue) async {
     if (_isProcessingScan || _scannedTokens.contains(rawValue)) return;
 
@@ -35,10 +68,13 @@ class _QRAttendanceScreenState extends ConsumerState<QRAttendanceScreen> {
     });
 
     try {
-      final repository = ref.read(institutionRepositoryProvider);
-      final result = await repository.scanQRAttendance(
+      final repository = ref.read(attendanceRepositoryProvider);
+      final periodIds = widget.classPeriodIds ??
+          (widget.classPeriodId != null ? [widget.classPeriodId!] : []);
+
+      final result = await repository.scanQR(
         qrToken: rawValue,
-        classPeriodId: widget.classPeriodId,
+        classPeriodIds: periodIds,
       );
 
       HapticFeedback.mediumImpact();
@@ -48,15 +84,16 @@ class _QRAttendanceScreenState extends ConsumerState<QRAttendanceScreen> {
           _scannedRecords.insert(0, result);
         });
 
+        final spanishStatus = _formatStatus(result.status);
+        final statusColor = _getStatusColor(result.status);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${result.studentName} — ${result.status}',
+              '${result.studentName} — $spanishStatus',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            backgroundColor: result.status == 'PUNTUAL'
-                ? const Color(0xFF10B981)
-                : const Color(0xFFF59E0B),
+            backgroundColor: statusColor,
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
           ),
@@ -139,17 +176,20 @@ class _QRAttendanceScreenState extends ConsumerState<QRAttendanceScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.qr_code_scanner, size: 48, color: AppTheme.slateGray),
+                    const Icon(Icons.qr_code_scanner,
+                        size: 48, color: AppTheme.slateGray),
                     const SizedBox(height: 16),
                     Text(
                       'ESCÁNER QR DESHABILITADO',
-                      style: textTheme.labelSmall?.copyWith(color: AppTheme.inkBlack),
+                      style: textTheme.labelSmall
+                          ?.copyWith(color: AppTheme.inkBlack),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'La toma de asistencia mediante código QR ha sido desactivada temporalmente por la Dirección en la configuración institucional.',
                       textAlign: TextAlign.center,
-                      style: textTheme.bodyMedium?.copyWith(color: AppTheme.slateGray),
+                      style:
+                          textTheme.bodyMedium?.copyWith(color: AppTheme.slateGray),
                     ),
                   ],
                 ),
@@ -196,14 +236,17 @@ class _QRAttendanceScreenState extends ConsumerState<QRAttendanceScreen> {
                     Text(
                       'POSICIONE EL CÓDIGO QR\nDENTRO DEL CUADRO',
                       textAlign: TextAlign.center,
-                      style: textTheme.labelSmall?.copyWith(color: AppTheme.pureWhite),
+                      style: textTheme.labelSmall
+                          ?.copyWith(color: AppTheme.pureWhite),
                     ),
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: AppTheme.inkBlack.withOpacity(0.6),
-                        border: Border.all(color: AppTheme.lineGray.withOpacity(0.3)),
+                        border: Border.all(
+                            color: AppTheme.lineGray.withOpacity(0.3)),
                       ),
                       child: Text(
                         'Tolerancia de Atraso: ${settings.lateToleranceMinutes} min',
@@ -226,7 +269,8 @@ class _QRAttendanceScreenState extends ConsumerState<QRAttendanceScreen> {
                   height: 220,
                   decoration: const BoxDecoration(
                     color: AppTheme.pureWhite,
-                    border: Border(top: BorderSide(color: AppTheme.lineGray, width: 1)),
+                    border: Border(
+                        top: BorderSide(color: AppTheme.lineGray, width: 1)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,10 +280,12 @@ class _QRAttendanceScreenState extends ConsumerState<QRAttendanceScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('REGISTROS EN TIEMPO REAL', style: textTheme.labelSmall),
+                            Text('REGISTROS EN TIEMPO REAL',
+                                style: textTheme.labelSmall),
                             Text(
                               '${_scannedRecords.length} REGISTRADOS',
-                              style: textTheme.labelSmall?.copyWith(color: AppTheme.swissBlue),
+                              style: textTheme.labelSmall
+                                  ?.copyWith(color: AppTheme.swissBlue),
                             ),
                           ],
                         ),
@@ -247,47 +293,57 @@ class _QRAttendanceScreenState extends ConsumerState<QRAttendanceScreen> {
                       const Divider(height: 1),
                       Expanded(
                         child: _scannedRecords.isEmpty
-                          ? Center(
-                              child: Text(
-                                'Aún no se han escaneado estudiantes.',
-                                style: textTheme.bodySmall?.copyWith(color: AppTheme.slateGray),
+                            ? Center(
+                                child: Text(
+                                  'Aún no se han escaneado estudiantes.',
+                                  style: textTheme.bodySmall
+                                      ?.copyWith(color: AppTheme.slateGray),
+                                ),
+                              )
+                            : ListView.separated(
+                                padding: EdgeInsets.zero,
+                                itemCount: _scannedRecords.length,
+                                separatorBuilder: (_, __) =>
+                                    const Divider(height: 1),
+                                itemBuilder: (context, index) {
+                                  final record = _scannedRecords[index];
+                                  final spanishStatus =
+                                      _formatStatus(record.status);
+                                  final statusColor =
+                                      _getStatusColor(record.status);
+
+                                  return ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 4),
+                                    leading: Icon(
+                                      record.status == 'PRESENT'
+                                          ? Icons.check_circle
+                                          : Icons.access_time_filled,
+                                      color: statusColor,
+                                    ),
+                                    title: Text(
+                                      record.studentName,
+                                      style: textTheme.bodyLarge?.copyWith(
+                                        color: AppTheme.inkBlack,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      spanishStatus,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: statusColor,
+                                      ),
+                                    ),
+                                    trailing: Text(
+                                      '${record.timestamp.hour.toString().padLeft(2, '0')}:${record.timestamp.minute.toString().padLeft(2, '0')}',
+                                      style: textTheme.labelSmall
+                                          ?.copyWith(color: AppTheme.slateGray),
+                                    ),
+                                  );
+                                },
                               ),
-                            )
-                          : ListView.separated(
-                              padding: EdgeInsets.zero,
-                              itemCount: _scannedRecords.length,
-                              separatorBuilder: (_, __) => const Divider(height: 1),
-                              itemBuilder: (context, index) {
-                                final record = _scannedRecords[index];
-                                final isPuntual = record.status == 'PUNTUAL';
-                                return ListTile(
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                  leading: Icon(
-                                    isPuntual ? Icons.check_circle : Icons.access_time_filled,
-                                    color: isPuntual ? const Color(0xFF10B981) : const Color(0xFFF59E0B),
-                                  ),
-                                  title: Text(
-                                    record.studentName,
-                                    style: textTheme.bodyLarge?.copyWith(
-                                      color: AppTheme.inkBlack,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    record.status,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: isPuntual ? const Color(0xFF10B981) : const Color(0xFFF59E0B),
-                                    ),
-                                  ),
-                                  trailing: Text(
-                                    '${record.timestamp.hour.toString().padLeft(2, '0')}:${record.timestamp.minute.toString().padLeft(2, '0')}',
-                                    style: textTheme.labelSmall?.copyWith(color: AppTheme.slateGray),
-                                  ),
-                                );
-                              },
-                            ),
                       ),
                     ],
                   ),
@@ -329,7 +385,8 @@ class QROverlayShape extends ShapeBorder {
     final height = rect.height;
     final size = width < height ? width * 0.7 : height * 0.7;
     final center = Offset(width / 2, height / 2 - 100);
-    final cutOutRect = Rect.fromCenter(center: center, width: size, height: size);
+    final cutOutRect =
+        Rect.fromCenter(center: center, width: size, height: size);
 
     final backgroundPaint = Paint()
       ..color = overlayColor

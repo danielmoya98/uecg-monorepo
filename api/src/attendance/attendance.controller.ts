@@ -19,6 +19,8 @@ import { ApiTags, ApiOperation, ApiCookieAuth } from '@nestjs/swagger';
 import { BulkAttendanceDto } from './dto/bulk-attendance.dto';
 import { GetClassroomAttendanceDto } from './dto/get-classroom-attendance.dto';
 import { JustifyAttendanceDto } from './dto/justify-attendance.dto';
+import { CreateJustificationRangeDto } from './dto/create-justification-range.dto';
+import { CreateHolidayDto } from './dto/create-holiday.dto';
 
 // 🔥 IMPORTACIONES ABAC
 import { AuthGuard } from '@nestjs/passport';
@@ -157,5 +159,51 @@ export class AttendanceController {
       dto.justification,
       req.user,
     );
+  }
+
+  @Post('justifications')
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_ATTENDANCE)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Registra una licencia/justificación por rango de fechas' })
+  async createJustificationRange(
+    @Body() dto: CreateJustificationRangeDto,
+    @Req() req: any,
+  ) {
+    return this.attendanceService.createJustificationRange(dto, req.user);
+  }
+
+  @Get('justifications/:enrollmentId')
+  @RequirePermissions(SystemPermissions.READ_ALL_ATTENDANCE)
+  @ApiOperation({ summary: 'Obtiene las licencias/justificaciones de un estudiante' })
+  async getStudentJustifications(
+    @Param('enrollmentId') enrollmentId: string,
+    @Req() req: any,
+  ) {
+    return this.attendanceService.getStudentJustifications(
+      enrollmentId,
+      req.user,
+    );
+  }
+
+  // ==========================================
+  // 🗓️ FERIADOS Y DÍAS NO LECTIVOS
+  // ==========================================
+
+  @Post('holidays')
+  @RequirePermissions(SystemPermissions.MANAGE_ALL_ATTENDANCE)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Registra un feriado o día no lectivo' })
+  async createHoliday(@Body() dto: CreateHolidayDto, @Req() req: any) {
+    return this.attendanceService.createHoliday(dto, req.user);
+  }
+
+  @Get('holidays')
+  @RequirePermissions(
+    SystemPermissions.READ_ALL_ATTENDANCE,
+    SystemPermissions.READ_OWN_TIMETABLE,
+  )
+  @ApiOperation({ summary: 'Lista feriados y días no lectivos' })
+  async getHolidays(@Query('academicYearId') academicYearId?: string) {
+    return this.attendanceService.getHolidays(academicYearId);
   }
 }

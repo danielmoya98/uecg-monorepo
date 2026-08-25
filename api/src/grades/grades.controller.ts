@@ -112,4 +112,40 @@ export class GradesController {
   ) {
     return this.gradesService.resolveChangeRequest(id, dto, req.user);
   }
+
+  // ==========================================
+  // RUTAS PARA ESTUDIANTES Y PADRES (PORTAL / MOBILE)
+  // ==========================================
+
+  @Get('my-grades')
+  @RequirePermissions(
+    SystemPermissions.READ_OWN_GRADE,
+    SystemPermissions.READ_OWN_STUDENT,
+    SystemPermissions.MANAGE_ALL,
+  )
+  @ApiOperation({
+    summary: 'Estudiante consulta su propio boletín de calificaciones',
+  })
+  getMyGrades(@Req() req: any) {
+    return this.gradesService.getMyGrades(req.user);
+  }
+
+  @Get('student/:studentId')
+  @RequirePermissions(
+    SystemPermissions.READ_OWN_GUARDIAN,
+    SystemPermissions.READ_ALL_GRADE,
+    SystemPermissions.MANAGE_ALL,
+  )
+  @ApiOperation({
+    summary: 'Padre/Tutor o Director consulta el boletín de un estudiante',
+  })
+  getStudentGradesForGuardian(
+    @Param('studentId') studentId: string,
+    @Req() req: any,
+  ) {
+    return this.gradesService.getStudentGradesForGuardian(
+      studentId,
+      req.user,
+    );
+  }
 }

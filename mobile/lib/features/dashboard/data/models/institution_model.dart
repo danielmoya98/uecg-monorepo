@@ -77,12 +77,22 @@ class QRAttendanceResultModel {
   });
 
   factory QRAttendanceResultModel.fromJson(Map<String, dynamic> json) {
+    final dataMap = json['data'] is Map<String, dynamic>
+        ? json['data'] as Map<String, dynamic>
+        : json;
     return QRAttendanceResultModel(
-      status: json['status'] as String? ?? 'PUNTUAL',
-      studentName: json['studentName'] as String? ?? (json['data']?['studentName'] as String? ?? 'Estudiante'),
-      rudeCode: json['rudeCode'] as String? ?? '',
-      message: json['message'] as String? ?? 'Asistencia registrada',
-      timestamp: DateTime.now(),
+      status: (dataMap['status'] as String?) ??
+          (json['status'] as String?) ??
+          'PRESENT',
+      studentName: (dataMap['studentName'] as String?) ??
+          (json['studentName'] as String?) ??
+          'Estudiante',
+      rudeCode: (dataMap['rudeCode'] as String?) ??
+          (json['rudeCode'] as String?) ??
+          '',
+      message: (json['message'] as String?) ?? 'Asistencia registrada',
+      timestamp: DateTime.tryParse(dataMap['timestamp']?.toString() ?? '') ??
+          DateTime.now(),
     );
   }
 }

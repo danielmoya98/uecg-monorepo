@@ -31,6 +31,7 @@ export type GradeChangeRequestAvgAggregateOutputType = {
   proposedSaber: number | null
   proposedHacer: number | null
   proposedAuto: number | null
+  proposedRecovery: number | null
 }
 
 export type GradeChangeRequestSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type GradeChangeRequestSumAggregateOutputType = {
   proposedSaber: number | null
   proposedHacer: number | null
   proposedAuto: number | null
+  proposedRecovery: number | null
 }
 
 export type GradeChangeRequestMinAggregateOutputType = {
@@ -50,8 +52,10 @@ export type GradeChangeRequestMinAggregateOutputType = {
   proposedSaber: number | null
   proposedHacer: number | null
   proposedAuto: number | null
+  proposedRecovery: number | null
   status: $Enums.UpdateRequestStatus | null
   resolvedAt: Date | null
+  rejectionReason: string | null
 }
 
 export type GradeChangeRequestMaxAggregateOutputType = {
@@ -64,8 +68,10 @@ export type GradeChangeRequestMaxAggregateOutputType = {
   proposedSaber: number | null
   proposedHacer: number | null
   proposedAuto: number | null
+  proposedRecovery: number | null
   status: $Enums.UpdateRequestStatus | null
   resolvedAt: Date | null
+  rejectionReason: string | null
 }
 
 export type GradeChangeRequestCountAggregateOutputType = {
@@ -78,8 +84,10 @@ export type GradeChangeRequestCountAggregateOutputType = {
   proposedSaber: number
   proposedHacer: number
   proposedAuto: number
+  proposedRecovery: number
   status: number
   resolvedAt: number
+  rejectionReason: number
   _all: number
 }
 
@@ -89,6 +97,7 @@ export type GradeChangeRequestAvgAggregateInputType = {
   proposedSaber?: true
   proposedHacer?: true
   proposedAuto?: true
+  proposedRecovery?: true
 }
 
 export type GradeChangeRequestSumAggregateInputType = {
@@ -96,6 +105,7 @@ export type GradeChangeRequestSumAggregateInputType = {
   proposedSaber?: true
   proposedHacer?: true
   proposedAuto?: true
+  proposedRecovery?: true
 }
 
 export type GradeChangeRequestMinAggregateInputType = {
@@ -108,8 +118,10 @@ export type GradeChangeRequestMinAggregateInputType = {
   proposedSaber?: true
   proposedHacer?: true
   proposedAuto?: true
+  proposedRecovery?: true
   status?: true
   resolvedAt?: true
+  rejectionReason?: true
 }
 
 export type GradeChangeRequestMaxAggregateInputType = {
@@ -122,8 +134,10 @@ export type GradeChangeRequestMaxAggregateInputType = {
   proposedSaber?: true
   proposedHacer?: true
   proposedAuto?: true
+  proposedRecovery?: true
   status?: true
   resolvedAt?: true
+  rejectionReason?: true
 }
 
 export type GradeChangeRequestCountAggregateInputType = {
@@ -136,8 +150,10 @@ export type GradeChangeRequestCountAggregateInputType = {
   proposedSaber?: true
   proposedHacer?: true
   proposedAuto?: true
+  proposedRecovery?: true
   status?: true
   resolvedAt?: true
+  rejectionReason?: true
   _all?: true
 }
 
@@ -237,8 +253,10 @@ export type GradeChangeRequestGroupByOutputType = {
   proposedSaber: number | null
   proposedHacer: number | null
   proposedAuto: number | null
+  proposedRecovery: number | null
   status: $Enums.UpdateRequestStatus
   resolvedAt: Date | null
+  rejectionReason: string | null
   _count: GradeChangeRequestCountAggregateOutputType | null
   _avg: GradeChangeRequestAvgAggregateOutputType | null
   _sum: GradeChangeRequestSumAggregateOutputType | null
@@ -274,8 +292,10 @@ export type GradeChangeRequestWhereInput = {
   proposedSaber?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   proposedHacer?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   proposedAuto?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
+  proposedRecovery?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   status?: Prisma.EnumUpdateRequestStatusFilter<"GradeChangeRequest"> | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.DateTimeNullableFilter<"GradeChangeRequest"> | Date | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"GradeChangeRequest"> | string | null
   grade?: Prisma.XOR<Prisma.GradeScalarRelationFilter, Prisma.GradeWhereInput>
 }
 
@@ -289,8 +309,10 @@ export type GradeChangeRequestOrderByWithRelationInput = {
   proposedSaber?: Prisma.SortOrderInput | Prisma.SortOrder
   proposedHacer?: Prisma.SortOrderInput | Prisma.SortOrder
   proposedAuto?: Prisma.SortOrderInput | Prisma.SortOrder
+  proposedRecovery?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   grade?: Prisma.GradeOrderByWithRelationInput
 }
 
@@ -307,8 +329,10 @@ export type GradeChangeRequestWhereUniqueInput = Prisma.AtLeast<{
   proposedSaber?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   proposedHacer?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   proposedAuto?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
+  proposedRecovery?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   status?: Prisma.EnumUpdateRequestStatusFilter<"GradeChangeRequest"> | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.DateTimeNullableFilter<"GradeChangeRequest"> | Date | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"GradeChangeRequest"> | string | null
   grade?: Prisma.XOR<Prisma.GradeScalarRelationFilter, Prisma.GradeWhereInput>
 }, "id">
 
@@ -322,8 +346,10 @@ export type GradeChangeRequestOrderByWithAggregationInput = {
   proposedSaber?: Prisma.SortOrderInput | Prisma.SortOrder
   proposedHacer?: Prisma.SortOrderInput | Prisma.SortOrder
   proposedAuto?: Prisma.SortOrderInput | Prisma.SortOrder
+  proposedRecovery?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.GradeChangeRequestCountOrderByAggregateInput
   _avg?: Prisma.GradeChangeRequestAvgOrderByAggregateInput
   _max?: Prisma.GradeChangeRequestMaxOrderByAggregateInput
@@ -344,8 +370,10 @@ export type GradeChangeRequestScalarWhereWithAggregatesInput = {
   proposedSaber?: Prisma.IntNullableWithAggregatesFilter<"GradeChangeRequest"> | number | null
   proposedHacer?: Prisma.IntNullableWithAggregatesFilter<"GradeChangeRequest"> | number | null
   proposedAuto?: Prisma.IntNullableWithAggregatesFilter<"GradeChangeRequest"> | number | null
+  proposedRecovery?: Prisma.IntNullableWithAggregatesFilter<"GradeChangeRequest"> | number | null
   status?: Prisma.EnumUpdateRequestStatusWithAggregatesFilter<"GradeChangeRequest"> | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"GradeChangeRequest"> | Date | string | null
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"GradeChangeRequest"> | string | null
 }
 
 export type GradeChangeRequestCreateInput = {
@@ -357,8 +385,10 @@ export type GradeChangeRequestCreateInput = {
   proposedSaber?: number | null
   proposedHacer?: number | null
   proposedAuto?: number | null
+  proposedRecovery?: number | null
   status?: $Enums.UpdateRequestStatus
   resolvedAt?: Date | string | null
+  rejectionReason?: string | null
   grade: Prisma.GradeCreateNestedOneWithoutGradeChangeRequestsInput
 }
 
@@ -372,8 +402,10 @@ export type GradeChangeRequestUncheckedCreateInput = {
   proposedSaber?: number | null
   proposedHacer?: number | null
   proposedAuto?: number | null
+  proposedRecovery?: number | null
   status?: $Enums.UpdateRequestStatus
   resolvedAt?: Date | string | null
+  rejectionReason?: string | null
 }
 
 export type GradeChangeRequestUpdateInput = {
@@ -385,8 +417,10 @@ export type GradeChangeRequestUpdateInput = {
   proposedSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proposedRecovery?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.GradeUpdateOneRequiredWithoutGradeChangeRequestsNestedInput
 }
 
@@ -400,8 +434,10 @@ export type GradeChangeRequestUncheckedUpdateInput = {
   proposedSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proposedRecovery?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GradeChangeRequestCreateManyInput = {
@@ -414,8 +450,10 @@ export type GradeChangeRequestCreateManyInput = {
   proposedSaber?: number | null
   proposedHacer?: number | null
   proposedAuto?: number | null
+  proposedRecovery?: number | null
   status?: $Enums.UpdateRequestStatus
   resolvedAt?: Date | string | null
+  rejectionReason?: string | null
 }
 
 export type GradeChangeRequestUpdateManyMutationInput = {
@@ -427,8 +465,10 @@ export type GradeChangeRequestUpdateManyMutationInput = {
   proposedSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proposedRecovery?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GradeChangeRequestUncheckedUpdateManyInput = {
@@ -441,8 +481,10 @@ export type GradeChangeRequestUncheckedUpdateManyInput = {
   proposedSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proposedRecovery?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GradeChangeRequestListRelationFilter = {
@@ -465,8 +507,10 @@ export type GradeChangeRequestCountOrderByAggregateInput = {
   proposedSaber?: Prisma.SortOrder
   proposedHacer?: Prisma.SortOrder
   proposedAuto?: Prisma.SortOrder
+  proposedRecovery?: Prisma.SortOrder
   status?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
 }
 
 export type GradeChangeRequestAvgOrderByAggregateInput = {
@@ -474,6 +518,7 @@ export type GradeChangeRequestAvgOrderByAggregateInput = {
   proposedSaber?: Prisma.SortOrder
   proposedHacer?: Prisma.SortOrder
   proposedAuto?: Prisma.SortOrder
+  proposedRecovery?: Prisma.SortOrder
 }
 
 export type GradeChangeRequestMaxOrderByAggregateInput = {
@@ -486,8 +531,10 @@ export type GradeChangeRequestMaxOrderByAggregateInput = {
   proposedSaber?: Prisma.SortOrder
   proposedHacer?: Prisma.SortOrder
   proposedAuto?: Prisma.SortOrder
+  proposedRecovery?: Prisma.SortOrder
   status?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
 }
 
 export type GradeChangeRequestMinOrderByAggregateInput = {
@@ -500,8 +547,10 @@ export type GradeChangeRequestMinOrderByAggregateInput = {
   proposedSaber?: Prisma.SortOrder
   proposedHacer?: Prisma.SortOrder
   proposedAuto?: Prisma.SortOrder
+  proposedRecovery?: Prisma.SortOrder
   status?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
 }
 
 export type GradeChangeRequestSumOrderByAggregateInput = {
@@ -509,6 +558,7 @@ export type GradeChangeRequestSumOrderByAggregateInput = {
   proposedSaber?: Prisma.SortOrder
   proposedHacer?: Prisma.SortOrder
   proposedAuto?: Prisma.SortOrder
+  proposedRecovery?: Prisma.SortOrder
 }
 
 export type GradeChangeRequestCreateNestedManyWithoutGradeInput = {
@@ -562,8 +612,10 @@ export type GradeChangeRequestCreateWithoutGradeInput = {
   proposedSaber?: number | null
   proposedHacer?: number | null
   proposedAuto?: number | null
+  proposedRecovery?: number | null
   status?: $Enums.UpdateRequestStatus
   resolvedAt?: Date | string | null
+  rejectionReason?: string | null
 }
 
 export type GradeChangeRequestUncheckedCreateWithoutGradeInput = {
@@ -575,8 +627,10 @@ export type GradeChangeRequestUncheckedCreateWithoutGradeInput = {
   proposedSaber?: number | null
   proposedHacer?: number | null
   proposedAuto?: number | null
+  proposedRecovery?: number | null
   status?: $Enums.UpdateRequestStatus
   resolvedAt?: Date | string | null
+  rejectionReason?: string | null
 }
 
 export type GradeChangeRequestCreateOrConnectWithoutGradeInput = {
@@ -618,8 +672,10 @@ export type GradeChangeRequestScalarWhereInput = {
   proposedSaber?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   proposedHacer?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   proposedAuto?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
+  proposedRecovery?: Prisma.IntNullableFilter<"GradeChangeRequest"> | number | null
   status?: Prisma.EnumUpdateRequestStatusFilter<"GradeChangeRequest"> | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.DateTimeNullableFilter<"GradeChangeRequest"> | Date | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"GradeChangeRequest"> | string | null
 }
 
 export type GradeChangeRequestCreateManyGradeInput = {
@@ -631,8 +687,10 @@ export type GradeChangeRequestCreateManyGradeInput = {
   proposedSaber?: number | null
   proposedHacer?: number | null
   proposedAuto?: number | null
+  proposedRecovery?: number | null
   status?: $Enums.UpdateRequestStatus
   resolvedAt?: Date | string | null
+  rejectionReason?: string | null
 }
 
 export type GradeChangeRequestUpdateWithoutGradeInput = {
@@ -644,8 +702,10 @@ export type GradeChangeRequestUpdateWithoutGradeInput = {
   proposedSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proposedRecovery?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GradeChangeRequestUncheckedUpdateWithoutGradeInput = {
@@ -657,8 +717,10 @@ export type GradeChangeRequestUncheckedUpdateWithoutGradeInput = {
   proposedSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proposedRecovery?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GradeChangeRequestUncheckedUpdateManyWithoutGradeInput = {
@@ -670,8 +732,10 @@ export type GradeChangeRequestUncheckedUpdateManyWithoutGradeInput = {
   proposedSaber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedHacer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   proposedAuto?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proposedRecovery?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -686,8 +750,10 @@ export type GradeChangeRequestSelect<ExtArgs extends runtime.Types.Extensions.In
   proposedSaber?: boolean
   proposedHacer?: boolean
   proposedAuto?: boolean
+  proposedRecovery?: boolean
   status?: boolean
   resolvedAt?: boolean
+  rejectionReason?: boolean
   grade?: boolean | Prisma.GradeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["gradeChangeRequest"]>
 
@@ -701,8 +767,10 @@ export type GradeChangeRequestSelectCreateManyAndReturn<ExtArgs extends runtime.
   proposedSaber?: boolean
   proposedHacer?: boolean
   proposedAuto?: boolean
+  proposedRecovery?: boolean
   status?: boolean
   resolvedAt?: boolean
+  rejectionReason?: boolean
   grade?: boolean | Prisma.GradeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["gradeChangeRequest"]>
 
@@ -716,8 +784,10 @@ export type GradeChangeRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.
   proposedSaber?: boolean
   proposedHacer?: boolean
   proposedAuto?: boolean
+  proposedRecovery?: boolean
   status?: boolean
   resolvedAt?: boolean
+  rejectionReason?: boolean
   grade?: boolean | Prisma.GradeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["gradeChangeRequest"]>
 
@@ -731,11 +801,13 @@ export type GradeChangeRequestSelectScalar = {
   proposedSaber?: boolean
   proposedHacer?: boolean
   proposedAuto?: boolean
+  proposedRecovery?: boolean
   status?: boolean
   resolvedAt?: boolean
+  rejectionReason?: boolean
 }
 
-export type GradeChangeRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gradeId" | "requestedById" | "approvedById" | "reason" | "proposedSer" | "proposedSaber" | "proposedHacer" | "proposedAuto" | "status" | "resolvedAt", ExtArgs["result"]["gradeChangeRequest"]>
+export type GradeChangeRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gradeId" | "requestedById" | "approvedById" | "reason" | "proposedSer" | "proposedSaber" | "proposedHacer" | "proposedAuto" | "proposedRecovery" | "status" | "resolvedAt" | "rejectionReason", ExtArgs["result"]["gradeChangeRequest"]>
 export type GradeChangeRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   grade?: boolean | Prisma.GradeDefaultArgs<ExtArgs>
 }
@@ -761,8 +833,10 @@ export type $GradeChangeRequestPayload<ExtArgs extends runtime.Types.Extensions.
     proposedSaber: number | null
     proposedHacer: number | null
     proposedAuto: number | null
+    proposedRecovery: number | null
     status: $Enums.UpdateRequestStatus
     resolvedAt: Date | null
+    rejectionReason: string | null
   }, ExtArgs["result"]["gradeChangeRequest"]>
   composites: {}
 }
@@ -1196,8 +1270,10 @@ export interface GradeChangeRequestFieldRefs {
   readonly proposedSaber: Prisma.FieldRef<"GradeChangeRequest", 'Int'>
   readonly proposedHacer: Prisma.FieldRef<"GradeChangeRequest", 'Int'>
   readonly proposedAuto: Prisma.FieldRef<"GradeChangeRequest", 'Int'>
+  readonly proposedRecovery: Prisma.FieldRef<"GradeChangeRequest", 'Int'>
   readonly status: Prisma.FieldRef<"GradeChangeRequest", 'UpdateRequestStatus'>
   readonly resolvedAt: Prisma.FieldRef<"GradeChangeRequest", 'DateTime'>
+  readonly rejectionReason: Prisma.FieldRef<"GradeChangeRequest", 'String'>
 }
     
 

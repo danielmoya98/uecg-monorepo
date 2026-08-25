@@ -243,6 +243,7 @@ export type AcademicYearWhereInput = {
   classrooms?: Prisma.ClassroomListRelationFilter
   enrollments?: Prisma.EnrollmentListRelationFilter
   trimesters?: Prisma.TrimesterListRelationFilter
+  holidays?: Prisma.HolidayListRelationFilter
 }
 
 export type AcademicYearOrderByWithRelationInput = {
@@ -257,6 +258,7 @@ export type AcademicYearOrderByWithRelationInput = {
   classrooms?: Prisma.ClassroomOrderByRelationAggregateInput
   enrollments?: Prisma.EnrollmentOrderByRelationAggregateInput
   trimesters?: Prisma.TrimesterOrderByRelationAggregateInput
+  holidays?: Prisma.HolidayOrderByRelationAggregateInput
 }
 
 export type AcademicYearWhereUniqueInput = Prisma.AtLeast<{
@@ -274,6 +276,7 @@ export type AcademicYearWhereUniqueInput = Prisma.AtLeast<{
   classrooms?: Prisma.ClassroomListRelationFilter
   enrollments?: Prisma.EnrollmentListRelationFilter
   trimesters?: Prisma.TrimesterListRelationFilter
+  holidays?: Prisma.HolidayListRelationFilter
 }, "id" | "year">
 
 export type AcademicYearOrderByWithAggregationInput = {
@@ -318,6 +321,7 @@ export type AcademicYearCreateInput = {
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutAcademicYearInput
   enrollments?: Prisma.EnrollmentCreateNestedManyWithoutAcademicYearInput
   trimesters?: Prisma.TrimesterCreateNestedManyWithoutAcademicYearInput
+  holidays?: Prisma.HolidayCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUncheckedCreateInput = {
@@ -332,6 +336,7 @@ export type AcademicYearUncheckedCreateInput = {
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAcademicYearInput
   enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutAcademicYearInput
   trimesters?: Prisma.TrimesterUncheckedCreateNestedManyWithoutAcademicYearInput
+  holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUpdateInput = {
@@ -346,6 +351,7 @@ export type AcademicYearUpdateInput = {
   classrooms?: Prisma.ClassroomUpdateManyWithoutAcademicYearNestedInput
   enrollments?: Prisma.EnrollmentUpdateManyWithoutAcademicYearNestedInput
   trimesters?: Prisma.TrimesterUpdateManyWithoutAcademicYearNestedInput
+  holidays?: Prisma.HolidayUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearUncheckedUpdateInput = {
@@ -360,6 +366,7 @@ export type AcademicYearUncheckedUpdateInput = {
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAcademicYearNestedInput
   enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutAcademicYearNestedInput
   trimesters?: Prisma.TrimesterUncheckedUpdateManyWithoutAcademicYearNestedInput
+  holidays?: Prisma.HolidayUncheckedUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearCreateManyInput = {
@@ -441,6 +448,11 @@ export type AcademicYearScalarRelationFilter = {
   isNot?: Prisma.AcademicYearWhereInput
 }
 
+export type AcademicYearNullableScalarRelationFilter = {
+  is?: Prisma.AcademicYearWhereInput | null
+  isNot?: Prisma.AcademicYearWhereInput | null
+}
+
 export type EnumAcademicStatusFieldUpdateOperationsInput = {
   set?: $Enums.AcademicStatus
 }
@@ -473,6 +485,22 @@ export type AcademicYearUpdateOneRequiredWithoutEnrollmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AcademicYearUpdateToOneWithWhereWithoutEnrollmentsInput, Prisma.AcademicYearUpdateWithoutEnrollmentsInput>, Prisma.AcademicYearUncheckedUpdateWithoutEnrollmentsInput>
 }
 
+export type AcademicYearCreateNestedOneWithoutHolidaysInput = {
+  create?: Prisma.XOR<Prisma.AcademicYearCreateWithoutHolidaysInput, Prisma.AcademicYearUncheckedCreateWithoutHolidaysInput>
+  connectOrCreate?: Prisma.AcademicYearCreateOrConnectWithoutHolidaysInput
+  connect?: Prisma.AcademicYearWhereUniqueInput
+}
+
+export type AcademicYearUpdateOneWithoutHolidaysNestedInput = {
+  create?: Prisma.XOR<Prisma.AcademicYearCreateWithoutHolidaysInput, Prisma.AcademicYearUncheckedCreateWithoutHolidaysInput>
+  connectOrCreate?: Prisma.AcademicYearCreateOrConnectWithoutHolidaysInput
+  upsert?: Prisma.AcademicYearUpsertWithoutHolidaysInput
+  disconnect?: Prisma.AcademicYearWhereInput | boolean
+  delete?: Prisma.AcademicYearWhereInput | boolean
+  connect?: Prisma.AcademicYearWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AcademicYearUpdateToOneWithWhereWithoutHolidaysInput, Prisma.AcademicYearUpdateWithoutHolidaysInput>, Prisma.AcademicYearUncheckedUpdateWithoutHolidaysInput>
+}
+
 export type AcademicYearCreateNestedOneWithoutTrimestersInput = {
   create?: Prisma.XOR<Prisma.AcademicYearCreateWithoutTrimestersInput, Prisma.AcademicYearUncheckedCreateWithoutTrimestersInput>
   connectOrCreate?: Prisma.AcademicYearCreateOrConnectWithoutTrimestersInput
@@ -498,6 +526,7 @@ export type AcademicYearCreateWithoutClassroomsInput = {
   updatedAt?: Date | string
   enrollments?: Prisma.EnrollmentCreateNestedManyWithoutAcademicYearInput
   trimesters?: Prisma.TrimesterCreateNestedManyWithoutAcademicYearInput
+  holidays?: Prisma.HolidayCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUncheckedCreateWithoutClassroomsInput = {
@@ -511,6 +540,7 @@ export type AcademicYearUncheckedCreateWithoutClassroomsInput = {
   updatedAt?: Date | string
   enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutAcademicYearInput
   trimesters?: Prisma.TrimesterUncheckedCreateNestedManyWithoutAcademicYearInput
+  holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearCreateOrConnectWithoutClassroomsInput = {
@@ -540,6 +570,7 @@ export type AcademicYearUpdateWithoutClassroomsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   enrollments?: Prisma.EnrollmentUpdateManyWithoutAcademicYearNestedInput
   trimesters?: Prisma.TrimesterUpdateManyWithoutAcademicYearNestedInput
+  holidays?: Prisma.HolidayUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearUncheckedUpdateWithoutClassroomsInput = {
@@ -553,6 +584,7 @@ export type AcademicYearUncheckedUpdateWithoutClassroomsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutAcademicYearNestedInput
   trimesters?: Prisma.TrimesterUncheckedUpdateManyWithoutAcademicYearNestedInput
+  holidays?: Prisma.HolidayUncheckedUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearCreateWithoutEnrollmentsInput = {
@@ -566,6 +598,7 @@ export type AcademicYearCreateWithoutEnrollmentsInput = {
   updatedAt?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutAcademicYearInput
   trimesters?: Prisma.TrimesterCreateNestedManyWithoutAcademicYearInput
+  holidays?: Prisma.HolidayCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUncheckedCreateWithoutEnrollmentsInput = {
@@ -579,6 +612,7 @@ export type AcademicYearUncheckedCreateWithoutEnrollmentsInput = {
   updatedAt?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAcademicYearInput
   trimesters?: Prisma.TrimesterUncheckedCreateNestedManyWithoutAcademicYearInput
+  holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearCreateOrConnectWithoutEnrollmentsInput = {
@@ -608,6 +642,7 @@ export type AcademicYearUpdateWithoutEnrollmentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutAcademicYearNestedInput
   trimesters?: Prisma.TrimesterUpdateManyWithoutAcademicYearNestedInput
+  holidays?: Prisma.HolidayUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearUncheckedUpdateWithoutEnrollmentsInput = {
@@ -620,6 +655,79 @@ export type AcademicYearUncheckedUpdateWithoutEnrollmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAcademicYearNestedInput
+  trimesters?: Prisma.TrimesterUncheckedUpdateManyWithoutAcademicYearNestedInput
+  holidays?: Prisma.HolidayUncheckedUpdateManyWithoutAcademicYearNestedInput
+}
+
+export type AcademicYearCreateWithoutHolidaysInput = {
+  id?: string
+  year: number
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.AcademicStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutAcademicYearInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutAcademicYearInput
+  trimesters?: Prisma.TrimesterCreateNestedManyWithoutAcademicYearInput
+}
+
+export type AcademicYearUncheckedCreateWithoutHolidaysInput = {
+  id?: string
+  year: number
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.AcademicStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAcademicYearInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutAcademicYearInput
+  trimesters?: Prisma.TrimesterUncheckedCreateNestedManyWithoutAcademicYearInput
+}
+
+export type AcademicYearCreateOrConnectWithoutHolidaysInput = {
+  where: Prisma.AcademicYearWhereUniqueInput
+  create: Prisma.XOR<Prisma.AcademicYearCreateWithoutHolidaysInput, Prisma.AcademicYearUncheckedCreateWithoutHolidaysInput>
+}
+
+export type AcademicYearUpsertWithoutHolidaysInput = {
+  update: Prisma.XOR<Prisma.AcademicYearUpdateWithoutHolidaysInput, Prisma.AcademicYearUncheckedUpdateWithoutHolidaysInput>
+  create: Prisma.XOR<Prisma.AcademicYearCreateWithoutHolidaysInput, Prisma.AcademicYearUncheckedCreateWithoutHolidaysInput>
+  where?: Prisma.AcademicYearWhereInput
+}
+
+export type AcademicYearUpdateToOneWithWhereWithoutHolidaysInput = {
+  where?: Prisma.AcademicYearWhereInput
+  data: Prisma.XOR<Prisma.AcademicYearUpdateWithoutHolidaysInput, Prisma.AcademicYearUncheckedUpdateWithoutHolidaysInput>
+}
+
+export type AcademicYearUpdateWithoutHolidaysInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumAcademicStatusFieldUpdateOperationsInput | $Enums.AcademicStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classrooms?: Prisma.ClassroomUpdateManyWithoutAcademicYearNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutAcademicYearNestedInput
+  trimesters?: Prisma.TrimesterUpdateManyWithoutAcademicYearNestedInput
+}
+
+export type AcademicYearUncheckedUpdateWithoutHolidaysInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumAcademicStatusFieldUpdateOperationsInput | $Enums.AcademicStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAcademicYearNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutAcademicYearNestedInput
   trimesters?: Prisma.TrimesterUncheckedUpdateManyWithoutAcademicYearNestedInput
 }
 
@@ -634,6 +742,7 @@ export type AcademicYearCreateWithoutTrimestersInput = {
   updatedAt?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutAcademicYearInput
   enrollments?: Prisma.EnrollmentCreateNestedManyWithoutAcademicYearInput
+  holidays?: Prisma.HolidayCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUncheckedCreateWithoutTrimestersInput = {
@@ -647,6 +756,7 @@ export type AcademicYearUncheckedCreateWithoutTrimestersInput = {
   updatedAt?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAcademicYearInput
   enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutAcademicYearInput
+  holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearCreateOrConnectWithoutTrimestersInput = {
@@ -676,6 +786,7 @@ export type AcademicYearUpdateWithoutTrimestersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutAcademicYearNestedInput
   enrollments?: Prisma.EnrollmentUpdateManyWithoutAcademicYearNestedInput
+  holidays?: Prisma.HolidayUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearUncheckedUpdateWithoutTrimestersInput = {
@@ -689,6 +800,7 @@ export type AcademicYearUncheckedUpdateWithoutTrimestersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAcademicYearNestedInput
   enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutAcademicYearNestedInput
+  holidays?: Prisma.HolidayUncheckedUpdateManyWithoutAcademicYearNestedInput
 }
 
 
@@ -700,12 +812,14 @@ export type AcademicYearCountOutputType = {
   classrooms: number
   enrollments: number
   trimesters: number
+  holidays: number
 }
 
 export type AcademicYearCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   classrooms?: boolean | AcademicYearCountOutputTypeCountClassroomsArgs
   enrollments?: boolean | AcademicYearCountOutputTypeCountEnrollmentsArgs
   trimesters?: boolean | AcademicYearCountOutputTypeCountTrimestersArgs
+  holidays?: boolean | AcademicYearCountOutputTypeCountHolidaysArgs
 }
 
 /**
@@ -739,6 +853,13 @@ export type AcademicYearCountOutputTypeCountTrimestersArgs<ExtArgs extends runti
   where?: Prisma.TrimesterWhereInput
 }
 
+/**
+ * AcademicYearCountOutputType without action
+ */
+export type AcademicYearCountOutputTypeCountHolidaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HolidayWhereInput
+}
+
 
 export type AcademicYearSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -752,6 +873,7 @@ export type AcademicYearSelect<ExtArgs extends runtime.Types.Extensions.Internal
   classrooms?: boolean | Prisma.AcademicYear$classroomsArgs<ExtArgs>
   enrollments?: boolean | Prisma.AcademicYear$enrollmentsArgs<ExtArgs>
   trimesters?: boolean | Prisma.AcademicYear$trimestersArgs<ExtArgs>
+  holidays?: boolean | Prisma.AcademicYear$holidaysArgs<ExtArgs>
   _count?: boolean | Prisma.AcademicYearCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["academicYear"]>
 
@@ -793,6 +915,7 @@ export type AcademicYearInclude<ExtArgs extends runtime.Types.Extensions.Interna
   classrooms?: boolean | Prisma.AcademicYear$classroomsArgs<ExtArgs>
   enrollments?: boolean | Prisma.AcademicYear$enrollmentsArgs<ExtArgs>
   trimesters?: boolean | Prisma.AcademicYear$trimestersArgs<ExtArgs>
+  holidays?: boolean | Prisma.AcademicYear$holidaysArgs<ExtArgs>
   _count?: boolean | Prisma.AcademicYearCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AcademicYearIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -804,6 +927,7 @@ export type $AcademicYearPayload<ExtArgs extends runtime.Types.Extensions.Intern
     classrooms: Prisma.$ClassroomPayload<ExtArgs>[]
     enrollments: Prisma.$EnrollmentPayload<ExtArgs>[]
     trimesters: Prisma.$TrimesterPayload<ExtArgs>[]
+    holidays: Prisma.$HolidayPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1211,6 +1335,7 @@ export interface Prisma__AcademicYearClient<T, Null = never, ExtArgs extends run
   classrooms<T extends Prisma.AcademicYear$classroomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYear$classroomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassroomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   enrollments<T extends Prisma.AcademicYear$enrollmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYear$enrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   trimesters<T extends Prisma.AcademicYear$trimestersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYear$trimestersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrimesterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  holidays<T extends Prisma.AcademicYear$holidaysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYear$holidaysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1710,6 +1835,30 @@ export type AcademicYear$trimestersArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.TrimesterScalarFieldEnum | Prisma.TrimesterScalarFieldEnum[]
+}
+
+/**
+ * AcademicYear.holidays
+ */
+export type AcademicYear$holidaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Holiday
+   */
+  select?: Prisma.HolidaySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Holiday
+   */
+  omit?: Prisma.HolidayOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HolidayInclude<ExtArgs> | null
+  where?: Prisma.HolidayWhereInput
+  orderBy?: Prisma.HolidayOrderByWithRelationInput | Prisma.HolidayOrderByWithRelationInput[]
+  cursor?: Prisma.HolidayWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HolidayScalarFieldEnum | Prisma.HolidayScalarFieldEnum[]
 }
 
 /**

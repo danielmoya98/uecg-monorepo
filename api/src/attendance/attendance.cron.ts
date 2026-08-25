@@ -23,6 +23,20 @@ export class AttendanceCronService {
     await this.processAttendanceClosing(Shift.TARDE);
   }
 
+  /**
+   * Obtiene la fecha exacta a las 00:00:00Z en zona horaria America/La_Paz (UTC-4)
+   */
+  private getSafeBoliviaDate(dateInput: Date = new Date()): Date {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/La_Paz',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    const formatted = formatter.format(dateInput); // YYYY-MM-DD
+    return new Date(`${formatted}T00:00:00.000Z`);
+  }
+
   private async processAttendanceClosing(shift: Shift) {
     // 🔥 1. SALVAVIDAS: Verificar si hay un trimestre abierto hoy
     const activeTrimester = await this.prisma.trimester.findFirst({
@@ -39,8 +53,25 @@ export class AttendanceCronService {
       return; // Cortamos la ejecución, salvando miles de registros falsos.
     }
 
-    const today = new Date();
-    const dateOnly = new Date(today.toISOString().split('T')[0]);
+    const dateOnly = this.getSafeBoliviaDate(new Date());
+
+    // 🔥 2. SALVAVIDAS: Verificar si hoy es feriado o día no lectivo
+    const holiday = await this.prisma.holiday.findFirst({
+      where: {
+        date: dateOnly,
+        OR: [
+          { academicYearId: activeTrimester.academicYearId },
+          { academicYearId: null },
+        ],
+      },
+    });
+
+    if (holiday) {
+      this.logger.log(
+        `[CRON ${shift}] Cancelado. Hoy es feriado o asueto escolar: ${holiday.name}.`,
+      );
+      return;
+    }
 
     try {
       const activeEnrollments = await this.prisma.enrollment.findMany({
@@ -75,15 +106,41 @@ export class AttendanceCronService {
 
       if (absentEnrollments.length === 0) return;
 
-      const missingRecordsData = absentEnrollments.map((enrollment) => ({
-        enrollmentId: enrollment.id,
-        classPeriodId: firstPeriod.id,
-        date: dateOnly,
-        status: AttendanceStatus.ABSENT,
-        method: AttendanceMethod.SYSTEM_AUTO,
-        timestamp: new Date(),
-        markedById: null,
-      }));
+      // 🔥 3. Buscar licencias/justificaciones aprobadas vigentes para hoy
+      const activeJustifications =
+        await this.prisma.attendanceJustification.findMany({
+          where: {
+            status: 'APPROVED',
+            enrollmentId: { in: absentEnrollments.map((e) => e.id) },
+            startDate: { lte: dateOnly },
+            endDate: { gte: dateOnly },
+          },
+          select: { enrollmentId: true, reason: true },
+        });
+
+      const justifiedMap = new Map(
+        activeJustifications.map((j) => [j.enrollmentId, j.reason]),
+      );
+
+      const missingRecordsData = absentEnrollments.map((enrollment) => {
+        const justificationReason = justifiedMap.get(enrollment.id);
+        const isJustified = !!justificationReason;
+
+        return {
+          enrollmentId: enrollment.id,
+          classPeriodId: firstPeriod.id,
+          date: dateOnly,
+          status: isJustified
+            ? AttendanceStatus.EXCUSED
+            : AttendanceStatus.ABSENT,
+          method: AttendanceMethod.SYSTEM_AUTO,
+          justification: isJustified
+            ? `Licencia aprobada: ${justificationReason}`
+            : null,
+          timestamp: new Date(),
+          markedById: null,
+        };
+      });
 
       const result = await this.prisma.attendanceRecord.createMany({
         data: missingRecordsData,
@@ -91,7 +148,7 @@ export class AttendanceCronService {
       });
 
       this.logger.log(
-        `Cierre completado (${shift}): ${result.count} faltas automáticas (ABSENT).`,
+        `Cierre completado (${shift}): ${result.count} registros automáticos procesados.`,
       );
     } catch (error) {
       this.logger.error(
