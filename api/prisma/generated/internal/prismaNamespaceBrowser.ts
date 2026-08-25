@@ -445,10 +445,14 @@ export const DataUpdateRequestScalarFieldEnum = {
   id: 'id',
   enrollmentId: 'enrollmentId',
   proposedData: 'proposedData',
+  previousSnapshot: 'previousSnapshot',
   status: 'status',
   createdAt: 'createdAt',
   reviewedAt: 'reviewedAt',
-  rejectionReason: 'rejectionReason'
+  reviewedById: 'reviewedById',
+  rejectionReason: 'rejectionReason',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent'
 } as const
 
 export type DataUpdateRequestScalarFieldEnum = (typeof DataUpdateRequestScalarFieldEnum)[keyof typeof DataUpdateRequestScalarFieldEnum]

@@ -1,4 +1,5 @@
 export { DataUpdatesPage } from "./components/data-updates-page";
+export { PublicRudeFormPage } from "./components/public-rude-form-page";
 export { DataUpdatesService } from "./api/data-updates.service";
 export { PublicUpdatesService } from "./api/public-updates.service";
 export * from "./types/data-updates.types";

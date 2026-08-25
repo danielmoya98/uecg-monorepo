@@ -30,7 +30,10 @@ export type DataUpdateRequestMinAggregateOutputType = {
   status: $Enums.UpdateRequestStatus | null
   createdAt: Date | null
   reviewedAt: Date | null
+  reviewedById: string | null
   rejectionReason: string | null
+  ipAddress: string | null
+  userAgent: string | null
 }
 
 export type DataUpdateRequestMaxAggregateOutputType = {
@@ -39,17 +42,24 @@ export type DataUpdateRequestMaxAggregateOutputType = {
   status: $Enums.UpdateRequestStatus | null
   createdAt: Date | null
   reviewedAt: Date | null
+  reviewedById: string | null
   rejectionReason: string | null
+  ipAddress: string | null
+  userAgent: string | null
 }
 
 export type DataUpdateRequestCountAggregateOutputType = {
   id: number
   enrollmentId: number
   proposedData: number
+  previousSnapshot: number
   status: number
   createdAt: number
   reviewedAt: number
+  reviewedById: number
   rejectionReason: number
+  ipAddress: number
+  userAgent: number
   _all: number
 }
 
@@ -60,7 +70,10 @@ export type DataUpdateRequestMinAggregateInputType = {
   status?: true
   createdAt?: true
   reviewedAt?: true
+  reviewedById?: true
   rejectionReason?: true
+  ipAddress?: true
+  userAgent?: true
 }
 
 export type DataUpdateRequestMaxAggregateInputType = {
@@ -69,17 +82,24 @@ export type DataUpdateRequestMaxAggregateInputType = {
   status?: true
   createdAt?: true
   reviewedAt?: true
+  reviewedById?: true
   rejectionReason?: true
+  ipAddress?: true
+  userAgent?: true
 }
 
 export type DataUpdateRequestCountAggregateInputType = {
   id?: true
   enrollmentId?: true
   proposedData?: true
+  previousSnapshot?: true
   status?: true
   createdAt?: true
   reviewedAt?: true
+  reviewedById?: true
   rejectionReason?: true
+  ipAddress?: true
+  userAgent?: true
   _all?: true
 }
 
@@ -159,10 +179,14 @@ export type DataUpdateRequestGroupByOutputType = {
   id: string
   enrollmentId: string
   proposedData: runtime.JsonValue
+  previousSnapshot: runtime.JsonValue | null
   status: $Enums.UpdateRequestStatus
   createdAt: Date
   reviewedAt: Date | null
+  reviewedById: string | null
   rejectionReason: string | null
+  ipAddress: string | null
+  userAgent: string | null
   _count: DataUpdateRequestCountAggregateOutputType | null
   _min: DataUpdateRequestMinAggregateOutputType | null
   _max: DataUpdateRequestMaxAggregateOutputType | null
@@ -190,47 +214,65 @@ export type DataUpdateRequestWhereInput = {
   id?: Prisma.StringFilter<"DataUpdateRequest"> | string
   enrollmentId?: Prisma.StringFilter<"DataUpdateRequest"> | string
   proposedData?: Prisma.JsonFilter<"DataUpdateRequest">
+  previousSnapshot?: Prisma.JsonNullableFilter<"DataUpdateRequest">
   status?: Prisma.EnumUpdateRequestStatusFilter<"DataUpdateRequest"> | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFilter<"DataUpdateRequest"> | Date | string
   reviewedAt?: Prisma.DateTimeNullableFilter<"DataUpdateRequest"> | Date | string | null
+  reviewedById?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
   rejectionReason?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+  userAgent?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
   enrollment?: Prisma.XOR<Prisma.EnrollmentScalarRelationFilter, Prisma.EnrollmentWhereInput>
+  reviewedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type DataUpdateRequestOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   enrollmentId?: Prisma.SortOrder
   proposedData?: Prisma.SortOrder
+  previousSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  userAgent?: Prisma.SortOrderInput | Prisma.SortOrder
   enrollment?: Prisma.EnrollmentOrderByWithRelationInput
+  reviewedBy?: Prisma.UserOrderByWithRelationInput
 }
 
 export type DataUpdateRequestWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  enrollmentId_status?: Prisma.DataUpdateRequestEnrollmentIdStatusCompoundUniqueInput
   AND?: Prisma.DataUpdateRequestWhereInput | Prisma.DataUpdateRequestWhereInput[]
   OR?: Prisma.DataUpdateRequestWhereInput[]
   NOT?: Prisma.DataUpdateRequestWhereInput | Prisma.DataUpdateRequestWhereInput[]
   enrollmentId?: Prisma.StringFilter<"DataUpdateRequest"> | string
   proposedData?: Prisma.JsonFilter<"DataUpdateRequest">
+  previousSnapshot?: Prisma.JsonNullableFilter<"DataUpdateRequest">
   status?: Prisma.EnumUpdateRequestStatusFilter<"DataUpdateRequest"> | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFilter<"DataUpdateRequest"> | Date | string
   reviewedAt?: Prisma.DateTimeNullableFilter<"DataUpdateRequest"> | Date | string | null
+  reviewedById?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
   rejectionReason?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+  userAgent?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
   enrollment?: Prisma.XOR<Prisma.EnrollmentScalarRelationFilter, Prisma.EnrollmentWhereInput>
-}, "id" | "enrollmentId_status">
+  reviewedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+}, "id">
 
 export type DataUpdateRequestOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   enrollmentId?: Prisma.SortOrder
   proposedData?: Prisma.SortOrder
+  previousSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  userAgent?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.DataUpdateRequestCountOrderByAggregateInput
   _max?: Prisma.DataUpdateRequestMaxOrderByAggregateInput
   _min?: Prisma.DataUpdateRequestMinOrderByAggregateInput
@@ -243,79 +285,110 @@ export type DataUpdateRequestScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"DataUpdateRequest"> | string
   enrollmentId?: Prisma.StringWithAggregatesFilter<"DataUpdateRequest"> | string
   proposedData?: Prisma.JsonWithAggregatesFilter<"DataUpdateRequest">
+  previousSnapshot?: Prisma.JsonNullableWithAggregatesFilter<"DataUpdateRequest">
   status?: Prisma.EnumUpdateRequestStatusWithAggregatesFilter<"DataUpdateRequest"> | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DataUpdateRequest"> | Date | string
   reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DataUpdateRequest"> | Date | string | null
+  reviewedById?: Prisma.StringNullableWithAggregatesFilter<"DataUpdateRequest"> | string | null
   rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"DataUpdateRequest"> | string | null
+  ipAddress?: Prisma.StringNullableWithAggregatesFilter<"DataUpdateRequest"> | string | null
+  userAgent?: Prisma.StringNullableWithAggregatesFilter<"DataUpdateRequest"> | string | null
 }
 
 export type DataUpdateRequestCreateInput = {
   id?: string
   proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.UpdateRequestStatus
   createdAt?: Date | string
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
   enrollment: Prisma.EnrollmentCreateNestedOneWithoutUpdateRequestsInput
+  reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedDataUpdatesInput
 }
 
 export type DataUpdateRequestUncheckedCreateInput = {
   id?: string
   enrollmentId: string
   proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.UpdateRequestStatus
   createdAt?: Date | string
   reviewedAt?: Date | string | null
+  reviewedById?: string | null
   rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
 }
 
 export type DataUpdateRequestUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enrollment?: Prisma.EnrollmentUpdateOneRequiredWithoutUpdateRequestsNestedInput
+  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedDataUpdatesNestedInput
 }
 
 export type DataUpdateRequestUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   enrollmentId?: Prisma.StringFieldUpdateOperationsInput | string
   proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DataUpdateRequestCreateManyInput = {
   id?: string
   enrollmentId: string
   proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.UpdateRequestStatus
   createdAt?: Date | string
   reviewedAt?: Date | string | null
+  reviewedById?: string | null
   rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
 }
 
 export type DataUpdateRequestUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DataUpdateRequestUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   enrollmentId?: Prisma.StringFieldUpdateOperationsInput | string
   proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DataUpdateRequestListRelationFilter = {
@@ -328,19 +401,18 @@ export type DataUpdateRequestOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type DataUpdateRequestEnrollmentIdStatusCompoundUniqueInput = {
-  enrollmentId: string
-  status: $Enums.UpdateRequestStatus
-}
-
 export type DataUpdateRequestCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   enrollmentId?: Prisma.SortOrder
   proposedData?: Prisma.SortOrder
+  previousSnapshot?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
+  userAgent?: Prisma.SortOrder
 }
 
 export type DataUpdateRequestMaxOrderByAggregateInput = {
@@ -349,7 +421,10 @@ export type DataUpdateRequestMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
+  userAgent?: Prisma.SortOrder
 }
 
 export type DataUpdateRequestMinOrderByAggregateInput = {
@@ -358,7 +433,52 @@ export type DataUpdateRequestMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
+  userAgent?: Prisma.SortOrder
+}
+
+export type DataUpdateRequestCreateNestedManyWithoutReviewedByInput = {
+  create?: Prisma.XOR<Prisma.DataUpdateRequestCreateWithoutReviewedByInput, Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput> | Prisma.DataUpdateRequestCreateWithoutReviewedByInput[] | Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput[]
+  connectOrCreate?: Prisma.DataUpdateRequestCreateOrConnectWithoutReviewedByInput | Prisma.DataUpdateRequestCreateOrConnectWithoutReviewedByInput[]
+  createMany?: Prisma.DataUpdateRequestCreateManyReviewedByInputEnvelope
+  connect?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+}
+
+export type DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput = {
+  create?: Prisma.XOR<Prisma.DataUpdateRequestCreateWithoutReviewedByInput, Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput> | Prisma.DataUpdateRequestCreateWithoutReviewedByInput[] | Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput[]
+  connectOrCreate?: Prisma.DataUpdateRequestCreateOrConnectWithoutReviewedByInput | Prisma.DataUpdateRequestCreateOrConnectWithoutReviewedByInput[]
+  createMany?: Prisma.DataUpdateRequestCreateManyReviewedByInputEnvelope
+  connect?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+}
+
+export type DataUpdateRequestUpdateManyWithoutReviewedByNestedInput = {
+  create?: Prisma.XOR<Prisma.DataUpdateRequestCreateWithoutReviewedByInput, Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput> | Prisma.DataUpdateRequestCreateWithoutReviewedByInput[] | Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput[]
+  connectOrCreate?: Prisma.DataUpdateRequestCreateOrConnectWithoutReviewedByInput | Prisma.DataUpdateRequestCreateOrConnectWithoutReviewedByInput[]
+  upsert?: Prisma.DataUpdateRequestUpsertWithWhereUniqueWithoutReviewedByInput | Prisma.DataUpdateRequestUpsertWithWhereUniqueWithoutReviewedByInput[]
+  createMany?: Prisma.DataUpdateRequestCreateManyReviewedByInputEnvelope
+  set?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+  disconnect?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+  delete?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+  connect?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+  update?: Prisma.DataUpdateRequestUpdateWithWhereUniqueWithoutReviewedByInput | Prisma.DataUpdateRequestUpdateWithWhereUniqueWithoutReviewedByInput[]
+  updateMany?: Prisma.DataUpdateRequestUpdateManyWithWhereWithoutReviewedByInput | Prisma.DataUpdateRequestUpdateManyWithWhereWithoutReviewedByInput[]
+  deleteMany?: Prisma.DataUpdateRequestScalarWhereInput | Prisma.DataUpdateRequestScalarWhereInput[]
+}
+
+export type DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput = {
+  create?: Prisma.XOR<Prisma.DataUpdateRequestCreateWithoutReviewedByInput, Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput> | Prisma.DataUpdateRequestCreateWithoutReviewedByInput[] | Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput[]
+  connectOrCreate?: Prisma.DataUpdateRequestCreateOrConnectWithoutReviewedByInput | Prisma.DataUpdateRequestCreateOrConnectWithoutReviewedByInput[]
+  upsert?: Prisma.DataUpdateRequestUpsertWithWhereUniqueWithoutReviewedByInput | Prisma.DataUpdateRequestUpsertWithWhereUniqueWithoutReviewedByInput[]
+  createMany?: Prisma.DataUpdateRequestCreateManyReviewedByInputEnvelope
+  set?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+  disconnect?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+  delete?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+  connect?: Prisma.DataUpdateRequestWhereUniqueInput | Prisma.DataUpdateRequestWhereUniqueInput[]
+  update?: Prisma.DataUpdateRequestUpdateWithWhereUniqueWithoutReviewedByInput | Prisma.DataUpdateRequestUpdateWithWhereUniqueWithoutReviewedByInput[]
+  updateMany?: Prisma.DataUpdateRequestUpdateManyWithWhereWithoutReviewedByInput | Prisma.DataUpdateRequestUpdateManyWithWhereWithoutReviewedByInput[]
+  deleteMany?: Prisma.DataUpdateRequestScalarWhereInput | Prisma.DataUpdateRequestScalarWhereInput[]
 }
 
 export type DataUpdateRequestCreateNestedManyWithoutEnrollmentInput = {
@@ -407,22 +527,99 @@ export type EnumUpdateRequestStatusFieldUpdateOperationsInput = {
   set?: $Enums.UpdateRequestStatus
 }
 
-export type DataUpdateRequestCreateWithoutEnrollmentInput = {
+export type DataUpdateRequestCreateWithoutReviewedByInput = {
   id?: string
   proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.UpdateRequestStatus
   createdAt?: Date | string
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
+  enrollment: Prisma.EnrollmentCreateNestedOneWithoutUpdateRequestsInput
+}
+
+export type DataUpdateRequestUncheckedCreateWithoutReviewedByInput = {
+  id?: string
+  enrollmentId: string
+  proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.UpdateRequestStatus
+  createdAt?: Date | string
+  reviewedAt?: Date | string | null
+  rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
+}
+
+export type DataUpdateRequestCreateOrConnectWithoutReviewedByInput = {
+  where: Prisma.DataUpdateRequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.DataUpdateRequestCreateWithoutReviewedByInput, Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput>
+}
+
+export type DataUpdateRequestCreateManyReviewedByInputEnvelope = {
+  data: Prisma.DataUpdateRequestCreateManyReviewedByInput | Prisma.DataUpdateRequestCreateManyReviewedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type DataUpdateRequestUpsertWithWhereUniqueWithoutReviewedByInput = {
+  where: Prisma.DataUpdateRequestWhereUniqueInput
+  update: Prisma.XOR<Prisma.DataUpdateRequestUpdateWithoutReviewedByInput, Prisma.DataUpdateRequestUncheckedUpdateWithoutReviewedByInput>
+  create: Prisma.XOR<Prisma.DataUpdateRequestCreateWithoutReviewedByInput, Prisma.DataUpdateRequestUncheckedCreateWithoutReviewedByInput>
+}
+
+export type DataUpdateRequestUpdateWithWhereUniqueWithoutReviewedByInput = {
+  where: Prisma.DataUpdateRequestWhereUniqueInput
+  data: Prisma.XOR<Prisma.DataUpdateRequestUpdateWithoutReviewedByInput, Prisma.DataUpdateRequestUncheckedUpdateWithoutReviewedByInput>
+}
+
+export type DataUpdateRequestUpdateManyWithWhereWithoutReviewedByInput = {
+  where: Prisma.DataUpdateRequestScalarWhereInput
+  data: Prisma.XOR<Prisma.DataUpdateRequestUpdateManyMutationInput, Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByInput>
+}
+
+export type DataUpdateRequestScalarWhereInput = {
+  AND?: Prisma.DataUpdateRequestScalarWhereInput | Prisma.DataUpdateRequestScalarWhereInput[]
+  OR?: Prisma.DataUpdateRequestScalarWhereInput[]
+  NOT?: Prisma.DataUpdateRequestScalarWhereInput | Prisma.DataUpdateRequestScalarWhereInput[]
+  id?: Prisma.StringFilter<"DataUpdateRequest"> | string
+  enrollmentId?: Prisma.StringFilter<"DataUpdateRequest"> | string
+  proposedData?: Prisma.JsonFilter<"DataUpdateRequest">
+  previousSnapshot?: Prisma.JsonNullableFilter<"DataUpdateRequest">
+  status?: Prisma.EnumUpdateRequestStatusFilter<"DataUpdateRequest"> | $Enums.UpdateRequestStatus
+  createdAt?: Prisma.DateTimeFilter<"DataUpdateRequest"> | Date | string
+  reviewedAt?: Prisma.DateTimeNullableFilter<"DataUpdateRequest"> | Date | string | null
+  reviewedById?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+  userAgent?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+}
+
+export type DataUpdateRequestCreateWithoutEnrollmentInput = {
+  id?: string
+  proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.UpdateRequestStatus
+  createdAt?: Date | string
+  reviewedAt?: Date | string | null
+  rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
+  reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedDataUpdatesInput
 }
 
 export type DataUpdateRequestUncheckedCreateWithoutEnrollmentInput = {
   id?: string
   proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.UpdateRequestStatus
   createdAt?: Date | string
   reviewedAt?: Date | string | null
+  reviewedById?: string | null
   rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
 }
 
 export type DataUpdateRequestCreateOrConnectWithoutEnrollmentInput = {
@@ -451,53 +648,108 @@ export type DataUpdateRequestUpdateManyWithWhereWithoutEnrollmentInput = {
   data: Prisma.XOR<Prisma.DataUpdateRequestUpdateManyMutationInput, Prisma.DataUpdateRequestUncheckedUpdateManyWithoutEnrollmentInput>
 }
 
-export type DataUpdateRequestScalarWhereInput = {
-  AND?: Prisma.DataUpdateRequestScalarWhereInput | Prisma.DataUpdateRequestScalarWhereInput[]
-  OR?: Prisma.DataUpdateRequestScalarWhereInput[]
-  NOT?: Prisma.DataUpdateRequestScalarWhereInput | Prisma.DataUpdateRequestScalarWhereInput[]
-  id?: Prisma.StringFilter<"DataUpdateRequest"> | string
-  enrollmentId?: Prisma.StringFilter<"DataUpdateRequest"> | string
-  proposedData?: Prisma.JsonFilter<"DataUpdateRequest">
-  status?: Prisma.EnumUpdateRequestStatusFilter<"DataUpdateRequest"> | $Enums.UpdateRequestStatus
-  createdAt?: Prisma.DateTimeFilter<"DataUpdateRequest"> | Date | string
-  reviewedAt?: Prisma.DateTimeNullableFilter<"DataUpdateRequest"> | Date | string | null
-  rejectionReason?: Prisma.StringNullableFilter<"DataUpdateRequest"> | string | null
+export type DataUpdateRequestCreateManyReviewedByInput = {
+  id?: string
+  enrollmentId: string
+  proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.UpdateRequestStatus
+  createdAt?: Date | string
+  reviewedAt?: Date | string | null
+  rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
+}
+
+export type DataUpdateRequestUpdateWithoutReviewedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enrollment?: Prisma.EnrollmentUpdateOneRequiredWithoutUpdateRequestsNestedInput
+}
+
+export type DataUpdateRequestUncheckedUpdateWithoutReviewedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  enrollmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type DataUpdateRequestUncheckedUpdateManyWithoutReviewedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  enrollmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DataUpdateRequestCreateManyEnrollmentInput = {
   id?: string
   proposedData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.UpdateRequestStatus
   createdAt?: Date | string
   reviewedAt?: Date | string | null
+  reviewedById?: string | null
   rejectionReason?: string | null
+  ipAddress?: string | null
+  userAgent?: string | null
 }
 
 export type DataUpdateRequestUpdateWithoutEnrollmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedDataUpdatesNestedInput
 }
 
 export type DataUpdateRequestUncheckedUpdateWithoutEnrollmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DataUpdateRequestUncheckedUpdateManyWithoutEnrollmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   proposedData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previousSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumUpdateRequestStatusFieldUpdateOperationsInput | $Enums.UpdateRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -506,69 +758,96 @@ export type DataUpdateRequestSelect<ExtArgs extends runtime.Types.Extensions.Int
   id?: boolean
   enrollmentId?: boolean
   proposedData?: boolean
+  previousSnapshot?: boolean
   status?: boolean
   createdAt?: boolean
   reviewedAt?: boolean
+  reviewedById?: boolean
   rejectionReason?: boolean
+  ipAddress?: boolean
+  userAgent?: boolean
   enrollment?: boolean | Prisma.EnrollmentDefaultArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.DataUpdateRequest$reviewedByArgs<ExtArgs>
 }, ExtArgs["result"]["dataUpdateRequest"]>
 
 export type DataUpdateRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   enrollmentId?: boolean
   proposedData?: boolean
+  previousSnapshot?: boolean
   status?: boolean
   createdAt?: boolean
   reviewedAt?: boolean
+  reviewedById?: boolean
   rejectionReason?: boolean
+  ipAddress?: boolean
+  userAgent?: boolean
   enrollment?: boolean | Prisma.EnrollmentDefaultArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.DataUpdateRequest$reviewedByArgs<ExtArgs>
 }, ExtArgs["result"]["dataUpdateRequest"]>
 
 export type DataUpdateRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   enrollmentId?: boolean
   proposedData?: boolean
+  previousSnapshot?: boolean
   status?: boolean
   createdAt?: boolean
   reviewedAt?: boolean
+  reviewedById?: boolean
   rejectionReason?: boolean
+  ipAddress?: boolean
+  userAgent?: boolean
   enrollment?: boolean | Prisma.EnrollmentDefaultArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.DataUpdateRequest$reviewedByArgs<ExtArgs>
 }, ExtArgs["result"]["dataUpdateRequest"]>
 
 export type DataUpdateRequestSelectScalar = {
   id?: boolean
   enrollmentId?: boolean
   proposedData?: boolean
+  previousSnapshot?: boolean
   status?: boolean
   createdAt?: boolean
   reviewedAt?: boolean
+  reviewedById?: boolean
   rejectionReason?: boolean
+  ipAddress?: boolean
+  userAgent?: boolean
 }
 
-export type DataUpdateRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "enrollmentId" | "proposedData" | "status" | "createdAt" | "reviewedAt" | "rejectionReason", ExtArgs["result"]["dataUpdateRequest"]>
+export type DataUpdateRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "enrollmentId" | "proposedData" | "previousSnapshot" | "status" | "createdAt" | "reviewedAt" | "reviewedById" | "rejectionReason" | "ipAddress" | "userAgent", ExtArgs["result"]["dataUpdateRequest"]>
 export type DataUpdateRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   enrollment?: boolean | Prisma.EnrollmentDefaultArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.DataUpdateRequest$reviewedByArgs<ExtArgs>
 }
 export type DataUpdateRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   enrollment?: boolean | Prisma.EnrollmentDefaultArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.DataUpdateRequest$reviewedByArgs<ExtArgs>
 }
 export type DataUpdateRequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   enrollment?: boolean | Prisma.EnrollmentDefaultArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.DataUpdateRequest$reviewedByArgs<ExtArgs>
 }
 
 export type $DataUpdateRequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DataUpdateRequest"
   objects: {
     enrollment: Prisma.$EnrollmentPayload<ExtArgs>
+    reviewedBy: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     enrollmentId: string
     proposedData: runtime.JsonValue
+    previousSnapshot: runtime.JsonValue | null
     status: $Enums.UpdateRequestStatus
     createdAt: Date
     reviewedAt: Date | null
+    reviewedById: string | null
     rejectionReason: string | null
+    ipAddress: string | null
+    userAgent: string | null
   }, ExtArgs["result"]["dataUpdateRequest"]>
   composites: {}
 }
@@ -964,6 +1243,7 @@ readonly fields: DataUpdateRequestFieldRefs;
 export interface Prisma__DataUpdateRequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   enrollment<T extends Prisma.EnrollmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EnrollmentDefaultArgs<ExtArgs>>): Prisma.Prisma__EnrollmentClient<runtime.Types.Result.GetResult<Prisma.$EnrollmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  reviewedBy<T extends Prisma.DataUpdateRequest$reviewedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DataUpdateRequest$reviewedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -996,10 +1276,14 @@ export interface DataUpdateRequestFieldRefs {
   readonly id: Prisma.FieldRef<"DataUpdateRequest", 'String'>
   readonly enrollmentId: Prisma.FieldRef<"DataUpdateRequest", 'String'>
   readonly proposedData: Prisma.FieldRef<"DataUpdateRequest", 'Json'>
+  readonly previousSnapshot: Prisma.FieldRef<"DataUpdateRequest", 'Json'>
   readonly status: Prisma.FieldRef<"DataUpdateRequest", 'UpdateRequestStatus'>
   readonly createdAt: Prisma.FieldRef<"DataUpdateRequest", 'DateTime'>
   readonly reviewedAt: Prisma.FieldRef<"DataUpdateRequest", 'DateTime'>
+  readonly reviewedById: Prisma.FieldRef<"DataUpdateRequest", 'String'>
   readonly rejectionReason: Prisma.FieldRef<"DataUpdateRequest", 'String'>
+  readonly ipAddress: Prisma.FieldRef<"DataUpdateRequest", 'String'>
+  readonly userAgent: Prisma.FieldRef<"DataUpdateRequest", 'String'>
 }
     
 
@@ -1398,6 +1682,25 @@ export type DataUpdateRequestDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many DataUpdateRequests to delete.
    */
   limit?: number
+}
+
+/**
+ * DataUpdateRequest.reviewedBy
+ */
+export type DataUpdateRequest$reviewedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

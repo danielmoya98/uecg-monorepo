@@ -165,6 +165,7 @@ model User {
   failedLoginAttempts Int       @default(0) @map("failed_login_attempts")
   lockoutUntil        DateTime? @map("lockout_until")
   sessions            UserSession[]
+  reviewedDataUpdates DataUpdateRequest[] @relation("ReviewedDataUpdates")
 
   @@index([status, roleId])
   @@index([institutionId, status])
@@ -676,20 +677,26 @@ enum UpdateRequestStatus {
 
 // 🔥 FASE 1: NUEVA TABLA DE CUARENTENA
 model DataUpdateRequest {
-  id           String @id @default(uuid())
-  enrollmentId String @map("enrollment_id")
+  id              String             @id @default(uuid())
+  enrollmentId    String             @map("enrollment_id")
 
-  proposedData Json @map("proposed_data")
+  proposedData     Json               @map("proposed_data")
+  previousSnapshot Json?              @map("previous_snapshot")
 
-  status UpdateRequestStatus @default(PENDING)
+  status          UpdateRequestStatus @default(PENDING)
 
-  createdAt       DateTime  @default(now()) @map("created_at")
-  reviewedAt      DateTime? @map("reviewed_at")
-  rejectionReason String?   @map("rejection_reason")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  reviewedAt      DateTime?          @map("reviewed_at")
+  reviewedById    String?            @map("reviewed_by_id")
+  rejectionReason String?            @map("rejection_reason")
+  ipAddress       String?            @map("ip_address")
+  userAgent       String?            @map("user_agent")
 
-  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  enrollment      Enrollment         @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  reviewedBy      User?              @relation("ReviewedDataUpdates", fields: [reviewedById], references: [id], onDelete: SetNull)
 
-  @@unique([enrollmentId, status])
+  @@index([enrollmentId, status])
+  @@index([status, createdAt])
   @@map("data_update_requests")
 }
 

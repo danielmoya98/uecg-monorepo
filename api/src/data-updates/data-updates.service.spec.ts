@@ -25,6 +25,7 @@ describe('DataUpdatesService - Pruebas Unitarias', () => {
       findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      findMany: jest.fn(),
     },
   };
 
@@ -173,9 +174,9 @@ describe('DataUpdatesService - Pruebas Unitarias', () => {
         guardians: [],
       };
 
-      const result = await service.submitUpdate('token', dto);
+      const result = await service.submitUpdate('token', dto as any);
 
-      expect(result.message).toBe('Enviado a revisión.');
+      expect(result.message).toBe('Formulario RUDE enviado a revisión.');
       expect(result.requestId).toBe('request-1');
       expect(mockPrisma.dataUpdateRequest.create).toHaveBeenCalled();
     });
@@ -208,9 +209,9 @@ describe('DataUpdatesService - Pruebas Unitarias', () => {
         guardians: [],
       };
 
-      const result = await service.submitUpdate('token', dto);
+      const result = await service.submitUpdate('token', dto as any);
 
-      expect(result.message).toBe('Solicitud actualizada.');
+      expect(result.message).toBe('Solicitud actualizada exitosamente.');
       expect(result.requestId).toBe('request-1');
       expect(mockPrisma.dataUpdateRequest.update).toHaveBeenCalled();
     });
@@ -239,7 +240,7 @@ describe('DataUpdatesService - Pruebas Unitarias', () => {
       mockPrisma.dataUpdateRequest.findUnique.mockResolvedValue(pendingRequest);
       mockTransactionService.executeApprovalTransaction.mockResolvedValue({});
 
-      const result = await service.approveUpdate('req-1');
+      const result = await service.approveUpdate('req-1', 'admin-user-id');
 
       expect(result.status).toBe('APPROVED');
       expect(
@@ -249,6 +250,7 @@ describe('DataUpdatesService - Pruebas Unitarias', () => {
         'student-1',
         'enroll-1',
         pendingRequest.proposedData,
+        'admin-user-id',
       );
       expect(eventEmitter.emit).toHaveBeenCalledWith('data.update.approved', {
         enrollmentId: 'enroll-1',
@@ -272,14 +274,16 @@ describe('DataUpdatesService - Pruebas Unitarias', () => {
       const result = await service.rejectUpdate(
         'req-1',
         'Documentos ilegibles',
+        'admin-user-id',
       );
 
-      expect(result.message).toBe('Solicitud rechazada.');
+      expect(result.message).toBe('Solicitud rechazada correctamente.');
       expect(mockPrisma.dataUpdateRequest.update).toHaveBeenCalledWith({
         where: { id: 'req-1' },
         data: {
           status: 'REJECTED',
           reviewedAt: expect.any(Date),
+          reviewedById: 'admin-user-id',
           rejectionReason: 'Documentos ilegibles',
         },
       });
