@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UpsertGradeDto } from './dto/upsert-grade.dto';
 import { CreateChangeRequestDto } from './dto/create-change-request.dto';
 import { ResolveChangeRequestDto } from './dto/resolve-change-request.dto';
+import { Prisma } from '../../prisma/generated/client';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { SystemPermissions } from '../auth/constants/permissions.constant';
@@ -230,7 +231,7 @@ export class GradesService {
                 finalScore: existingGrade.finalScore,
                 status: existingGrade.status,
               }
-            : null,
+            : Prisma.DbNull,
           newScores: {
             scoreSer: currentSer,
             scoreSaber: currentSaber,
@@ -424,7 +425,7 @@ export class GradesService {
                   finalScore: existingGrade.finalScore,
                   status: existingGrade.status,
                 }
-              : null,
+              : Prisma.DbNull,
             newScores: {
               scoreSer: currentSer,
               scoreSaber: currentSaber,

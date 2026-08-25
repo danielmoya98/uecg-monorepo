@@ -39,8 +39,12 @@ export const GradesService = {
   resolveChangeRequest: async (
     requestId: string,
     status: 'APPROVED' | 'REJECTED',
+    rejectionReason?: string,
   ): Promise<unknown> => {
-    const response = await api.patch(`/grades/change-requests/${requestId}/resolve`, { status })
+    const response = await api.patch(`/grades/change-requests/${requestId}/resolve`, {
+      status,
+      rejectionReason,
+    })
     return response.data
   },
 }

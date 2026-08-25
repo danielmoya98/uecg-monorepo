@@ -15,18 +15,25 @@ export const GradeRow = ({
 }: GradeRowProps) => {
   const studentName = `${studentData.student.lastNamePaterno} ${studentData.student.lastNameMaterno} ${studentData.student.names}`
 
+  const hasAnyScore =
+    scores.ser !== '' ||
+    scores.saber !== '' ||
+    scores.hacer !== '' ||
+    scores.auto !== ''
+
   const totalPreview =
     (Number(scores.ser) || 0) +
     (Number(scores.saber) || 0) +
     (Number(scores.hacer) || 0) +
     (Number(scores.auto) || 0)
-  const needsRecovery = totalPreview < 51 && totalPreview > 0
 
-  let finalPreview = totalPreview
+  const needsRecovery = hasAnyScore && totalPreview < 51
+
+  let finalPreview: number | string = hasAnyScore ? totalPreview : '-'
   if (needsRecovery && scores.recovery !== '') {
     finalPreview = Math.min(Number(scores.recovery), 51)
   }
-  const isFailingFinal = finalPreview < 51 && finalPreview > 0
+  const isFailingFinal = typeof finalPreview === 'number' && finalPreview < 51
 
   const handleInputChange = (field: keyof GradeInput, value: string, max: number) => {
     if (!isTrimesterOpen) return
@@ -107,7 +114,7 @@ export const GradeRow = ({
         />
       </td>
       <td className="p-2 border-l border-uecg-line text-center w-16 font-black tabular-nums text-xs text-uecg-gray bg-gray-50/50">
-        {totalPreview || '-'}
+        {hasAnyScore ? totalPreview : '-'}
       </td>
       <td className="p-0 border-l border-uecg-line w-20 relative bg-red-50/30">
         {needsRecovery ? (
@@ -131,7 +138,7 @@ export const GradeRow = ({
           isFailingFinal ? 'bg-red-100 text-red-700' : 'bg-uecg-dark text-white'
         }`}
       >
-        {finalPreview || '-'}
+        {finalPreview}
       </td>
     </tr>
   )
