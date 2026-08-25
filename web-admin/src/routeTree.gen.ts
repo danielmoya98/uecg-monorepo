@@ -13,6 +13,7 @@ import { Route as SetupWizardRouteImport } from './app/router/setup-wizard'
 import { Route as SetupPasswordRouteImport } from './app/router/setup-password'
 import { Route as AuthenticatedRouteImport } from './app/router/_authenticated'
 import { Route as IndexRouteImport } from './app/router/index'
+import { Route as ActualizarDatosTokenRouteImport } from './app/router/actualizar-datos.$token'
 import { Route as AuthenticatedUsersRouteImport } from './app/router/_authenticated/users'
 import { Route as AuthenticatedTimetablesRouteImport } from './app/router/_authenticated/timetables'
 import { Route as AuthenticatedTeacherAssignmentsRouteImport } from './app/router/_authenticated/teacher-assignments'
@@ -53,6 +54,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActualizarDatosTokenRoute = ActualizarDatosTokenRouteImport.update({
+  id: '/actualizar-datos/$token',
+  path: '/actualizar-datos/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
@@ -253,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/teacher-assignments': typeof AuthenticatedTeacherAssignmentsRoute
   '/timetables': typeof AuthenticatedTimetablesRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/actualizar-datos/$token': typeof ActualizarDatosTokenRoute
   '/enrollments/new': typeof AuthenticatedEnrollmentsNewRoute
   '/students/import': typeof AuthenticatedStudentsImportRoute
   '/enrollments/': typeof AuthenticatedEnrollmentsIndexRoute
@@ -278,6 +285,7 @@ export interface FileRoutesByTo {
   '/teacher-assignments': typeof AuthenticatedTeacherAssignmentsRoute
   '/timetables': typeof AuthenticatedTimetablesRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/actualizar-datos/$token': typeof ActualizarDatosTokenRoute
   '/enrollments/new': typeof AuthenticatedEnrollmentsNewRoute
   '/students/import': typeof AuthenticatedStudentsImportRoute
   '/enrollments': typeof AuthenticatedEnrollmentsIndexRoute
@@ -307,6 +315,7 @@ export interface FileRoutesById {
   '/_authenticated/teacher-assignments': typeof AuthenticatedTeacherAssignmentsRoute
   '/_authenticated/timetables': typeof AuthenticatedTimetablesRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
+  '/actualizar-datos/$token': typeof ActualizarDatosTokenRoute
   '/_authenticated/enrollments/new': typeof AuthenticatedEnrollmentsNewRoute
   '/_authenticated/students/import': typeof AuthenticatedStudentsImportRoute
   '/_authenticated/enrollments/': typeof AuthenticatedEnrollmentsIndexRoute
@@ -336,6 +345,7 @@ export interface FileRouteTypes {
     | '/teacher-assignments'
     | '/timetables'
     | '/users'
+    | '/actualizar-datos/$token'
     | '/enrollments/new'
     | '/students/import'
     | '/enrollments/'
@@ -361,6 +371,7 @@ export interface FileRouteTypes {
     | '/teacher-assignments'
     | '/timetables'
     | '/users'
+    | '/actualizar-datos/$token'
     | '/enrollments/new'
     | '/students/import'
     | '/enrollments'
@@ -389,6 +400,7 @@ export interface FileRouteTypes {
     | '/_authenticated/teacher-assignments'
     | '/_authenticated/timetables'
     | '/_authenticated/users'
+    | '/actualizar-datos/$token'
     | '/_authenticated/enrollments/new'
     | '/_authenticated/students/import'
     | '/_authenticated/enrollments/'
@@ -400,6 +412,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   SetupPasswordRoute: typeof SetupPasswordRoute
   SetupWizardRoute: typeof SetupWizardRoute
+  ActualizarDatosTokenRoute: typeof ActualizarDatosTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -430,6 +443,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/actualizar-datos/$token': {
+      id: '/actualizar-datos/$token'
+      path: '/actualizar-datos/$token'
+      fullPath: '/actualizar-datos/$token'
+      preLoaderRoute: typeof ActualizarDatosTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/users': {
@@ -671,6 +691,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   SetupPasswordRoute: SetupPasswordRoute,
   SetupWizardRoute: SetupWizardRoute,
+  ActualizarDatosTokenRoute: ActualizarDatosTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

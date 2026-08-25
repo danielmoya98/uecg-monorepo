@@ -11,7 +11,6 @@ import { DataUpdatesBroadcastService } from './data-updates-broadcast.service';
 import { DataUpdatesTransactionService } from './data-updates-transaction.service';
 import { SubmitDataUpdateDto } from './dto/submit-data-update.dto';
 import { Prisma } from '../../prisma/generated/client';
-
 import { InstitutionConfigService } from '../institutions/institution-config.service';
 
 @Injectable()
@@ -59,7 +58,7 @@ export class DataUpdatesService {
 
     if (enrollment.rudeUpdateCount >= institution.maxRudeUpdatesPerYear) {
       throw new BadRequestException(
-        `Ha superado el límite de ${institution.maxRudeUpdatesPerYear} actualizaciones. Acuda a Secretaría.`,
+        `Ha superado el límite de ${institution.maxRudeUpdatesPerYear} actualizaciones permitidas para este ciclo. Acuda a Secretaría.`,
       );
     }
 
@@ -69,7 +68,6 @@ export class DataUpdatesService {
   async verifyTokenAndGetData(token: string) {
     let payload: {
       enrollmentId: string;
-
       purpose: string;
     };
 
@@ -79,60 +77,51 @@ export class DataUpdatesService {
       throw new UnauthorizedException('El enlace es inválido o ha expirado.');
     }
 
-    // ======================================================
-    // VALIDACIÓN PURPOSE
-    // ======================================================
-
     if (payload.purpose !== 'RUDE_UPDATE') {
-      throw new UnauthorizedException('Token inválido.');
+      throw new UnauthorizedException('Token de propósito inválido.');
     }
 
-    const enrollment = await this.validateCampaignAndLimits(
-      payload.enrollmentId,
-    );
-
-    // ======================================================
-    // PENDING CHECK
-    // ======================================================
+    const enrollment = await this.validateCampaignAndLimits(payload.enrollmentId);
 
     const pendingRequest = await this.prisma.dataUpdateRequest.findFirst({
       where: {
         enrollmentId: payload.enrollmentId,
-
         status: 'PENDING',
       },
     });
 
     if (pendingRequest) {
       throw new BadRequestException(
-        'Sus datos ya fueron enviados y se encuentran en revisión.',
+        'Sus datos ya fueron enviados y se encuentran en proceso de revisión por Secretaría.',
       );
     }
 
     return {
       message: 'Enlace verificado',
-
       data: {
         enrollmentId: enrollment.id,
-
         rudeCode: enrollment.student.rudeCode,
-
         student: {
           names: enrollment.student.names,
-
           lastNamePaterno: enrollment.student.lastNamePaterno,
-
           lastNameMaterno: enrollment.student.lastNameMaterno,
-
           ci: enrollment.student.ci,
+          birthDate: enrollment.student.birthDate,
+          gender: enrollment.student.gender,
+          birthCountry: enrollment.student.birthCountry,
+          birthDepartment: enrollment.student.birthDepartment,
+          birthProvince: enrollment.student.birthProvince,
+          birthLocality: enrollment.student.birthLocality,
+          hasDisability: enrollment.student.hasDisability,
+          disabilityType: enrollment.student.disabilityType,
+          disabilityDegree: enrollment.student.disabilityDegree,
+          hasAutism: enrollment.student.hasAutism,
+          hasExtraordinaryTalent: enrollment.student.hasExtraordinaryTalent,
         },
-
         guardians: enrollment.student.guardians.map((g) => ({
           relationship: g.relationship,
-
           ...g.guardian,
         })),
-
         rudeRecord: enrollment.rudeRecord,
       },
     };
@@ -140,12 +129,11 @@ export class DataUpdatesService {
 
   async submitUpdate(
     token: string,
-
     proposedData: SubmitDataUpdateDto,
+    metadata?: { ipAddress?: string; userAgent?: string },
   ) {
     let payload: {
       enrollmentId: string;
-
       purpose: string;
     };
 
@@ -155,137 +143,119 @@ export class DataUpdatesService {
       throw new UnauthorizedException('El enlace es inválido o expiró.');
     }
 
-    // ======================================================
-    // VALIDACIÓN PURPOSE
-    // ======================================================
-
     if (payload.purpose !== 'RUDE_UPDATE') {
-      throw new UnauthorizedException('Token inválido.');
+      throw new UnauthorizedException('Token de propósito inválido.');
     }
 
     await this.validateCampaignAndLimits(payload.enrollmentId);
 
-    // ======================================================
-    // EXISTING PENDING
-    // ======================================================
-
     const existingPending = await this.prisma.dataUpdateRequest.findFirst({
       where: {
         enrollmentId: payload.enrollmentId,
-
         status: 'PENDING',
       },
     });
 
-    // ======================================================
-    // UPDATE EXISTING
-    // ======================================================
-
     if (existingPending) {
       await this.prisma.dataUpdateRequest.update({
-        where: {
-          id: existingPending.id,
-        },
-
+        where: { id: existingPending.id },
         data: {
           proposedData: proposedData as unknown as Prisma.InputJsonValue,
+          ipAddress: metadata?.ipAddress,
+          userAgent: metadata?.userAgent,
         },
       });
 
       return {
-        message: 'Solicitud actualizada.',
-
+        message: 'Solicitud actualizada exitosamente.',
         requestId: existingPending.id,
       };
     }
 
-    // ======================================================
-    // CREATE NEW REQUEST
-    // ======================================================
-
     const requestRecord = await this.prisma.dataUpdateRequest.create({
       data: {
         enrollmentId: payload.enrollmentId,
-
         proposedData: proposedData as unknown as Prisma.InputJsonValue,
-
         status: 'PENDING',
+        ipAddress: metadata?.ipAddress,
+        userAgent: metadata?.userAgent,
       },
     });
 
     return {
-      message: 'Enviado a revisión.',
-
+      message: 'Formulario RUDE enviado a revisión.',
       requestId: requestRecord.id,
     };
   }
 
-  async approveUpdate(requestId: string) {
+  async approveUpdate(requestId: string, reviewerId?: string) {
     const request = await this.prisma.dataUpdateRequest.findUnique({
       where: { id: requestId },
       include: { enrollment: { include: { student: true } } },
     });
 
-    if (!request || request.status !== 'PENDING')
+    if (!request || request.status !== 'PENDING') {
       throw new BadRequestException('Solicitud inválida o ya procesada.');
+    }
 
     await this.transactionService.executeApprovalTransaction(
       requestId,
       request.enrollment.studentId,
       request.enrollmentId,
       request.proposedData,
+      reviewerId,
     );
 
-    // 🔥 EMITIMOS EVENTO: El Listener se encargará de notificar al padre
     this.eventEmitter.emit('data.update.approved', {
       enrollmentId: request.enrollmentId,
       studentId: request.enrollment.studentId,
       studentName: request.enrollment.student.names,
     });
 
-    return { message: 'Fusión exitosa.', status: 'APPROVED' };
+    return { message: 'Expediente fusionado exitosamente.', status: 'APPROVED' };
   }
 
-  async rejectUpdate(requestId: string, reason: string) {
+  async rejectUpdate(requestId: string, reason: string, reviewerId?: string) {
     const request = await this.prisma.dataUpdateRequest.findUnique({
       where: { id: requestId },
       include: { enrollment: true },
     });
 
-    if (!request || request.status !== 'PENDING')
-      throw new NotFoundException('Solicitud no encontrada.');
+    if (!request || request.status !== 'PENDING') {
+      throw new NotFoundException('Solicitud no encontrada o ya procesada.');
+    }
 
     await this.prisma.dataUpdateRequest.update({
       where: { id: requestId },
       data: {
         status: 'REJECTED',
         reviewedAt: new Date(),
+        reviewedById: reviewerId || null,
         rejectionReason: reason,
       },
     });
 
-    // 🔥 EMITIMOS EVENTO
     this.eventEmitter.emit('data.update.rejected', {
       studentId: request.enrollment.studentId,
       reason: reason,
     });
 
-    return { message: 'Solicitud rechazada.' };
+    return { message: 'Solicitud rechazada correctamente.' };
   }
 
   async markPhysicalDelivery(enrollmentId: string) {
     const institution = await this.institutionConfig.getOrNull();
-    const maxUpdates = institution?.maxRudeUpdatesPerYear || 5;
+    const maxUpdates = institution?.maxRudeUpdatesPerYear || 2;
 
     await this.prisma.enrollment.update({
       where: { id: enrollmentId },
-      data: { rudeUpdateCount: maxUpdates + 1 }, // 🔥 Dinámico, no hardcoded
+      data: { rudeUpdateCount: maxUpdates + 1 },
     });
 
     return { message: 'Entrega física registrada.' };
   }
 
-  // Delegadores de Broadcast (se mantienen para el controller)
+  // Delegaciones al servicio de difusión
   async generateUpdateToken(id: string) {
     return this.broadcastService.generateUpdateToken(id);
   }
@@ -307,7 +277,17 @@ export class DataUpdatesService {
         status: 'PENDING',
         enrollment: { academicYear: { status: 'ACTIVE' } },
       },
-      include: { enrollment: { include: { student: true, classroom: true } } },
+      include: {
+        enrollment: {
+          include: {
+            student: true,
+            classroom: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 }

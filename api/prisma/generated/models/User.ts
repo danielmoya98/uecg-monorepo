@@ -376,6 +376,7 @@ export type UserWhereInput = {
   grades?: Prisma.GradeListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   sessions?: Prisma.UserSessionListRelationFilter
+  reviewedDataUpdates?: Prisma.DataUpdateRequestListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -415,6 +416,7 @@ export type UserOrderByWithRelationInput = {
   grades?: Prisma.GradeOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   sessions?: Prisma.UserSessionOrderByRelationAggregateInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -457,6 +459,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   grades?: Prisma.GradeListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   sessions?: Prisma.UserSessionListRelationFilter
+  reviewedDataUpdates?: Prisma.DataUpdateRequestListRelationFilter
 }, "id" | "email" | "ciHash" | "guardianId" | "studentId">
 
 export type UserOrderByWithAggregationInput = {
@@ -554,6 +557,7 @@ export type UserCreateInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -589,6 +593,7 @@ export type UserUncheckedCreateInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUpdateInput = {
@@ -624,6 +629,7 @@ export type UserUpdateInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -659,6 +665,7 @@ export type UserUncheckedUpdateInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1104,6 +1111,22 @@ export type UserUncheckedUpdateOneWithoutGuardianNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGuardianInput, Prisma.UserUpdateWithoutGuardianInput>, Prisma.UserUncheckedUpdateWithoutGuardianInput>
 }
 
+export type UserCreateNestedOneWithoutReviewedDataUpdatesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedDataUpdatesInput, Prisma.UserUncheckedCreateWithoutReviewedDataUpdatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedDataUpdatesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutReviewedDataUpdatesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedDataUpdatesInput, Prisma.UserUncheckedCreateWithoutReviewedDataUpdatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedDataUpdatesInput
+  upsert?: Prisma.UserUpsertWithoutReviewedDataUpdatesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewedDataUpdatesInput, Prisma.UserUpdateWithoutReviewedDataUpdatesInput>, Prisma.UserUncheckedUpdateWithoutReviewedDataUpdatesInput>
+}
+
 export type UserCreateNestedOneWithoutAttendancesMarkedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAttendancesMarkedInput, Prisma.UserUncheckedCreateWithoutAttendancesMarkedInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendancesMarkedInput
@@ -1184,6 +1207,7 @@ export type UserCreateWithoutRoleInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutRoleInput = {
@@ -1218,6 +1242,7 @@ export type UserUncheckedCreateWithoutRoleInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutRoleInput = {
@@ -1308,6 +1333,7 @@ export type UserCreateWithoutSessionsInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -1342,6 +1368,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -1392,6 +1419,7 @@ export type UserUpdateWithoutSessionsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -1426,6 +1454,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutDirectedInstitutionInput = {
@@ -1460,6 +1489,7 @@ export type UserCreateWithoutDirectedInstitutionInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutDirectedInstitutionInput = {
@@ -1494,6 +1524,7 @@ export type UserUncheckedCreateWithoutDirectedInstitutionInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutDirectedInstitutionInput = {
@@ -1533,6 +1564,7 @@ export type UserCreateWithoutInstitutionInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutInstitutionInput = {
@@ -1567,6 +1599,7 @@ export type UserUncheckedCreateWithoutInstitutionInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutInstitutionInput = {
@@ -1622,6 +1655,7 @@ export type UserUpdateWithoutDirectedInstitutionInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDirectedInstitutionInput = {
@@ -1656,6 +1690,7 @@ export type UserUncheckedUpdateWithoutDirectedInstitutionInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutInstitutionInput = {
@@ -1706,6 +1741,7 @@ export type UserCreateWithoutClassroomsInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutClassroomsInput = {
@@ -1740,6 +1776,7 @@ export type UserUncheckedCreateWithoutClassroomsInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutClassroomsInput = {
@@ -1790,6 +1827,7 @@ export type UserUpdateWithoutClassroomsInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClassroomsInput = {
@@ -1824,6 +1862,7 @@ export type UserUncheckedUpdateWithoutClassroomsInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutTeacherAssignmentsInput = {
@@ -1858,6 +1897,7 @@ export type UserCreateWithoutTeacherAssignmentsInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutTeacherAssignmentsInput = {
@@ -1892,6 +1932,7 @@ export type UserUncheckedCreateWithoutTeacherAssignmentsInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutTeacherAssignmentsInput = {
@@ -1942,6 +1983,7 @@ export type UserUpdateWithoutTeacherAssignmentsInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherAssignmentsInput = {
@@ -1976,6 +2018,7 @@ export type UserUncheckedUpdateWithoutTeacherAssignmentsInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutScheduleSlotsInput = {
@@ -2010,6 +2053,7 @@ export type UserCreateWithoutScheduleSlotsInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutScheduleSlotsInput = {
@@ -2044,6 +2088,7 @@ export type UserUncheckedCreateWithoutScheduleSlotsInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutScheduleSlotsInput = {
@@ -2094,6 +2139,7 @@ export type UserUpdateWithoutScheduleSlotsInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutScheduleSlotsInput = {
@@ -2128,6 +2174,7 @@ export type UserUncheckedUpdateWithoutScheduleSlotsInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutStudentInput = {
@@ -2162,6 +2209,7 @@ export type UserCreateWithoutStudentInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutStudentInput = {
@@ -2196,6 +2244,7 @@ export type UserUncheckedCreateWithoutStudentInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutStudentInput = {
@@ -2246,6 +2295,7 @@ export type UserUpdateWithoutStudentInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentInput = {
@@ -2280,6 +2330,7 @@ export type UserUncheckedUpdateWithoutStudentInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutGuardianInput = {
@@ -2314,6 +2365,7 @@ export type UserCreateWithoutGuardianInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutGuardianInput = {
@@ -2348,6 +2400,7 @@ export type UserUncheckedCreateWithoutGuardianInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutGuardianInput = {
@@ -2398,6 +2451,7 @@ export type UserUpdateWithoutGuardianInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGuardianInput = {
@@ -2417,6 +2471,163 @@ export type UserUncheckedUpdateWithoutGuardianInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   institutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recoveryEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetCodeExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  directedInstitution?: Prisma.InstitutionUncheckedUpdateOneWithoutDirectorNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutAdvisorNestedInput
+  teacherAssignments?: Prisma.TeacherAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
+  scheduleSlots?: Prisma.ScheduleSlotUncheckedUpdateManyWithoutTeacherNestedInput
+  attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutReviewedDataUpdatesInput = {
+  id?: string
+  email: string
+  password: string
+  fullName: string
+  status?: $Enums.UserStatus
+  requiresPasswordChange?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ci?: string | null
+  ciHash?: string | null
+  phone?: string | null
+  address?: string | null
+  specialty?: string | null
+  recoveryEmail?: string | null
+  resetCode?: string | null
+  resetCodeExpiresAt?: Date | string | null
+  fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
+  failedLoginAttempts?: number
+  lockoutUntil?: Date | string | null
+  role: Prisma.RoleCreateNestedOneWithoutUsersInput
+  institution?: Prisma.InstitutionCreateNestedOneWithoutStaffInput
+  directedInstitution?: Prisma.InstitutionCreateNestedOneWithoutDirectorInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutAdvisorInput
+  teacherAssignments?: Prisma.TeacherAssignmentCreateNestedManyWithoutTeacherInput
+  scheduleSlots?: Prisma.ScheduleSlotCreateNestedManyWithoutTeacherInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
+  grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReviewedDataUpdatesInput = {
+  id?: string
+  email: string
+  password: string
+  fullName: string
+  roleId: string
+  status?: $Enums.UserStatus
+  requiresPasswordChange?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ci?: string | null
+  ciHash?: string | null
+  phone?: string | null
+  address?: string | null
+  specialty?: string | null
+  institutionId?: string | null
+  guardianId?: string | null
+  studentId?: string | null
+  recoveryEmail?: string | null
+  resetCode?: string | null
+  resetCodeExpiresAt?: Date | string | null
+  fcmTokens?: Prisma.UserCreatefcmTokensInput | string[]
+  failedLoginAttempts?: number
+  lockoutUntil?: Date | string | null
+  directedInstitution?: Prisma.InstitutionUncheckedCreateNestedOneWithoutDirectorInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutAdvisorInput
+  teacherAssignments?: Prisma.TeacherAssignmentUncheckedCreateNestedManyWithoutTeacherInput
+  scheduleSlots?: Prisma.ScheduleSlotUncheckedCreateNestedManyWithoutTeacherInput
+  attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReviewedDataUpdatesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedDataUpdatesInput, Prisma.UserUncheckedCreateWithoutReviewedDataUpdatesInput>
+}
+
+export type UserUpsertWithoutReviewedDataUpdatesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedDataUpdatesInput, Prisma.UserUncheckedUpdateWithoutReviewedDataUpdatesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedDataUpdatesInput, Prisma.UserUncheckedCreateWithoutReviewedDataUpdatesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewedDataUpdatesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewedDataUpdatesInput, Prisma.UserUncheckedUpdateWithoutReviewedDataUpdatesInput>
+}
+
+export type UserUpdateWithoutReviewedDataUpdatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  requiresPasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ci?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ciHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recoveryEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetCodeExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fcmTokens?: Prisma.UserUpdatefcmTokensInput | string[]
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockoutUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.RoleUpdateOneRequiredWithoutUsersNestedInput
+  institution?: Prisma.InstitutionUpdateOneWithoutStaffNestedInput
+  directedInstitution?: Prisma.InstitutionUpdateOneWithoutDirectorNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutAdvisorNestedInput
+  teacherAssignments?: Prisma.TeacherAssignmentUpdateManyWithoutTeacherNestedInput
+  scheduleSlots?: Prisma.ScheduleSlotUpdateManyWithoutTeacherNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewedDataUpdatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  requiresPasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ci?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ciHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  institutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recoveryEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2466,6 +2677,7 @@ export type UserCreateWithoutAttendancesMarkedInput = {
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutAttendancesMarkedInput = {
@@ -2500,6 +2712,7 @@ export type UserUncheckedCreateWithoutAttendancesMarkedInput = {
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutAttendancesMarkedInput = {
@@ -2550,6 +2763,7 @@ export type UserUpdateWithoutAttendancesMarkedInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendancesMarkedInput = {
@@ -2584,6 +2798,7 @@ export type UserUncheckedUpdateWithoutAttendancesMarkedInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutGradesInput = {
@@ -2618,6 +2833,7 @@ export type UserCreateWithoutGradesInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutGradesInput = {
@@ -2652,6 +2868,7 @@ export type UserUncheckedCreateWithoutGradesInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutGradesInput = {
@@ -2702,6 +2919,7 @@ export type UserUpdateWithoutGradesInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGradesInput = {
@@ -2736,6 +2954,7 @@ export type UserUncheckedUpdateWithoutGradesInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -2770,6 +2989,7 @@ export type UserCreateWithoutAuditLogsInput = {
   attendancesMarked?: Prisma.AttendanceRecordCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeCreateNestedManyWithoutModifierInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -2804,6 +3024,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutMarkerInput
   grades?: Prisma.GradeUncheckedCreateNestedManyWithoutModifierInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -2854,6 +3075,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -2888,6 +3110,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   attendancesMarked?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutMarkerNestedInput
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateManyRoleInput = {
@@ -2948,6 +3171,7 @@ export type UserUpdateWithoutRoleInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleInput = {
@@ -2982,6 +3206,7 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -3068,6 +3293,7 @@ export type UserUpdateWithoutInstitutionInput = {
   grades?: Prisma.GradeUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInstitutionInput = {
@@ -3102,6 +3328,7 @@ export type UserUncheckedUpdateWithoutInstitutionInput = {
   grades?: Prisma.GradeUncheckedUpdateManyWithoutModifierNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedDataUpdates?: Prisma.DataUpdateRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutInstitutionInput = {
@@ -3143,6 +3370,7 @@ export type UserCountOutputType = {
   grades: number
   auditLogs: number
   sessions: number
+  reviewedDataUpdates: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3153,6 +3381,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   grades?: boolean | UserCountOutputTypeCountGradesArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+  reviewedDataUpdates?: boolean | UserCountOutputTypeCountReviewedDataUpdatesArgs
 }
 
 /**
@@ -3214,6 +3443,13 @@ export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.UserSessionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewedDataUpdatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DataUpdateRequestWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3252,6 +3488,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   grades?: boolean | Prisma.User$gradesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  reviewedDataUpdates?: boolean | Prisma.User$reviewedDataUpdatesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3358,6 +3595,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   grades?: boolean | Prisma.User$gradesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  reviewedDataUpdates?: boolean | Prisma.User$reviewedDataUpdatesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3388,6 +3626,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     grades: Prisma.$GradePayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     sessions: Prisma.$UserSessionPayload<ExtArgs>[]
+    reviewedDataUpdates: Prisma.$DataUpdateRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3820,6 +4059,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   grades<T extends Prisma.User$gradesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$gradesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GradePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewedDataUpdates<T extends Prisma.User$reviewedDataUpdatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedDataUpdatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DataUpdateRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4515,6 +4755,30 @@ export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.UserSessionScalarFieldEnum | Prisma.UserSessionScalarFieldEnum[]
+}
+
+/**
+ * User.reviewedDataUpdates
+ */
+export type User$reviewedDataUpdatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DataUpdateRequest
+   */
+  select?: Prisma.DataUpdateRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DataUpdateRequest
+   */
+  omit?: Prisma.DataUpdateRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DataUpdateRequestInclude<ExtArgs> | null
+  where?: Prisma.DataUpdateRequestWhereInput
+  orderBy?: Prisma.DataUpdateRequestOrderByWithRelationInput | Prisma.DataUpdateRequestOrderByWithRelationInput[]
+  cursor?: Prisma.DataUpdateRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DataUpdateRequestScalarFieldEnum | Prisma.DataUpdateRequestScalarFieldEnum[]
 }
 
 /**

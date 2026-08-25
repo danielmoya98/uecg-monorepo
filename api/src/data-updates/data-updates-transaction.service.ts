@@ -1,25 +1,90 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { EncryptionService } from '../common/services/encryption.service'; // 🔥 IMPORTADO
+import { EncryptionService } from '../common/services/encryption.service';
+import { Prisma } from '../../prisma/generated/client';
 
 @Injectable()
 export class DataUpdatesTransactionService {
   constructor(
     private prisma: PrismaService,
-    private encryptionService: EncryptionService, // 🔥 INYECTADO
+    private encryptionService: EncryptionService,
   ) {}
 
   // ====================================================================
-  // EJECUTOR DE TRANSACCIÓN MAESTRA (Fusión de Datos con Bóveda)
+  // EJECUTOR DE TRANSACCIÓN MAESTRA (Fusión de Datos con Bóveda Criptográfica)
   // ====================================================================
   async executeApprovalTransaction(
     requestId: string,
     studentId: string,
     enrollmentId: string,
     data: any,
+    reviewedById?: string,
   ) {
     return await this.prisma.$transaction(async (tx) => {
-      // 1. ACTUALIZAMOS AL ESTUDIANTE (CON ENCRIPTACIÓN)
+      // 0. VERIFICACIÓN DE CONCURRENCIA ATÓMICA (Optimistic Lock)
+      const currentRequest = await tx.dataUpdateRequest.findUnique({
+        where: { id: requestId },
+      });
+
+      if (!currentRequest || currentRequest.status !== 'PENDING') {
+        throw new BadRequestException(
+          'La solicitud ya no está pendiente o ya fue procesada por otro usuario.',
+        );
+      }
+
+      // 1. CAPTURA DE SNAPSHOT PREVIO PARA AUDITORÍA Y TRAZABILIDAD
+      const previousStudent = await tx.student.findUnique({
+        where: { id: studentId },
+        include: {
+          guardians: {
+            include: {
+              guardian: true,
+            },
+          },
+        },
+      });
+
+      if (!previousStudent) {
+        throw new NotFoundException('Estudiante no encontrado en el sistema.');
+      }
+
+      const previousRude = await tx.rudeRecord.findUnique({
+        where: { enrollmentId },
+      });
+
+      const previousSnapshot = {
+        student: {
+          names: previousStudent.names,
+          lastNamePaterno: previousStudent.lastNamePaterno,
+          lastNameMaterno: previousStudent.lastNameMaterno,
+          birthDate: previousStudent.birthDate,
+          gender: previousStudent.gender,
+          birthCountry: previousStudent.birthCountry,
+          birthDepartment: previousStudent.birthDepartment,
+          birthProvince: previousStudent.birthProvince,
+          birthLocality: previousStudent.birthLocality,
+          documentType: previousStudent.documentType,
+          complement: previousStudent.complement,
+          expedition: previousStudent.expedition,
+          hasDisability: previousStudent.hasDisability,
+          disabilityType: previousStudent.disabilityType,
+          disabilityDegree: previousStudent.disabilityDegree,
+          hasAutism: previousStudent.hasAutism,
+          hasExtraordinaryTalent: previousStudent.hasExtraordinaryTalent,
+        },
+        guardians: previousStudent.guardians.map((g) => ({
+          relationship: g.relationship,
+          names: g.guardian.names,
+          lastNamePaterno: g.guardian.lastNamePaterno,
+          lastNameMaterno: g.guardian.lastNameMaterno,
+          occupation: g.guardian.occupation,
+          educationLevel: g.guardian.educationLevel,
+        })),
+        rudeRecord: previousRude,
+        capturedAt: new Date().toISOString(),
+      };
+
+      // 2. ACTUALIZAMOS AL ESTUDIANTE (CON ENCRIPTACIÓN Y BLIND INDEX)
       await tx.student.update({
         where: { id: studentId },
         data: {
@@ -30,7 +95,7 @@ export class DataUpdatesTransactionService {
           birthDepartment: data.birthDepartment,
           birthProvince: data.birthProvince,
           birthLocality: data.birthLocality,
-          birthDate: new Date(data.birthDate),
+          birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
           certOficialia: data.certOficialia
             ? this.encryptionService.encrypt(data.certOficialia)
             : undefined,
@@ -45,7 +110,7 @@ export class DataUpdatesTransactionService {
             : undefined,
           documentType: data.documentType,
 
-          // 🔥 Hasheo y encriptación simultánea del CI
+          // Hasheo y encriptación simultánea del CI
           ciHash: data.ci
             ? this.encryptionService.generateBlindIndex(data.ci)
             : undefined,
@@ -83,7 +148,7 @@ export class DataUpdatesTransactionService {
         },
       });
 
-      // 2. ACTUALIZAMOS EL FORMULARIO RUDE
+      // 3. ACTUALIZAMOS EL FORMULARIO RUDE
       await tx.rudeRecord.upsert({
         where: { enrollmentId: enrollmentId },
         update: {
@@ -104,7 +169,9 @@ export class DataUpdatesTransactionService {
             : undefined,
           nativeLanguage: data.nativeLanguage,
           frequentLanguages: data.frequentLanguages
-            ? data.frequentLanguages.split(',').map((s: string) => s.trim())
+            ? Array.isArray(data.frequentLanguages)
+              ? data.frequentLanguages
+              : data.frequentLanguages.split(',').map((s: string) => s.trim())
             : [],
           culturalIdentity: data.culturalIdentity,
           nearestHealthCenter: data.nearestHealthCenter,
@@ -148,7 +215,9 @@ export class DataUpdatesTransactionService {
             : null,
           nativeLanguage: data.nativeLanguage,
           frequentLanguages: data.frequentLanguages
-            ? data.frequentLanguages.split(',').map((s: string) => s.trim())
+            ? Array.isArray(data.frequentLanguages)
+              ? data.frequentLanguages
+              : data.frequentLanguages.split(',').map((s: string) => s.trim())
             : [],
           culturalIdentity: data.culturalIdentity,
           nearestHealthCenter: data.nearestHealthCenter,
@@ -177,20 +246,16 @@ export class DataUpdatesTransactionService {
         },
       });
 
-      // 3. ACTUALIZAMOS TUTORES
-      if (data.guardians && data.guardians.length > 0) {
-        await tx.studentGuardian.deleteMany({
-          where: { studentId: studentId },
-        });
-
+      // 4. SINCRONIZACIÓN INTELIGENTE Y NO DESTRUCTIVA DE TUTORES
+      if (data.guardians && Array.isArray(data.guardians) && data.guardians.length > 0) {
         for (const tutor of data.guardians) {
-          const tutorCiHash = this.encryptionService.generateBlindIndex(
-            tutor.ci,
-          ) as string;
+          if (!tutor.ci || !tutor.names) continue;
+
+          const tutorCiHash = this.encryptionService.generateBlindIndex(tutor.ci) as string;
           const tutorCiEnc = this.encryptionService.encrypt(tutor.ci);
 
           const guardian = await tx.guardian.upsert({
-            where: { ciHash: tutorCiHash }, // 🔥 Búsqueda segura
+            where: { ciHash: tutorCiHash },
             update: {
               ci: tutorCiEnc,
               names: tutor.names,
@@ -226,17 +291,26 @@ export class DataUpdatesTransactionService {
             },
           });
 
-          await tx.studentGuardian.create({
-            data: {
+          await tx.studentGuardian.upsert({
+            where: {
+              studentId_guardianId: {
+                studentId: studentId,
+                guardianId: guardian.id,
+              },
+            },
+            update: {
+              relationship: tutor.relationship || 'TUTOR',
+            },
+            create: {
               studentId: studentId,
               guardianId: guardian.id,
-              relationship: tutor.relationship,
+              relationship: tutor.relationship || 'TUTOR',
             },
           });
         }
       }
 
-      // 4. ACTUALIZAMOS CONTADORES Y ESTADO DE LA SOLICITUD
+      // 5. ACTUALIZAMOS CONTADORES Y ESTADO DE LA SOLICITUD
       await tx.enrollment.update({
         where: { id: enrollmentId },
         data: { rudeUpdateCount: { increment: 1 } },
@@ -244,7 +318,12 @@ export class DataUpdatesTransactionService {
 
       const finalRequest = await tx.dataUpdateRequest.update({
         where: { id: requestId },
-        data: { status: 'APPROVED', reviewedAt: new Date() },
+        data: {
+          status: 'APPROVED',
+          reviewedAt: new Date(),
+          reviewedById: reviewedById || null,
+          previousSnapshot: previousSnapshot as unknown as Prisma.InputJsonValue,
+        },
       });
 
       return finalRequest;
