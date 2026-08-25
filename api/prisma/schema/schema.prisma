@@ -158,7 +158,9 @@ model User {
 
   // 🔥 CORRECCIÓN: Relación exacta para saber qué profesor tomó la lista
   attendancesMarked AttendanceRecord[] @relation("AttendanceMarker")
+  approvedJustifications AttendanceJustification[] @relation("JustificationApprover")
   grades            Grade[]
+  gradeAudits       GradeAudit[]
   auditLogs         AuditLog[]
 
   // Dentro de tu model User { ... }
@@ -268,6 +270,7 @@ model AcademicYear {
   updatedAt   DateTime     @updatedAt @map("updated_at")
   enrollments Enrollment[]
   trimesters  Trimester[]
+  holidays    Holiday[]
 
   @@map("academic_years")
 }
@@ -519,6 +522,7 @@ model Enrollment {
   updateRequests  DataUpdateRequest[]
 
   attendanceRecords AttendanceRecord[]
+  attendanceJustifications AttendanceJustification[]
   grades            Grade[]
 
   @@unique([studentId, academicYearId])
@@ -754,7 +758,54 @@ model AttendanceRecord {
   @@unique([enrollmentId, classPeriodId, date])
   @@index([date, classPeriodId])
   @@index([enrollmentId, date])
+  @@index([date, status])
   @@map("attendance_records")
+}
+
+// 2. JUSTIFICACIONES / LICENCIAS ESTRUCTURADAS
+enum JustificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model AttendanceJustification {
+  id           String              @id @default(uuid())
+  enrollmentId String              @map("enrollment_id")
+  enrollment   Enrollment          @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  startDate    DateTime            @map("start_date") @db.Date
+  endDate      DateTime            @map("end_date") @db.Date
+  reason       String
+  documentUrl  String?             @map("document_url")
+
+  status       JustificationStatus @default(APPROVED)
+  approvedById String?             @map("approved_by_id")
+  approvedBy   User?               @relation("JustificationApprover", fields: [approvedById], references: [id])
+
+  createdAt    DateTime            @default(now()) @map("created_at")
+  updatedAt    DateTime            @updatedAt @map("updated_at")
+
+  @@index([enrollmentId, startDate, endDate])
+  @@index([status, startDate])
+  @@map("attendance_justifications")
+}
+
+// 3. FERIADOS Y DÍAS NO LECTIVOS
+model Holiday {
+  id             String        @id @default(uuid())
+  name           String        // Ej: "Día del Trabajo", "Carnaval", "Feriado Departamental"
+  date           DateTime      @db.Date
+  academicYearId String?       @map("academic_year_id")
+  academicYear   AcademicYear? @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+  isRecurring    Boolean       @default(false) @map("is_recurring")
+
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  @@unique([date, academicYearId])
+  @@index([date])
+  @@map("holidays")
 }
 
 // ==========================================
@@ -825,6 +876,7 @@ model Grade {
   trimester           Trimester            @relation(fields: [trimesterId], references: [id], onDelete: Cascade)
   modifier            User?                @relation(fields: [lastModifiedById], references: [id])
   gradeChangeRequests GradeChangeRequest[]
+  audits              GradeAudit[]
 
   @@unique([enrollmentId, teacherAssignmentId, trimesterId]) // Solo 1 registro oficial por alumno/materia/trimestre
   @@index([teacherAssignmentId, trimesterId])
@@ -839,18 +891,41 @@ model GradeChangeRequest {
   requestedById String  @map("requested_by_id") // Profesor
   approvedById  String? @map("approved_by_id") // Director
 
-  reason        String @db.Text
-  proposedSer   Int?
-  proposedSaber Int?
-  proposedHacer Int?
-  proposedAuto  Int?
+  reason           String  @db.Text
+  proposedSer      Int?    @map("proposed_ser")
+  proposedSaber    Int?    @map("proposed_saber")
+  proposedHacer    Int?    @map("proposed_hacer")
+  proposedAuto     Int?    @map("proposed_auto")
+  proposedRecovery Int?    @map("proposed_recovery")
 
-  status     UpdateRequestStatus @default(PENDING) // Reusamos tu enum de PENDING, APPROVED, REJECTED
-  resolvedAt DateTime?
+  status          UpdateRequestStatus @default(PENDING) // Reusamos tu enum de PENDING, APPROVED, REJECTED
+  resolvedAt      DateTime?           @map("resolved_at")
+  rejectionReason String?             @map("rejection_reason") @db.Text
 
   grade Grade @relation(fields: [gradeId], references: [id])
 
+  @@index([gradeId, status])
+  @@index([requestedById, status])
   @@map("grade_change_requests")
+}
+
+// 4. HISTORIAL Y AUDITORÍA DE CALIFICACIONES
+model GradeAudit {
+  id          String   @id @default(uuid())
+  gradeId     String   @map("grade_id")
+  changedById String   @map("changed_by_id")
+  action      String   // "UPSERT" | "BULK_UPDATE" | "CHANGE_REQUEST_APPROVED"
+  oldScores   Json?    @map("old_scores")
+  newScores   Json     @map("new_scores")
+  reason      String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  grade   Grade @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  changer User  @relation(fields: [changedById], references: [id])
+
+  @@index([gradeId])
+  @@index([changedById])
+  @@map("grade_audits")
 }
 
 // ==========================================

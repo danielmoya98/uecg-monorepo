@@ -71,9 +71,12 @@ export const ModelName = {
   PhysicalSpace: 'PhysicalSpace',
   DataUpdateRequest: 'DataUpdateRequest',
   AttendanceRecord: 'AttendanceRecord',
+  AttendanceJustification: 'AttendanceJustification',
+  Holiday: 'Holiday',
   Trimester: 'Trimester',
   Grade: 'Grade',
   GradeChangeRequest: 'GradeChangeRequest',
+  GradeAudit: 'GradeAudit',
   AuditLog: 'AuditLog'
 } as const
 
@@ -475,6 +478,35 @@ export const AttendanceRecordScalarFieldEnum = {
 export type AttendanceRecordScalarFieldEnum = (typeof AttendanceRecordScalarFieldEnum)[keyof typeof AttendanceRecordScalarFieldEnum]
 
 
+export const AttendanceJustificationScalarFieldEnum = {
+  id: 'id',
+  enrollmentId: 'enrollmentId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  reason: 'reason',
+  documentUrl: 'documentUrl',
+  status: 'status',
+  approvedById: 'approvedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceJustificationScalarFieldEnum = (typeof AttendanceJustificationScalarFieldEnum)[keyof typeof AttendanceJustificationScalarFieldEnum]
+
+
+export const HolidayScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  date: 'date',
+  academicYearId: 'academicYearId',
+  isRecurring: 'isRecurring',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HolidayScalarFieldEnum = (typeof HolidayScalarFieldEnum)[keyof typeof HolidayScalarFieldEnum]
+
+
 export const TrimesterScalarFieldEnum = {
   id: 'id',
   academicYearId: 'academicYearId',
@@ -520,11 +552,27 @@ export const GradeChangeRequestScalarFieldEnum = {
   proposedSaber: 'proposedSaber',
   proposedHacer: 'proposedHacer',
   proposedAuto: 'proposedAuto',
+  proposedRecovery: 'proposedRecovery',
   status: 'status',
-  resolvedAt: 'resolvedAt'
+  resolvedAt: 'resolvedAt',
+  rejectionReason: 'rejectionReason'
 } as const
 
 export type GradeChangeRequestScalarFieldEnum = (typeof GradeChangeRequestScalarFieldEnum)[keyof typeof GradeChangeRequestScalarFieldEnum]
+
+
+export const GradeAuditScalarFieldEnum = {
+  id: 'id',
+  gradeId: 'gradeId',
+  changedById: 'changedById',
+  action: 'action',
+  oldScores: 'oldScores',
+  newScores: 'newScores',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type GradeAuditScalarFieldEnum = (typeof GradeAuditScalarFieldEnum)[keyof typeof GradeAuditScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {

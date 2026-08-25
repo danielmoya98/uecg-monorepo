@@ -589,6 +589,23 @@ export type EnumAttendanceMethodWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAttendanceMethodFilter<$PrismaModel>
 }
 
+export type EnumJustificationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.JustificationStatus | Prisma.EnumJustificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JustificationStatus[] | Prisma.ListEnumJustificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JustificationStatus[] | Prisma.ListEnumJustificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJustificationStatusFilter<$PrismaModel> | $Enums.JustificationStatus
+}
+
+export type EnumJustificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JustificationStatus | Prisma.EnumJustificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JustificationStatus[] | Prisma.ListEnumJustificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JustificationStatus[] | Prisma.ListEnumJustificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJustificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.JustificationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJustificationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJustificationStatusFilter<$PrismaModel>
+}
+
 export type EnumTrimesterNameFilter<$PrismaModel = never> = {
   equals?: $Enums.TrimesterName | Prisma.EnumTrimesterNameFieldRefInput<$PrismaModel>
   in?: $Enums.TrimesterName[] | Prisma.ListEnumTrimesterNameFieldRefInput<$PrismaModel>
@@ -1155,6 +1172,23 @@ export type NestedEnumAttendanceMethodWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAttendanceMethodFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAttendanceMethodFilter<$PrismaModel>
+}
+
+export type NestedEnumJustificationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.JustificationStatus | Prisma.EnumJustificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JustificationStatus[] | Prisma.ListEnumJustificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JustificationStatus[] | Prisma.ListEnumJustificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJustificationStatusFilter<$PrismaModel> | $Enums.JustificationStatus
+}
+
+export type NestedEnumJustificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JustificationStatus | Prisma.EnumJustificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JustificationStatus[] | Prisma.ListEnumJustificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JustificationStatus[] | Prisma.ListEnumJustificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJustificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.JustificationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJustificationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJustificationStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumTrimesterNameFilter<$PrismaModel = never> = {

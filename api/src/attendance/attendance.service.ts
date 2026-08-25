@@ -21,6 +21,8 @@ import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interfa
 import { BulkAttendanceDto } from './dto/bulk-attendance.dto';
 import { RegisterAttendanceDto } from './dto/register-attendance.dto';
 import { ManualAttendanceDto } from './dto/manual-attendance.dto';
+import { CreateJustificationRangeDto } from './dto/create-justification-range.dto';
+import { CreateHolidayDto } from './dto/create-holiday.dto';
 
 import { InstitutionConfigService } from '../institutions/institution-config.service';
 
@@ -565,6 +567,128 @@ export class AttendanceService {
         method: AttendanceMethod.MANUAL,
         updatedAt: new Date(),
       },
+    });
+  }
+
+  async createJustificationRange(
+    dto: CreateJustificationRangeDto,
+    user: AuthenticatedUser,
+  ) {
+    const isPowerUser =
+      user.permissions?.includes(SystemPermissions.MANAGE_ALL) ||
+      user.permissions?.includes(SystemPermissions.MANAGE_ALL_ATTENDANCE);
+
+    if (!isPowerUser) {
+      throw new ForbiddenException(
+        'No tienes permisos suficientes para registrar licencias/justificaciones.',
+      );
+    }
+
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { id: dto.enrollmentId },
+      include: { student: true },
+    });
+
+    if (!enrollment) {
+      throw new NotFoundException('Inscripción de estudiante no encontrada.');
+    }
+
+    const startDate = this.getSafeLocalDate(dto.startDate);
+    const endDate = this.getSafeLocalDate(dto.endDate);
+
+    if (startDate > endDate) {
+      throw new BadRequestException(
+        'La fecha de inicio no puede ser posterior a la fecha final.',
+      );
+    }
+
+    // 1. Crear el registro maestro de justificación
+    const justification = await this.prisma.attendanceJustification.create({
+      data: {
+        enrollmentId: dto.enrollmentId,
+        startDate: startDate,
+        endDate: endDate,
+        reason: dto.reason,
+        documentUrl: dto.documentUrl,
+        status: 'APPROVED',
+        approvedById: user.userId,
+      },
+    });
+
+    // 2. Actualizar en lote todos los AttendanceRecords existentes en ese rango a EXCUSED
+    const updateResult = await this.prisma.attendanceRecord.updateMany({
+      where: {
+        enrollmentId: dto.enrollmentId,
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      data: {
+        status: AttendanceStatus.EXCUSED,
+        justification: `Licencia: ${dto.reason}`,
+        markedById: user.userId,
+        method: AttendanceMethod.MANUAL,
+        updatedAt: new Date(),
+      },
+    });
+
+    return {
+      message: 'Licencia registrada exitosamente.',
+      data: justification,
+      updatedRecordsCount: updateResult.count,
+    };
+  }
+
+  async getStudentJustifications(
+    enrollmentId: string,
+    _user: AuthenticatedUser,
+  ) {
+    return this.prisma.attendanceJustification.findMany({
+      where: { enrollmentId },
+      include: {
+        approvedBy: {
+          select: {
+            id: true,
+            fullName: true,
+            role: { select: { name: true } },
+          },
+        },
+      },
+      orderBy: { startDate: 'desc' },
+    });
+  }
+
+  // ==========================================
+  // 🗓️ GESTIÓN DE FERIADOS Y DÍAS NO LECTIVOS
+  // ==========================================
+  async createHoliday(dto: CreateHolidayDto, user: AuthenticatedUser) {
+    const isPowerUser =
+      user.permissions?.includes(SystemPermissions.MANAGE_ALL) ||
+      user.permissions?.includes(SystemPermissions.MANAGE_ALL_ATTENDANCE);
+
+    if (!isPowerUser) {
+      throw new ForbiddenException(
+        'No tienes permisos suficientes para registrar feriados o asuetos escolares.',
+      );
+    }
+
+    const dateOnly = this.getSafeLocalDate(dto.date);
+
+    return this.prisma.holiday.create({
+      data: {
+        name: dto.name,
+        date: dateOnly,
+        academicYearId: dto.academicYearId,
+        isRecurring: dto.isRecurring ?? false,
+      },
+    });
+  }
+
+  async getHolidays(academicYearId?: string) {
+    return this.prisma.holiday.findMany({
+      where: academicYearId ? { academicYearId } : {},
+      orderBy: { date: 'asc' },
     });
   }
 

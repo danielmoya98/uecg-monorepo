@@ -74,4 +74,19 @@ export class CreateChangeRequestDto {
   @Min(0)
   @Max(5, { message: 'La nota no puede exceder los 5 puntos.' })
   proposedAuto?: number;
+
+  @ApiPropertyOptional({
+    description:
+      'Propuesta de nota para el examen de Reforzamiento/Recuperación (0-100)',
+    minimum: 0,
+    maximum: 100,
+    example: 60,
+  })
+  @IsOptional()
+  @IsInt({ message: 'La nota de recuperación debe ser un número entero.' })
+  @Min(0)
+  @Max(100, {
+    message: 'La nota de recuperación no puede exceder los 100 puntos.',
+  })
+  proposedRecovery?: number;
 }

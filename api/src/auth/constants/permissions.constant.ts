@@ -27,6 +27,7 @@ export enum SystemPermissions {
 
   // GRADE (Calificaciones)
   READ_ALL_GRADE = 'read:all:Grade',
+  READ_OWN_GRADE = 'read:own:Grade',
   UPDATE_OWN_GRADE = 'update:own:Grade',
 
   // TIMETABLE (Horarios)

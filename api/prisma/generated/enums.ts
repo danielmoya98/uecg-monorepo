@@ -164,6 +164,15 @@ export const NotificationFrequency = {
 export type NotificationFrequency = (typeof NotificationFrequency)[keyof typeof NotificationFrequency]
 
 
+export const JustificationStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type JustificationStatus = (typeof JustificationStatus)[keyof typeof JustificationStatus]
+
+
 export const TrimesterName = {
   PRIMER_TRIMESTRE: 'PRIMER_TRIMESTRE',
   SEGUNDO_TRIMESTRE: 'SEGUNDO_TRIMESTRE',

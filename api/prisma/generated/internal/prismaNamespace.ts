@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.9.1
- * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.9.1",
-  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 /**
@@ -156,19 +156,6 @@ export type Subset<T, U> = {
 };
 
 /**
- * Resolved type of the argument passed to the `PrismaClient` constructor.
- *
- * When called without a narrower options type (the common case), this resolves
- * to `PrismaClientOptions` directly, which produces a clear TypeScript error
- * message (`not assignable to parameter of type 'PrismaClientOptions'`) when
- * the argument is missing or incomplete. When the user supplies a narrower
- * options type (e.g. via a literal), it falls back to `Subset` to keep
- * filtering out unknown properties.
- */
-export type PrismaClientConstructorArgs<Options extends PrismaClientOptions> =
-  [PrismaClientOptions] extends [Options] ? PrismaClientOptions : Subset<Options, PrismaClientOptions>;
-
-/**
  * SelectSubset
  * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
  * Additionally, it validates, if both select and include are present. If the case, it errors.
@@ -200,7 +187,7 @@ type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 export type XOR<T, U> =
   T extends object ?
   U extends object ?
-    ((Without<T, U> & U) | (Without<U, T> & T)) & object
+    (Without<T, U> & U) | (Without<U, T> & T)
   : U : T
 
 
@@ -417,9 +404,12 @@ export const ModelName = {
   PhysicalSpace: 'PhysicalSpace',
   DataUpdateRequest: 'DataUpdateRequest',
   AttendanceRecord: 'AttendanceRecord',
+  AttendanceJustification: 'AttendanceJustification',
+  Holiday: 'Holiday',
   Trimester: 'Trimester',
   Grade: 'Grade',
   GradeChangeRequest: 'GradeChangeRequest',
+  GradeAudit: 'GradeAudit',
   AuditLog: 'AuditLog'
 } as const
 
@@ -436,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "role" | "permission" | "rolePermission" | "user" | "userSession" | "institution" | "academicYear" | "subject" | "classroom" | "teacherAssignment" | "classPeriod" | "scheduleSlot" | "student" | "enrollment" | "guardian" | "studentGuardian" | "rudeRecord" | "physicalSpace" | "dataUpdateRequest" | "attendanceRecord" | "trimester" | "grade" | "gradeChangeRequest" | "auditLog"
+    modelProps: "role" | "permission" | "rolePermission" | "user" | "userSession" | "institution" | "academicYear" | "subject" | "classroom" | "teacherAssignment" | "classPeriod" | "scheduleSlot" | "student" | "enrollment" | "guardian" | "studentGuardian" | "rudeRecord" | "physicalSpace" | "dataUpdateRequest" | "attendanceRecord" | "attendanceJustification" | "holiday" | "trimester" | "grade" | "gradeChangeRequest" | "gradeAudit" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1920,6 +1910,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AttendanceJustification: {
+      payload: Prisma.$AttendanceJustificationPayload<ExtArgs>
+      fields: Prisma.AttendanceJustificationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AttendanceJustificationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AttendanceJustificationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>
+        }
+        findFirst: {
+          args: Prisma.AttendanceJustificationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AttendanceJustificationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>
+        }
+        findMany: {
+          args: Prisma.AttendanceJustificationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>[]
+        }
+        create: {
+          args: Prisma.AttendanceJustificationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>
+        }
+        createMany: {
+          args: Prisma.AttendanceJustificationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AttendanceJustificationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>[]
+        }
+        delete: {
+          args: Prisma.AttendanceJustificationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>
+        }
+        update: {
+          args: Prisma.AttendanceJustificationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>
+        }
+        deleteMany: {
+          args: Prisma.AttendanceJustificationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AttendanceJustificationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AttendanceJustificationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>[]
+        }
+        upsert: {
+          args: Prisma.AttendanceJustificationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendanceJustificationPayload>
+        }
+        aggregate: {
+          args: Prisma.AttendanceJustificationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAttendanceJustification>
+        }
+        groupBy: {
+          args: Prisma.AttendanceJustificationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AttendanceJustificationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AttendanceJustificationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AttendanceJustificationCountAggregateOutputType> | number
+        }
+      }
+    }
+    Holiday: {
+      payload: Prisma.$HolidayPayload<ExtArgs>
+      fields: Prisma.HolidayFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HolidayFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HolidayFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>
+        }
+        findFirst: {
+          args: Prisma.HolidayFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HolidayFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>
+        }
+        findMany: {
+          args: Prisma.HolidayFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>[]
+        }
+        create: {
+          args: Prisma.HolidayCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>
+        }
+        createMany: {
+          args: Prisma.HolidayCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HolidayCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>[]
+        }
+        delete: {
+          args: Prisma.HolidayDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>
+        }
+        update: {
+          args: Prisma.HolidayUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>
+        }
+        deleteMany: {
+          args: Prisma.HolidayDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HolidayUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HolidayUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>[]
+        }
+        upsert: {
+          args: Prisma.HolidayUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HolidayPayload>
+        }
+        aggregate: {
+          args: Prisma.HolidayAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHoliday>
+        }
+        groupBy: {
+          args: Prisma.HolidayGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HolidayGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HolidayCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HolidayCountAggregateOutputType> | number
+        }
+      }
+    }
     Trimester: {
       payload: Prisma.$TrimesterPayload<ExtArgs>
       fields: Prisma.TrimesterFieldRefs
@@ -2139,6 +2277,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.GradeChangeRequestCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.GradeChangeRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    GradeAudit: {
+      payload: Prisma.$GradeAuditPayload<ExtArgs>
+      fields: Prisma.GradeAuditFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GradeAuditFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GradeAuditFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>
+        }
+        findFirst: {
+          args: Prisma.GradeAuditFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GradeAuditFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>
+        }
+        findMany: {
+          args: Prisma.GradeAuditFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>[]
+        }
+        create: {
+          args: Prisma.GradeAuditCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>
+        }
+        createMany: {
+          args: Prisma.GradeAuditCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GradeAuditCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>[]
+        }
+        delete: {
+          args: Prisma.GradeAuditDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>
+        }
+        update: {
+          args: Prisma.GradeAuditUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>
+        }
+        deleteMany: {
+          args: Prisma.GradeAuditDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GradeAuditUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GradeAuditUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>[]
+        }
+        upsert: {
+          args: Prisma.GradeAuditUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeAuditPayload>
+        }
+        aggregate: {
+          args: Prisma.GradeAuditAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGradeAudit>
+        }
+        groupBy: {
+          args: Prisma.GradeAuditGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GradeAuditGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GradeAuditCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GradeAuditCountAggregateOutputType> | number
         }
       }
     }
@@ -2637,6 +2849,35 @@ export const AttendanceRecordScalarFieldEnum = {
 export type AttendanceRecordScalarFieldEnum = (typeof AttendanceRecordScalarFieldEnum)[keyof typeof AttendanceRecordScalarFieldEnum]
 
 
+export const AttendanceJustificationScalarFieldEnum = {
+  id: 'id',
+  enrollmentId: 'enrollmentId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  reason: 'reason',
+  documentUrl: 'documentUrl',
+  status: 'status',
+  approvedById: 'approvedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceJustificationScalarFieldEnum = (typeof AttendanceJustificationScalarFieldEnum)[keyof typeof AttendanceJustificationScalarFieldEnum]
+
+
+export const HolidayScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  date: 'date',
+  academicYearId: 'academicYearId',
+  isRecurring: 'isRecurring',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HolidayScalarFieldEnum = (typeof HolidayScalarFieldEnum)[keyof typeof HolidayScalarFieldEnum]
+
+
 export const TrimesterScalarFieldEnum = {
   id: 'id',
   academicYearId: 'academicYearId',
@@ -2682,11 +2923,27 @@ export const GradeChangeRequestScalarFieldEnum = {
   proposedSaber: 'proposedSaber',
   proposedHacer: 'proposedHacer',
   proposedAuto: 'proposedAuto',
+  proposedRecovery: 'proposedRecovery',
   status: 'status',
-  resolvedAt: 'resolvedAt'
+  resolvedAt: 'resolvedAt',
+  rejectionReason: 'rejectionReason'
 } as const
 
 export type GradeChangeRequestScalarFieldEnum = (typeof GradeChangeRequestScalarFieldEnum)[keyof typeof GradeChangeRequestScalarFieldEnum]
+
+
+export const GradeAuditScalarFieldEnum = {
+  id: 'id',
+  gradeId: 'gradeId',
+  changedById: 'changedById',
+  action: 'action',
+  oldScores: 'oldScores',
+  newScores: 'newScores',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type GradeAuditScalarFieldEnum = (typeof GradeAuditScalarFieldEnum)[keyof typeof GradeAuditScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {
@@ -3045,6 +3302,20 @@ export type ListEnumAttendanceMethodFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'JustificationStatus'
+ */
+export type EnumJustificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JustificationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'JustificationStatus[]'
+ */
+export type ListEnumJustificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JustificationStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'TrimesterName'
  */
 export type EnumTrimesterNameFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrimesterName'>
@@ -3095,10 +3366,19 @@ export type BatchPayload = {
 export const defineExtension = runtime.Extensions.defineExtension as unknown as runtime.Types.Extensions.ExtendsHook<"define", TypeMapCb, runtime.Types.Extensions.DefaultArgs>
 export type DefaultPrismaClient = PrismaClient
 export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
-/**
- * Options common to all variants of `PrismaClientOptions`, regardless of whether you connect to your database through a driver adapter or through Prisma Accelerate.
- */
-export interface PrismaClientBaseOptions {
+export type PrismaClientOptions = ({
+  /**
+   * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-pg`.
+   */
+  adapter: runtime.SqlDriverAdapterFactory
+  accelerateUrl?: never
+} | {
+  /**
+   * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
+   */
+  accelerateUrl: string
+  adapter?: never
+}) & {
   /**
    * @default "colorless"
    */
@@ -3185,56 +3465,6 @@ export interface PrismaClientBaseOptions {
    */
   queryPlanCacheMaxSize?: number
 }
-
-/**
- * `PrismaClient` options for connecting to your database through Prisma Accelerate instead of a driver adapter.
- * 
- * Learn more: https://pris.ly/d/accelerate
- */
-export interface PrismaClientOptionsWithAccelerateUrl extends PrismaClientBaseOptions {
-  /**
-   * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
-   * 
-   * Learn more: https://pris.ly/d/accelerate
-   */
-  accelerateUrl: string
-  adapter?: never
-}
-
-/**
- * `PrismaClient` options for connecting to your database through a driver adapter. This is the common case in Prisma 7.
- * 
- * Learn more: https://pris.ly/d/driver-adapters
- */
-export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions {
-  /**
-   * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
-   * 
-   * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
-   * 
-   * Learn more: https://pris.ly/d/driver-adapters
-   * 
-   * @example
-   * ```ts
-   * import { PrismaPg } from '@prisma/adapter-pg'
-   * import { PrismaClient } from './generated/prisma/client'
-   * 
-   * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
-   * const prisma = new PrismaClient({ adapter })
-   * ```
-   */
-  adapter: runtime.SqlDriverAdapterFactory
-  accelerateUrl?: never
-}
-
-/**
- * Options passed to the `PrismaClient` constructor.
- * 
- * A driver adapter (or, alternatively, a Prisma Accelerate URL) is **required**. See {@link PrismaClientOptionsWithAdapter} and {@link PrismaClientOptionsWithAccelerateUrl} for the two variants. All other properties live in {@link PrismaClientBaseOptions} and are optional.
- * 
- * Learn more about driver adapters: https://pris.ly/d/driver-adapters
- */
-export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   role?: Prisma.RoleOmit
   permission?: Prisma.PermissionOmit
@@ -3256,9 +3486,12 @@ export type GlobalOmitConfig = {
   physicalSpace?: Prisma.PhysicalSpaceOmit
   dataUpdateRequest?: Prisma.DataUpdateRequestOmit
   attendanceRecord?: Prisma.AttendanceRecordOmit
+  attendanceJustification?: Prisma.AttendanceJustificationOmit
+  holiday?: Prisma.HolidayOmit
   trimester?: Prisma.TrimesterOmit
   grade?: Prisma.GradeOmit
   gradeChangeRequest?: Prisma.GradeChangeRequestOmit
+  gradeAudit?: Prisma.GradeAuditOmit
   auditLog?: Prisma.AuditLogOmit
 }
 
